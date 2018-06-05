@@ -1,0 +1,29 @@
+<div class='modal fade' id='error-geolocation' tabindex='-1' role='dialog' aria-labelledby='mySmallModalLabel'>
+  <div class='modal-dialog modal-lg'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <%= button_tag '×', type: 'button', class: 'close', data: { dismiss: 'modal' }, aria: { hidden: 'true' } %>
+        <h4 class='text-center'>Please enable Geo-Location!!</h4>
+      </div>
+
+      <div class='modal-body'>
+        <div class='row'>
+          <div class='col-md-12'>
+            <h5 class='text-center'>
+              In order to use the Speed Test, please allow location services. This is to ensure that all speed tests are submitted from the SanJose area only.
+            </h5>
+
+            <h5 class='text-center'>
+              Please refresh the page and enable location services to test your internet speed!
+            </h5>
+          </div>
+        </div>
+      </div>
+
+      <div class='modal-footer'>
+        <%= button_tag 'Close Popup', type: 'button', class: 'btn btn-primary', data: { dismiss: 'modal' }, aria: { hidden: 'true' } %>
+      </div>
+      <div class='clearfix'></div>
+    </div>
+  </div>
+</div>

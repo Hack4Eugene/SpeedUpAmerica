@@ -1,0 +1,69 @@
+<div id='all-results'>
+  <div class='results-sharing-box'>
+    <h4 class=''>To help SpeedUp San Jose, share this site!</h4>
+    <%= render partial: 'shared/social_sharing_links' %>
+  </div>
+
+  <div class='hidden-xs'>
+    <% if all_results.blank? %>
+      <p class='text-center hide'>There are no submissions yet.</p>
+    <% else %>
+      <div class='container hide'>
+        <div>
+          <div class='col-md-12 col-centered'>
+            <div class="table-responsive bdrNone">
+              <table>
+                <thead>
+                  <th></th>
+                  <th>Submissions</th>
+                  <th>Satisfaction</th>
+                  <th>Advertised to Actual Speed Difference</th>
+                  <th>Average $ per Mbps</th>
+                </thead>
+                <tbody>
+                  <% all_results.each do |provider, submission| %>
+                    <tr>
+                      <td class='col-md-2'><%= provider %></td>
+                      <td class='col-md-2'><%= submission['count'] %></td>
+                      <td class='col-md-2'><%= text_field_tag :average_rating, filter_rating(submission['rating']), class: 'rating-loading average_rating' %></td>
+                      <td class='col-md-2 <%= set_color(submission['ratio'])%>'><%= print_provider_ratio(submission['ratio']) %></td>
+                      <td class='col-md-2'><%= "$#{submission['cost']}" %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class='container white-section'>
+    <div class='row'>
+      <div class='col-md-12'>
+        <h1 class='text-center margin-top-40 margin-bottom-40'>Measuring Internet Service in San Jose</h1>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 banner-static'>
+        <%= image_tag 'banner.png' %>
+      </div>
+
+      <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+        <div class='banner-text results-banner-text'>
+          Through www.speedupsanjose.com, San Jose residents have submitted over <%= number_with_delimiter(@total_submissions) %> internet speed tests to help improve internet service in our city!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= render 'about_the_data' %>
+  <%= render 'home_test_report' %>
+  <%= render 'mobile_test_report' %>
+  <%= render 'public_test_report' %>
+  <%= render 'about_speedup' %>
+
+  <%= hidden_field_tag :selected_zipcode, nil %>
+</div>

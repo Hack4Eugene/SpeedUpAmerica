@@ -1,0 +1,29 @@
+<div class='container'>
+  <div class='row'>
+    <div class='col-md-12 col-centered table-responsive bdrNone resultTableForDesktop'>
+      <div class="col-md-1 col-xs-12"></div>
+      <div class='col-md-5 col-xs-12'>
+        <h3>Your Results</h3>
+        <table class='col-md-12 text-left'>
+          <tr>
+            <td>Download Speed</td>
+            <td class='pull-right'><h4><%= print_speed(submission.actual_down_speed) %></h4></td>
+          </tr>
+          <tr>
+            <td>Upload Speed</td>
+            <td class='pull-right'><%= print_speed(submission.actual_upload_speed) %></td>
+          </tr>
+          <tr>
+            <td>Ping</td>
+            <td class='pull-right'><%= print_ping(submission.ping) %></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class='col-md-5 col-xs-12'>
+        <h3>Comparison</h3>
+        <%= render partial: 'result_comparison_table', locals: {submission: submission} %>
+      </div>
+    </div>
+  </div>
+</div>

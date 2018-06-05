@@ -1,0 +1,39 @@
+<table class='col-md-12 text-left'>
+  <% if submission.testing_for == Submission::MAP_FILTERS[:connection_type][:home_wifi] && submission.provider_down_speed %>
+    <tr>
+      <td>Your advertised download speed is: <span class="percent-val"><%= print_speed(submission.provider_down_speed) %></span></td>
+    </tr>
+    <tr>
+      <td>Your actual speed is <%= actual_speed_percentage(submission) %> than expected</td>
+    </tr>
+    <tr>
+      <td><%= compared_speed_percentage(submission) %> of other home connections</td>
+    </tr>
+  <% elsif submission.testing_for == Submission::MAP_FILTERS[:connection_type][:public_wifi] %>
+    <tr>
+      <td><h4>Your internet speed is <%= compared_speed_percentage(submission).downcase.html_safe %> of other Work/Public connections in SanJose.</h4></td>
+    </tr>
+  <% elsif submission.testing_for == Submission::MAP_FILTERS[:connection_type][:home_wifi] && submission.provider_down_speed.blank? %>
+    <tr>
+      <td><h4>Your internet speed is <%= compared_speed_percentage(submission).downcase.html_safe %> of other home internet connections in SanJose.</h4></td>
+    </tr>
+  <% elsif submission.testing_for == Submission::MAP_FILTERS[:connection_type][:mobile_data] %>
+    <tr>
+      <td><h4>Your internet speed is <%= compared_speed_percentage(submission).downcase.html_safe %> of other mobile internet speeds in SanJose.</h4></td>
+    </tr>
+  <% elsif commercial_test_without_download_speed?(submission) %>
+    <tr>
+      <td><h4>Your internet speed is <%= compared_speed_percentage(submission).downcase.html_safe %> of other commercial internet connections in SanJose.</h4></td>
+    </tr>
+  <% elsif commercial_test_with_download_speed?(submission) %>
+    <tr>
+      <td>Your advertised download speed is: <span class="percent-val"><%= print_speed(submission.provider_down_speed) %></span></td>
+    </tr>
+    <tr>
+      <td>Your actual speed is <%= actual_speed_percentage(submission) %> than expected</td>
+    </tr>
+    <tr>
+      <td><%= compared_speed_percentage(submission) %> of other commercial internet connections</td>
+    </tr>
+  <% end %>
+</table>

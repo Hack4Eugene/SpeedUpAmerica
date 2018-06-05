@@ -1,0 +1,47 @@
+<%= render partial: 'shared/test_speed_header', locals: {title: 'Help SpeedUp San Jose'} %>
+
+<div class='col-md-6 home-wrapper text-center col-sm-9'>
+  <%= render 'introduction' %>
+
+  <div id='form-container' class='hide'>
+    <%= form_for @submission, url: submissions_path, class: 'form-horizontal' do |f| %>
+      <%= f.hidden_field :latitude %>
+      <%= f.hidden_field :longitude %>
+      <%= f.hidden_field :actual_down_speed %>
+      <%= f.hidden_field :actual_upload_speed %>
+      <%= f.hidden_field :address %>
+      <%= f.hidden_field :zip_code %>
+      <%= f.hidden_field :ping %>
+
+      <%= render 'form_step_1', f: f %>
+      <%= render 'form_step_2a', f: f %>
+      <%= render 'form_step_2b', f: f %>
+      <%= render 'form_step_2c', f: f %>
+      <%= render 'form_step_3',  f: f %>
+    <% end %>
+  </div>
+</div>
+
+<div class='modal fade' id='testing_speed' tabindex='-1' role='dialog' aria-labelledby='mySmallModalLabel'>
+  <div class='modal-dialog modal-sm'>
+    <div class='modal-content'>
+      <div class="modal-header">
+        <h4 class="modal-title">Calculating Download Speed..</h4>
+      </div>
+      <div class="modal-body">
+        <div class='row'>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= image_tag 'ring-alt.gif', class: 'loader-image' %>
+          </div>
+        </div>
+      </div>
+      <div class='clearfix'></div>
+    </div>
+  </div>
+</div>
+
+<%= render 'error_geolocation' %>
+
+<% content_for :js_init do %>
+  BrowserBackDisable.init();
+<% end %>

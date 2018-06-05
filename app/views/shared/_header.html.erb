@@ -1,0 +1,28 @@
+<nav class='navbar navbar-inverse'>
+  <div class='container-fluid'>
+    <div class='pull-right hidden', id='social-share-button-wrapper'>
+      <%= social_share_button_tag 'I just tested my internet speed with Speed Up SanJose! Check it out here: ', url: root_url, desc: 'SanJose internet speed test is brought to you by SanJose City', popup: true %>
+    </div>
+
+    <div class='navbar-header'>
+      <%= button_tag class: 'navbar-toggle', data: {toggle: 'collapse', target: '#bs-example-navbar-collapse-1'}, 'aria-expanded': false do %>
+        <span class='sr-only'>Toggle navigation</span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+      <% end %>
+
+      <%= link_to root_path, data: {no_turbolink: true}, class: 'navbar-brand color-white' do %>
+        <%= image_tag('logo.png', class: 'logo-img') %>
+        <span>SpeedUpSanJose</span>
+      <% end %>
+    </div>
+    <div class='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>
+      <ul class='nav navbar-nav navbar-right header-links'>
+        <li><%= link_to 'Take the Test', root_path, data: { no_turbolink: true } %></li>
+        <li><%= link_to 'View Results', result_page_path, data: { no_turbolink: true } %></li>
+        <li><%= link_to 'About SpeedUpSanJose', 'http://sanjoseca.gov/index.aspx?NID=5346', target: '_blank' %></li>
+      </ul>
+    </div>
+  </div>
+</nav>

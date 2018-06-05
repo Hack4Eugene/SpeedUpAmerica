@@ -1,0 +1,23 @@
+<div class='social-container'>
+  <div class='social-sharing-links'>
+    <div class='row'>
+      <div class='col-md-2'><span class='speedupmo'>#speedupsj</span></div>
+      <div class='col-md-3'>
+        <span class='social-share-btn' data-share='facebook-img'>
+          <%= image_tag 'facebook.png', width: 21 %> Share on Facebook
+        </span>
+      </div>
+      <div class='col-md-3'>
+        <%= link_to "https://twitter.com/share?text=I just tested my internet speed with Speed Up SanJose! Check it out here:&url=#{request.url}&hashtags=speedupsj", class: 'social-share-btn', target: '_blank' do %>
+          <%= image_tag 'twitter.png', width: 21 %> Share on Twitter
+        <% end %>
+      </div>
+      <div class='col-md-3'>
+        <span class='social-share-btn' data-share='linkedin-img'>
+          <%= image_tag 'linkedin.png', class: 'linkedin-img', width: 16 %>
+          &nbsp; Share on Linkedin
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

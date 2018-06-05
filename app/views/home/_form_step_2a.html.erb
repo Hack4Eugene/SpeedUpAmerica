@@ -1,0 +1,70 @@
+<div id='form-step-2a' class='hide form-fields'>
+  <div class='form-group'>
+    <div class='row'>
+      <%= f.label :provider, 'Who is your provider?', class: 'col-md-6' %>
+
+      <div class='col-md-6'>
+        <%= f.select :provider, provider_list({provider_list_type: 'residential-form'}), {}, class: 'form-control pull-right', disabled: true %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class='form-group col-md-12'>
+      <div class='row'>
+        <%= f.label :connected_with, 'How are you connected?', class: 'col-md-6' %>
+
+        <div class='col-md-6'>
+          <%= f.select :connected_with, connected_list, {}, class: 'form-control pull-right', disabled: true %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+      <label class='optional-label'>
+        The below questions are optional, but determine if you are getting the internet service you're paying for:
+      </label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class='form-group col-md-12'>
+      <div class='row'>
+        <%= f.label :monthly_price, class: 'col-md-6' do %>
+          What is your monthly Internet Cost?
+
+          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='By providing your monthly internet cost, we help determine if you are getting the internet speed and value you should be expecting. If your internet service is part of a bundle, please identify and enter the cost of internet ONLY.'></span>
+        <% end %>
+
+        <div class='col-md-6 restricted-field text-left'>
+          <%= f.number_field :monthly_price, within: 0..200, class: 'form-control pull-right numeric', disabled: true %>
+          <span id='price_error_span' class='hide'>Error: This should not be greater than 200</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class='form-group col-md-12'>
+      <div class='row'>
+        <%= f.label :provider_down_speed, class: 'col-md-6' do %>
+          What is your advertised download speed?
+          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='Your "advertised download speed" is how many Megabits Per Second (Mbps, a measure of internet speed), you have agreed to with your internet provider.'></span>
+        <% end %>
+
+        <div class='col-md-6 restricted-field text-left'>
+          <%= f.number_field :provider_down_speed, max: 9999, class: 'form-control pull-right numeric', disabled: true %>
+          <span id='speed_error_span' class='hide'></span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <%= render 'rating', f: f %>
+  </div>
+
+  <div class='clearfix'></div>
+
+  <%= render 'submit_button_and_description' %>
+</div>
