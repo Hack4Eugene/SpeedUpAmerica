@@ -1,6 +1,6 @@
 # SpeedUp Your City
 
-The project vision is an open source nation-wide map that pulls individual internet speed test data from [M-Lab](https://viz.measurementlab.net/location/nauskylouisville?isps=AS10796x_AS10774x_AS11486x) and breaking down the results on maps and charts by points, census blocks, ISP, date range, and speed.  Census block data and [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data will used in both the analysis and maps.
+The project vision is an open source nation-wide map that pulls individual internet speed test data from [M-Lab](https://viz.measurementlab.net/location/nauskylouisville?isps=AS10796x_AS10774x_AS11486x) and breaking down the results on maps and charts by points, census blocks, ISP, date range, and speed.  Census block data and [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data will used to supplement both the analysis and maps.
 
 The current implentation of SpeedUp has been deployed to these cities.
 
@@ -11,6 +11,10 @@ The current implentation of SpeedUp has been deployed to these cities.
 ## Digital Inclusion
 
 The project can be used as part of a digital inclusion strategy to learn where inequities are in your community.  SpeedUp can help citizens, businesses, policymakers and others better understand where Louisville residents can access high-quality Internet service, and where there are needs, allowing cities to track and improve performance through key policies, ISP agreements, and partnerships.
+
+### Replace FCC 477 Data
+
+All current digital inclusion maps rely on [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data which is ISP self-reported, notriously incomplete, misleading, gameable by ISPs, and not detailed enough.  Let's get better, more accurate, crowd-source speed data directly from citizens to make better decisions and drive policy.
 
 ## Project History
 
