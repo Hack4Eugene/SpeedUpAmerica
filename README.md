@@ -115,10 +115,14 @@ RDS_USERNAME=
 ~~~~
 
 ### Seed Database
+rake db:setup
 
-### Migrate Changes
+### Migrate Database Changes
+rake db:migrate:status  
+rake db:migrate                         # Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)
 
 ### Run Local (optional)
+rails s
 
 ### Familiarize yourself with rake tasks
 Run "rake -t" to get the following output of rake tasks:
@@ -171,13 +175,13 @@ rake tmp:create                         # Creates tmp directories for sessions, 
 ~~~~
 
 ### Push to Web Based Development Environment
-
+This stage of implementation is dependent on what environment you will be deploying to. We currently have 3 methods that we're testing, with Heroku and dedicated hosting being operational.
 
 ## Heroku
-This implementation of Speed Up Your City has been tested on Heroku, on a free dyno, with a small MySQL instance
+This implementation of Speed Up Your City has been tested on Heroku, on a free dyno, with a small MySQL instance add-on ($9.99 a month, only recommend for testing purposes)
 
 ## Elastic Beanstalk
-This project currently does not run on Elastic Beanstalk, although we do intend to implement this. There is a placeholder .ebextensions folder in preparation for this.
+This project currently does not run on Elastic Beanstalk, although we do intend to implement this. There is a placeholder .ebextensions folder in preparation for this. This would utilize Elastic Beanstalk, in conjunction with a small to medium EC2 instance, and a MySQL RDS instance.
 
 ## Dedicated Hosting
-Speeduplouisville.com is currently running on a dedicated server.
+Speeduplouisville.com is currently running on a dedicated server hosted by Smart Data Systems.
