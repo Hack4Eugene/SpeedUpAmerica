@@ -1,0 +1,8 @@
+<div class='messages'>
+  <% flash.each do |key, value| %>
+    <div class='alert alert-danger'>
+      <%= link_to '×', '#', class: 'close', title: 'close', data: { dismiss: 'alert' }, 'aria-label' => 'close' %>
+      <%= value %>
+    </div>
+  <% end %>
+</div>

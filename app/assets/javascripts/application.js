@@ -14,4 +14,8 @@
 //= require jquery_ujs
 //= require bootstrap-sprockets
 //= require turbolinks
+//= require chosen-jquery
+//= require bootstrap-datepicker
+//= require ndt.js
+//= require d3.v3.min.js
 //= require_tree .

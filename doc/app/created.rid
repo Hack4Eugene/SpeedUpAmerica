@@ -1,0 +1,14 @@
+Thu, 14 Jun 2018 13:08:32 -0400
+README.rdoc	Thu, 14 Jun 2018 10:41:52 -0400
+app/classes/submissions_importer.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/controllers/application_controller.rb	Thu, 14 Jun 2018 12:27:27 -0400
+app/controllers/home_controller.rb	Thu, 14 Jun 2018 10:41:53 -0400
+app/controllers/submissions_controller.rb	Thu, 14 Jun 2018 12:27:27 -0400
+app/helpers/application_helper.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/helpers/home_helper.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/helpers/submissions_helper.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/models/census_boundary.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/models/provider_statistic.rb	Thu, 14 Jun 2018 10:41:53 -0400
+app/models/service_provider.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/models/submission.rb	Thu, 14 Jun 2018 10:42:06 -0400
+app/models/zip_boundary.rb	Thu, 14 Jun 2018 10:41:53 -0400

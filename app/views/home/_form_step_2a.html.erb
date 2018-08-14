@@ -4,7 +4,7 @@
       <%= f.label :provider, 'Who is your provider?', class: 'col-md-6' %>
 
       <div class='col-md-6'>
-        <%= f.select :provider, provider_list({provider_list_type: 'residential-form'}), {}, class: 'form-control pull-right', disabled: true %>
+        <%= f.select :provider, provider_list({first_step: true}), {}, class: 'form-control pull-right', disabled: true %>
       </div>
     </div>
   </div>
@@ -21,9 +21,9 @@
   </div>
 
   <div class='row'>
-    <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-      <label class='optional-label'>
-        The below questions are optional, but determine if you are getting the internet service you're paying for:
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <label class='text-left form-separator-margin'>
+        The below questions are optional, but answering them will help determine if you are getting the internet speed you should be expecting.
       </label>
     </div>
   </div>
@@ -32,12 +32,12 @@
     <div class='form-group col-md-12'>
       <div class='row'>
         <%= f.label :monthly_price, class: 'col-md-6' do %>
-          What is your monthly Internet Cost?
+          Estimated price you pay per month?
 
-          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='By providing your monthly internet cost, we help determine if you are getting the internet speed and value you should be expecting. If your internet service is part of a bundle, please identify and enter the cost of internet ONLY.'></span>
+          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='By providing your monthly internet cost, we help determine if you are getting the internet speed and value you should be expecting.'></span>
         <% end %>
 
-        <div class='col-md-6 restricted-field text-left'>
+        <div class='col-md-4 restricted-field text-left'>
           <%= f.number_field :monthly_price, within: 0..200, class: 'form-control pull-right numeric', disabled: true %>
           <span id='price_error_span' class='hide'>Error: This should not be greater than 200</span>
         </div>
@@ -49,22 +49,46 @@
       <div class='row'>
         <%= f.label :provider_down_speed, class: 'col-md-6' do %>
           What is your advertised download speed?
-          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='Your "advertised download speed" is how many Megabits Per Second (Mbps, a measure of internet speed), you have agreed to with your internet provider.'></span>
+          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='Your "advertised download speed" is how many Megabytes Per Second (Mbps, a measure of internet speed), you have agreed to with your internet provider.'></span>
         <% end %>
 
-        <div class='col-md-6 restricted-field text-left'>
-          <%= f.number_field :provider_down_speed, max: 9999, class: 'form-control pull-right numeric', disabled: true %>
-          <span id='speed_error_span' class='hide'></span>
+        <div class='col-md-4 restricted-field text-left'>
+          <%= f.number_field :provider_down_speed, within: 0..310, class: 'form-control pull-right numeric', disabled: true %>
+          <span id='speed_error_span' class='hide'>Error: This should not be greater than 310</span>
         </div>
 
+        <div id='mbps-container' class='col-md-1'>
+          <span class='line-height-50 negative-margin-left-20 bold'>Mbps</span>
+        </div>
       </div>
     </div>
   </div>
   <div class="row">
-    <%= render 'rating', f: f %>
-  </div>
+    <div class='form-group rating-container col-md-12'>
+      <div class='row'>
+        <%= f.label :rating, 'Is this service meeting your expectations for internet speed and value?', class: 'col-md-6' %>
 
+        <div class='col-md-6'>
+          <%= f.text_field :rating %>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class='clearfix'></div>
 
-  <%= render 'submit_button_and_description' %>
+  <div class='row'>
+    <div class='form-group col-md-6 col-md-offset-6'>
+      <div class='col-md-12 text-center'>
+        <%= button_tag 'Test My Speed!!', type: 'button', class: 'test-speed-btn col-md-12' %>
+        <p class='location-warning'>(Note: Please, allow to share your location to take a test.)</p>
+      </div>
+    </div>
+  </div>
+
+  <%= render 'bottom_description' %>
+
+  <div class='text-center find-more-div'>
+    Questions about speeduplouisville.com? Find more information
+    <%= link_to 'here.', 'http://poweruplabs.co/introducing-speed-up-louisville/', target: '_blank' %>
+  </div>
 </div>

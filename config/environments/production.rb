@@ -13,6 +13,7 @@ Rails.application.configure do
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
+  config.action_controller.page_cache_directory = "#{Rails.root.to_s}/public/cache"
 
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
@@ -78,25 +79,29 @@ Rails.application.configure do
     address: 'smtp.mailgun.org',
     port: 587,
     authentication: :plain,
-    user_name: 'xxx',
-    password: 'xxx',
-    domain: 'xxx.mailgun.org',
+    user_name: 'postmaster@speeduplouisville.com',
+    password: '740629340bec07c903fca9d96e35325b',
+    domain: 'speeduplouisville.com',
   }
 
   config.middleware.use ExceptionNotification::Rack,
   email: {
     email_prefix: '[Notification] ',
-    sender_address: %('notifier' <notifier@speedupsanjose.com>),
+    sender_address: %('notifier' <notifier@speeduplouisvelle.com>),
     exception_recipients: %w(dev1@contenttools.co dev2@contenttools.co dev3@contenttools.co)
   }
 
-  config.action_mailer.default_url_options = { host: 'speedupsanjose.com' }
+  config.action_mailer.default_url_options = { host: 'speeduplouisville.com' }
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+  config.action_dispatch.default_headers = {
+    'X-Frame-Options' => 'ALLOWALL'
+  }
 
-  GA.tracker = 'UA-xxx-1'
+  GA.tracker = 'UA-76999024-2'
+
 end

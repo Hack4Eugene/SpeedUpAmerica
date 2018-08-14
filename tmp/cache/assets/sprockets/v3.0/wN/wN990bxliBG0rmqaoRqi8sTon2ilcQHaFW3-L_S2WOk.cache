@@ -1,0 +1,35 @@
+I"7(function() {
+  var handle_back_page_loading;
+
+  handle_back_page_loading = function() {
+    var count;
+    count = 0;
+    window.onload = function() {
+      if (typeof history.pushState === 'function') {
+        history.pushState('back', null, null);
+        return window.onpopstate = function() {
+          history.pushState('back', null, null);
+          if (count === 1) {
+            return false;
+          }
+        };
+      }
+    };
+    return setTimeout((function() {
+      count = 1;
+    }), 200);
+  };
+
+  (function($) {
+    var init_controls;
+    window.BrowserBackDisable || (window.BrowserBackDisable = {});
+    BrowserBackDisable.init = function() {
+      return init_controls();
+    };
+    return init_controls = function() {
+      return handle_back_page_loading();
+    };
+  }).call(this);
+
+}).call(this);
+:ET

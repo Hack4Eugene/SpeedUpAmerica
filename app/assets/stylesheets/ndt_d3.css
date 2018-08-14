@@ -1,0 +1,69 @@
+#ndt-div {
+  height: 200px;
+  width: 200px;
+  margin: 30px auto;
+}
+
+#ndt-svg {
+  margin: 0 auto;
+}
+
+#progress-meter {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+
+#progress-meter text {
+  fill: #2A333D;
+}
+
+#progress-meter text.information {
+/*  fill: #007dc3; */
+  fill: #666666;
+  font-size: 3em;
+}
+
+#progress-meter text.status{
+  fill: #3F4D4D;
+}
+
+#progress-meter .ready {
+  cursor: pointer;
+}
+
+#progress-meter .progress {
+  cursor: wait;
+}
+
+#progress-meter .background {
+  fill: #007dc3;
+}
+
+#progress-meter .complete {
+  fill: #83B09C;
+}
+
+#progress-meter .progress-error .background {
+  fill: #A77D7D;
+}
+
+.metric-results {
+  position: relative;
+  border: thin solid #ccc;
+  border-radius: 50%;
+  height: 0;
+  padding-bottom: 100%;
+}
+
+.metric-results > div {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  font-size: 150%;
+  font-weight: bold;
+}
+
+.metric-value {
+  color: blue;
+}

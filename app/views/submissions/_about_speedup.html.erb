@@ -5,20 +5,19 @@
         <%= image_tag 'bottom_banner.png' %>
       </div>
       <div class='ccol-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <h2 class="text-center">About SpeedUpSanJose</h2>
-        <p>SpeedUp San Jose identifies the real life internet speed our residents experience. We need your help to learn which neighborhoods consistently have slow internet connections. All you have to do is answer a couple of questions and conduct a speed test.</p>
-        <p>We value your privacy, and will not collect any personal information. We will incorporate your general location in the aggregate data.</p>
-        <p>Once the testing period is over, we will have a more complete picture of internet speeds in every part of the city. From there we can take steps to ensure all San Jose residents have access to quality, high-speed internet.</p>
-      </div>
-        <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center export-data-div'>
-          <%= form_tag export_csv_submissions_path, method: :post, target: export_csv_form_target do %>
-            <%= submit_tag 'Export Data', class: 'btn btn-lg btn-primary export-btn' %>
-          <% end %>
-          <div  class='padding-top-10'>
-            <%= render partial: 'shared/info_link' %>
-          </div>
+        <h2 class="text-center">About SpeedUpLouisville</h2>
+        <div class="banner-text">
+          The SpeedUp Louisville project is designed to help Louisville Metro understand the quality and cost of internet service provided to our citizens. By answering a few questions you can help increase transparency around internet speeds and costs for Louisville residents.
         </div>
-
+      </div>
     </div>
+  </div>
+  <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center export-data-div'>
+    <%= link_to 'Export Data', export_csv_submissions_path, method: :post, class: 'btn btn-lg btn-primary export-btn' %>
+  </div>
+
+  <div class='text-center find-more-div'>
+    Questions about speeduplouisville.com? Find more information
+    <%= link_to 'here.', 'http://poweruplabs.co/introducing-speed-up-louisville/', target: '_blank' %>
   </div>
 </div>

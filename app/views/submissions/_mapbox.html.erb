@@ -1,80 +1,16 @@
 <div id='map-container'>
   <div class='row mapbox-heading'>
-    <h3>View all tests from SpeedUpSanJose below:</h3>
+    <h3>View all tests from SpeedUpLouisville below:</h3>
   </div>
   <div>
     <div>
       <div id='all_results_map' class='map col-xs-12 col-sm-8 col-md-8 col-lg-8'></div>
-      <div id='loader' class='map col-xs-12 col-sm-8 col-md-8 col-lg-8 hide text-center'>
+      <div id='loader' class='col-xs-12 col-sm-8 col-md-8 col-lg-8 text-center'>
         <%= image_tag 'loader.gif' %>
         <div class='loading-spinner-text'>Loading Map Data...</div>
       </div>
 
-      <div id='map-filters' class='filters col-xs-12 col-sm-4 col-md-4 col-lg-4'>
-        <h3>Interact with the map!</h3>
-
-        <ul>
-          <div>Download Speed</div>
-          <li><span class='background-color-1000-plus'></span>1,000+ Mbps</li>
-          <li><span class='background-color-500-999'></span>500-999 Mbps</li>
-          <li><span class='background-color-100-499'></span>100-499 Mbps</li>
-          <li><span class='background-color-50-99'></span>50-99 Mbps</li>
-          <li><span class='background-color-20-49'></span>20-49 Mbps</li>
-          <li><span class='background-color-10-19'></span>10-19 Mbps</li>
-          <li><span class='background-color-0-9'></span>0-9 Mbps</li>
-        </ul>
-
-        <div class='row'>
-          <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-            <div class='connection-type'>
-              <p>Internet Connection Type</p>
-
-              <div class='connection-type-buttons'>
-                <%= button_tag 'Residential', type: 'button', data: { value: Submission::MAP_FILTERS[:connection_type][:home_wifi] }, class: 'btn btn-primary' %>
-                <%= button_tag 'Mobile Data', type: 'button', data: { value: Submission::MAP_FILTERS[:connection_type][:mobile_data] }, class: 'btn btn-default' %>
-                <%= button_tag 'Public/At Work', type: 'button', data: { value: Submission::MAP_FILTERS[:connection_type][:public_wifi] }, class: 'btn btn-default' %>
-                <%= button_tag 'Business Owner', type: 'button', data: { value: Submission::MAP_FILTERS[:connection_type][:commercial_data] }, class: 'btn btn-default' %>
-                <%= button_tag 'All', type: 'button', data: { value: Submission::MAP_FILTERS[:connection_type][:all] }, class: 'btn btn-default' %>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class='row'>
-          <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-            <div class='group-by'>
-              <p>Group By:</p>
-
-              <div class='group-by-buttons'>
-                <%= button_tag 'Zip Code', type: 'button', data: { value: Submission::MAP_FILTERS[:group_by][:zip_code] }, class: 'btn btn-primary' %>
-                <%= button_tag 'All Responses', type: 'button', data: { value: Submission::MAP_FILTERS[:group_by][:all_responses] }, class: 'btn btn-default hidden' %>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class='row selected-zipcode-section hidden'>
-          <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-            <p>Selected Zip Code:</p>
-            <strong class='selected-zipcode btn btn-primary'></strong>
-          </div>
-        </div>
-
-        <div class='row'>
-          <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-            <div class='satisfaction'>
-              <p>Internet service satisfaction:</p>
-
-              <div class='satisfaction-buttons'>
-                <%= button_tag 'All', type: 'button', class: 'btn btn-primary' %>
-                <%= button_tag 'Negative', type: 'button', class: 'btn btn-default' %>
-                <%= button_tag 'Neutral', type: 'button', class: 'btn btn-default' %>
-                <%= button_tag 'Positive', type: 'button', class: 'btn btn-default' %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <%= render partial: 'filters' %>
     </div>
   </div>
 </div>

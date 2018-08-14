@@ -4,20 +4,36 @@
       <%= f.label :provider, 'Who is your provider?', class: 'col-md-6 text-center' %>
 
       <div class='col-md-6'>
-        <%= f.select :provider, provider_list({provider_list_type: 'mobile-form'}), {}, class: 'form-control pull-right', disabled: true %>
+        <%= f.select :provider, provider_list({first_step: false}), {}, class: 'form-control pull-right', disabled: true %>
       </div>
     </div>
   </div>
 
-  <div class='row'>
-    <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-      <label class='optional-text'>The below questions are optional:</label>
+  <div class='form-group rating-container col-md-12'>
+    <div class='row'>
+      <%= f.label :rating, 'Is this service meeting your expectations for internet speed and value?', class: 'col-md-6 text-center' %>
+
+      <div class='col-md-6'>
+        <%= f.text_field :rating %>
+      </div>
     </div>
   </div>
 
-  <%= render 'rating', f: f %>
-
   <div class='clearfix'></div>
 
-  <%= render 'submit_button_and_description' %>
+  <div class='row'>
+    <div class='form-group col-md-6 col-md-offset-6'>
+      <div class='col-md-12 text-center'>
+        <%= button_tag 'Test My Speed!!', type: 'button', class: 'test-speed-btn col-md-12' %>
+        <p class='location-warning'>(Note: Please, allow to share your location to take a test.)</p>
+      </div>
+    </div>
+  </div>
+
+  <%= render 'bottom_description' %>
+
+  <div class='text-center find-more-div'>
+    Questions about speeduplouisville.com? Find more information
+    <%= link_to 'here.', 'http://poweruplabs.co/introducing-speed-up-louisville/', target: '_blank' %>
+  </div>
 </div>

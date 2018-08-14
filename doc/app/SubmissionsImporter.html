@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>class SubmissionsImporter - Rails Application Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-attribute_val">::attribute_val</a>
+    
+    <li ><a href="#method-c-attributes_list">::attributes_list</a>
+    
+    <li ><a href="#method-c-bigquery_init">::bigquery_init</a>
+    
+    <li ><a href="#method-c-create_submissions">::create_submissions</a>
+    
+    <li ><a href="#method-c-download_query">::download_query</a>
+    
+    <li ><a href="#method-c-import">::import</a>
+    
+    <li ><a href="#method-c-time_constraints">::time_constraints</a>
+    
+    <li ><a href="#method-c-upload_query">::upload_query</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-SubmissionsImporter">
+  <h1 id="class-SubmissionsImporter" class="class">
+    class SubmissionsImporter
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-attribute_val" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">attribute_val</span><span
+            class="method-args">(row, attributes, name)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="attribute_val-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attribute_val</span>(<span class="ruby-identifier">row</span>, <span class="ruby-identifier">attributes</span>, <span class="ruby-identifier">name</span>)
+  <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;f&#39;</span>][<span class="ruby-identifier">attributes</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">name</span>)][<span class="ruby-string">&#39;v&#39;</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-attributes_list" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">attributes_list</span><span
+            class="method-args">(schema)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="attributes_list-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attributes_list</span>(<span class="ruby-identifier">schema</span>)
+  <span class="ruby-identifier">attribute_names</span> = []
+
+  <span class="ruby-identifier">schema</span>[<span class="ruby-string">&#39;fields&#39;</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">field</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">attribute_names</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">field</span>[<span class="ruby-string">&#39;name&#39;</span>]
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">attribute_names</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-bigquery_init" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">bigquery_init</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="bigquery_init-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">bigquery_init</span>
+  <span class="ruby-identifier">opts</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load_file</span>(<span class="ruby-node">&quot;#{Rails.root}/config/bigquery.yml&quot;</span>)
+  <span class="ruby-constant">BigQuery</span><span class="ruby-operator">::</span><span class="ruby-constant">Client</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-string">&#39;config&#39;</span>])
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-create_submissions" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create_submissions</span><span
+            class="method-args">(data, test_type)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="create_submissions-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 24</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">create_submissions</span>(<span class="ruby-identifier">data</span>, <span class="ruby-identifier">test_type</span>)
+  <span class="ruby-identifier">data</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">submission</span> = <span class="ruby-constant">Submission</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&#39;DATE(created_at) = ? AND ip_address = ? AND test_type = ?&#39;</span>, <span class="ruby-constant">Date</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;UTC_date_time&#39;</span>]), <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_ip_numeric&#39;</span>], <span class="ruby-identifier">test_type</span>).<span class="ruby-identifier">first_or_initialize</span>
+
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">persisted?</span>
+
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">from_mlab</span>           = <span class="ruby-keyword">true</span>
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">completed</span>           = <span class="ruby-keyword">true</span>
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">ip_address</span>          = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_ip_numeric&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">created_at</span>          = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;UTC_date_time&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">address</span>             = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;city&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">area_code</span>           = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;area_code&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">zip_code</span>            = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;postal_code&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">hostname</span>            = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_hostname&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">latitude</span>            = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_latitude&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">longitude</span>           = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_longitude&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">provider</span>            = <span class="ruby-constant">Submission</span>.<span class="ruby-identifier">provider_mapping</span>(<span class="ruby-identifier">submission</span>.<span class="ruby-identifier">get_provider</span>)
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">actual_down_speed</span>   = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;downloadThroughput&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">actual_upload_speed</span> = <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;uploadThroughput&#39;</span>]
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">set_census_code</span>(<span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_latitude&#39;</span>], <span class="ruby-identifier">row</span>[<span class="ruby-string">&#39;client_longitude&#39;</span>])
+    <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">save</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-download_query" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">download_query</span><span
+            class="method-args">(zip_codes)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="download_query-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 98</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">download_query</span>(<span class="ruby-identifier">zip_codes</span>)
+  <span class="ruby-node">&quot;SELECT
+    test_id,
+    STRFTIME_UTC_USEC((INTEGER(web100_log_entry.log_time) * 1000000), &#39;%Y-%m-%d %T&#39;) AS UTC_date_time,
+    PARSE_IP(connection_spec.client_ip) AS client_ip_numeric,
+    connection_spec.client_hostname AS client_hostname,
+    connection_spec.client_application AS client_app,
+    connection_spec.client_geolocation.city AS city,
+    connection_spec.client_geolocation.latitude AS client_latitude,
+    connection_spec.client_geolocation.longitude AS client_longitude,
+    connection_spec.client_geolocation.postal_code AS postal_code,
+    connection_spec.client_geolocation.area_code AS area_code,
+    8 * web100_log_entry.snap.HCThruOctetsAcked/ (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS downloadThroughput,
+    NULL AS uploadThroughput,
+    web100_log_entry.snap.HCThruOctetsAcked AS HCThruOctetsAcked,
+  FROM [plx.google:m_lab.ndt.all]
+  WHERE
+    #{time_constraints.to_s}
+    connection_spec.client_geolocation.longitude &gt; -85.948441 AND
+    connection_spec.client_geolocation.longitude &lt; -85.4051 AND
+    connection_spec.client_geolocation.latitude &gt; 37.9971 AND
+    connection_spec.client_geolocation.latitude &lt; 38.38051 AND
+    connection_spec.client_geolocation.postal_code IN (#{zip_codes}) AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.SndLimTimeRwin) AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.SndLimTimeCwnd) AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.SndLimTimeSnd) AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.HCThruOctetsAcked) AND
+    IS_EXPLICITLY_DEFINED(connection_spec.data_direction) AND
+    connection_spec.data_direction = 1 AND
+    web100_log_entry.snap.HCThruOctetsAcked &gt;= 8192 AND
+    (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) &gt;= 9000000 AND
+    (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) &lt; 3600000000 AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.CongSignals) AND
+    web100_log_entry.snap.CongSignals &gt; 0 AND
+    blacklist_flags == 0;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-import" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">import</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="import-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 48</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">import</span>
+  <span class="ruby-identifier">client</span> = <span class="ruby-identifier">bigquery_init</span>
+  <span class="ruby-identifier">zip_codes</span> = <span class="ruby-node">&quot;&#39;#{Submission::ZIP_CODES.join(&quot;&#39;,&#39;&quot;)}&#39;&quot;</span>
+
+  <span class="ruby-identifier">upload_test_data</span> = <span class="ruby-identifier">client</span>.<span class="ruby-identifier">sql</span>(<span class="ruby-identifier">upload_query</span>(<span class="ruby-identifier">zip_codes</span>))
+  <span class="ruby-identifier">download_test_data</span> = <span class="ruby-identifier">client</span>.<span class="ruby-identifier">sql</span>(<span class="ruby-identifier">download_query</span>(<span class="ruby-identifier">zip_codes</span>))
+
+  <span class="ruby-identifier">create_submissions</span>(<span class="ruby-identifier">upload_test_data</span>, <span class="ruby-string">&#39;upload&#39;</span>)
+  <span class="ruby-identifier">create_submissions</span>(<span class="ruby-identifier">download_test_data</span>, <span class="ruby-string">&#39;download&#39;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-time_constraints" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">time_constraints</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="time_constraints-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">time_constraints</span>
+  <span class="ruby-identifier">start_time</span> = <span class="ruby-constant">Submission</span>.<span class="ruby-identifier">from_mlab</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">created_at</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)
+  <span class="ruby-identifier">end_time</span> = <span class="ruby-constant">Date</span>.<span class="ruby-identifier">today</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)
+  <span class="ruby-node">&quot;web100_log_entry.log_time &gt;= PARSE_UTC_USEC(&#39;#{start_time}&#39;) / POW(10, 6) AND
+  web100_log_entry.log_time &lt; PARSE_UTC_USEC(&#39;#{end_time}&#39;) / POW(10, 6) AND&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-constant">Submission</span>.<span class="ruby-identifier">from_mlab</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-upload_query" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">upload_query</span><span
+            class="method-args">(zip_codes)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="upload_query-source">
+            <pre><span class="ruby-comment"># File app/classes/submissions_importer.rb, line 66</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">upload_query</span>(<span class="ruby-identifier">zip_codes</span>)
+  <span class="ruby-node">&quot;SELECT
+    test_id,
+    STRFTIME_UTC_USEC(INTEGER(web100_log_entry.log_time) * 1000000, &#39;%Y-%m-%d %T&#39;) AS UTC_date_time,
+    PARSE_IP(connection_spec.client_ip) AS client_ip_numeric,
+    connection_spec.client_hostname AS client_hostname,
+    connection_spec.client_application AS client_app,
+    connection_spec.client_geolocation.city AS city,
+    connection_spec.client_geolocation.latitude AS client_latitude,
+    connection_spec.client_geolocation.longitude AS client_longitude,
+    connection_spec.client_geolocation.postal_code AS postal_code,
+    connection_spec.client_geolocation.area_code AS area_code,
+    8 * web100_log_entry.snap.HCThruOctetsReceived/web100_log_entry.snap.Duration AS uploadThroughput,
+    NULL AS downloadThroughput,
+    web100_log_entry.snap.Duration AS duration,
+    web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
+  FROM [plx.google:m_lab.ndt.all]
+  WHERE
+    #{time_constraints.to_s}
+    connection_spec.client_geolocation.longitude &gt; -85.948441 AND
+    connection_spec.client_geolocation.longitude &lt; -85.4051 AND
+    connection_spec.client_geolocation.latitude &gt; 37.9971 AND
+    connection_spec.client_geolocation.latitude &lt; 38.38051 AND
+    connection_spec.client_geolocation.postal_code IN (#{zip_codes}) AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.Duration) AND
+    IS_EXPLICITLY_DEFINED(web100_log_entry.snap.HCThruOctetsReceived) AND
+    web100_log_entry.snap.HCThruOctetsReceived &gt;= 8192 AND
+    web100_log_entry.snap.Duration &gt;= 9000000 AND
+    web100_log_entry.snap.Duration &lt; 3600000000 AND
+    blacklist_flags == 0;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.3.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

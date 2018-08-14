@@ -1,8 +1,8 @@
 bind_rating_stars = ->
   star_options =
-    stars: 5
+    stars: 7
     min: 0
-    max: 5
+    max: 7
     step: 1
     displayOnly: false
     showClear: false
@@ -14,9 +14,6 @@ bind_rating_stars = ->
 
 disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
-
-is_buisness_test = ->
-  !$('#form_step_3').hasClass('hide')
 
 set_coords = (position) ->
   $('#submission_latitude').attr 'value', position.coords.latitude
@@ -35,6 +32,8 @@ set_coords = (position) ->
         $('.location-warning').addClass('hide')
         $('#take_test').prop('disabled', false)
         $('#take_test').addClass('opacity-100')
+        $.getJSON 'https://jsonip.com/?callback=?', (result_data) ->
+          $('#submission_ip_address').val result_data.ip.split(',')[0]
 
 block_callback = (error) ->
   $('#error-geolocation').modal('show');
@@ -42,12 +41,6 @@ block_callback = (error) ->
 get_location = ->
   if navigator.geolocation
     navigator.geolocation.getCurrentPosition set_coords, block_callback
-
-check_provider_speed_limits = (id) ->
-  ($("##{id}").val() <= 0 || $("##{id}").val() > 9999) && ($("##{id}").val() != '')
-
-check_buisness_provider_limits = (klass) ->
-  ($(".#{klass}").val() <= 0 || $(".#{klass}").val() > 9999) && ($(".#{klass}").val() != '')
 
 check_fields_validity = ->
   is_valid = true
@@ -60,78 +53,27 @@ check_fields_validity = ->
     $('#submission_monthly_price').removeClass('got-error')
     $('#price_error_span').addClass('hide')
 
-  if check_provider_speed_limits('submission_provider_down_speed')
+  unless $('#submission_provider_down_speed')[0].checkValidity()
     $('#submission_provider_down_speed').addClass('got-error')
     $('#speed_error_span').removeClass('hide')
-    $('#speed_error_span').text('Error: This value should be between 0 to 9999.')
     is_valid = false
   else
     $('#submission_provider_down_speed').removeClass('got-error')
     $('#speed_error_span').addClass('hide')
 
-  if is_buisness_test()
-    if check_buisness_provider_limits('buisness-provider-speed')
-      $('.buisness-provider-speed').addClass('got-error')
-      $('#buisness_speed_error_span').removeClass('hide')
-      $('#buisness_speed_error_span').text('Error: This value should be between 0 to 9999.')
-      is_valid = false
-    else
-      $('.buisness-provider-speed').removeClass('got-error')
-      $('#buisness_speed_error_span').addClass('hide')
-
   is_valid
+
+is_mobile_data = ->
+  $(".checkboxes-container input[name='submission[testing_for]']:checked").val() == 'Mobile Data'
 
 start_speed_test = ->
   $('.test-speed-btn').on 'click', ->
-    if navigator['onLine']
-      $('.internet-error').addClass('hide') if $('.internet-error').is ':visible'
+    if check_fields_validity()
+      $('#testing_speed').modal('show');
 
-      if check_fields_validity()
-        $('#testing_speed').modal('show');
-        SomApi.config.testServerEnabled = false
-        SomApi.config.userInfoEnabled = false
-        SomApi.config.latencyTestEnabled = true
-        SomApi.config.uploadTestEnabled = true
-        SomApi.config.progress.enabled = true
-        SomApi.config.progress.verbose = true
-        SomApi.startTest()
-    else
-      $('.internet-error').removeClass('hide')
-
-  onTestCompleted = (testResult) ->
-    $('#submission_actual_upload_speed').val(testResult.upload)
-    $('#submission_actual_down_speed').val(testResult.download)
-    $('#submission_ping').val(testResult.latency)
-    $("#new_submission").submit()
-
-  onError = (error) ->
-    msgDiv.html(['Error', error.code, ':', error.message].join(' '))
-
-  if $('#rails_env_constant').val() == 'production'
-    SomApi.account = 'SOM582f308b88201'
-    SomApi.domainName = 'speedupsanjose.com'
-  else
-    SomApi.account = 'SOM5818352c44bb3'
-    SomApi.domainName = 'speed.fractus.ws'
-
-  SomApi.config.sustainTime = 2
-  SomApi.onTestCompleted = onTestCompleted
-  SomApi.onError = onError
-  SomApi.onProgress = onProgress
-
-  onProgress = (progress) ->
-    console.log progress.type
-    console.log progress.pass
-    console.log progress.percentDone
-    console.log progress.currentSpeed
-    $('#progress-ul').html("<li>Progress Type: " + progress.type + "</li>" +
-                           "<li>Pass: " + progress.pass + "</li>" +
-                           "<li>Percent Done: " + progress.percentDone + "% </li>" +
-                           "<li>Current Speed: " + progress.currentSpeed + " Mbps </li>")
-    $('#testing_speed #progress_type').html progress.type
-    $('#testing_speed #pass').html progress.pass
-    $('#testing_speed #percentage_done').html progress.percentDone + "%"
-    $('#testing_speed #current_speed').html progress.currentSpeed + " Mbps"
+      setTimeout (->
+        $('#start_ndt_test').click()
+      ), 200
 
 numeric_field_constraint = ->
   $('.numeric').keydown (e) ->
@@ -148,6 +90,24 @@ numeric_field_constraint = ->
     if (e.shiftKey or e.keyCode < 48 or e.keyCode > 57) and (e.keyCode < 96 or e.keyCode > 105)
       e.preventDefault()
 
+set_error_for_invalid_fields = ->
+  $('#submission_monthly_price').focusout ->
+    unless $('#submission_monthly_price')[0].checkValidity()
+      $('#submission_monthly_price').addClass('got-error')
+      $('#price_error_span').removeClass('hide')
+    else
+      $('#submission_monthly_price').removeClass('got-error')
+      $('#price_error_span').addClass('hide')
+
+  $('#submission_provider_down_speed').focusout ->
+    unless $('#submission_provider_down_speed')[0].checkValidity()
+      $('#submission_provider_down_speed').addClass('got-error')
+      $('#speed_error_span').removeClass('hide')
+      is_valid = false
+    else
+      $('#submission_provider_down_speed').removeClass('got-error')
+      $('#speed_error_span').addClass('hide')
+
 $ ->
   bind_rating_stars()
   disable_form_inputs()
@@ -156,6 +116,7 @@ $ ->
   if window.location.pathname == '/'
     get_location()
     start_speed_test()
+    set_error_for_invalid_fields()
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
@@ -167,7 +128,6 @@ $ ->
     $('#form-step-1 input').prop('disabled', false)
     $('#introduction').addClass('hide')
     $('.home-wrapper').addClass('mobile-wrapper-margin')
-    scroll_to_top()
 
   $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
     $(".checkboxes-container input[name='submission[testing_for]']").each ->
@@ -181,20 +141,3 @@ $ ->
     $(testing_for + ' input').prop('disabled', false)
     $(testing_for + ' select').prop('disabled', false)
     $('#form-step-1').addClass('hide')
-    scroll_to_top()
-
-  $('.take-test-text').click ->
-    $('#take_test').click() unless($('#take_test').is ':disabled')
-
-  scroll_to_top = ->
-    $('html, body').animate { scrollTop: 0 }, 'slow'
-
-  $('.view-result-text').click ->
-    $('#view_results_link').click()
-
-  $('.checkboxes-container').on 'keyup', '.checkbox', (e) ->
-    keyCode = e.keyCode or e.which
-    if keyCode == 9
-      $(this).find("input[type='checkbox']").prop("checked", true)
-      $(this).siblings('.checkbox').find("input[type='checkbox']").prop("checked", false)
-      $('#testing_for_button').prop('disabled', false)

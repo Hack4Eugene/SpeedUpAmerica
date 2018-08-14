@@ -1,24 +1,29 @@
 <div id='form-step-2c' class='hide form-fields'>
-  <div class='form-group col-md-12'>
+  <div class='form-group rating-container col-md-12'>
     <div class='row'>
-      <%= f.label :internet_location, 'What type of internet are you testing?', class: 'col-md-6 text-center' %>
+      <%= f.label :rating, 'Is this service meeting your expectations for internet speed and value?', class: 'col-md-6 text-center' %>
 
       <div class='col-md-6'>
-        <%= f.select :internet_location, provider_list({provider_list_type: 'public-form'}), {}, class: 'form-control pull-right', disabled: true %>
+        <%= f.text_field :rating %>
       </div>
     </div>
   </div>
 
-  <div class='form-group col-md-12'>
-    <div class='row'>
-      <%= f.label :connected_with, 'Connection Type?', class: 'col-md-6' %>
+  <div class='clearfix'></div>
 
-      <div class='col-md-6'>
-        <%= f.select :connected_with, public_connected_list, {}, class: 'form-control pull-right', disabled: true %>
+  <div class='row'>
+    <div class='form-group col-md-6 col-md-offset-6'>
+      <div class='col-md-12 text-center'>
+        <%= button_tag 'Test My Speed!!', type: 'button', class: 'col-md-12 test-speed-btn' %>
+        <p class='location-warning'>(Note: Please, allow to share your location to take a test.)</p>
       </div>
     </div>
   </div>
-  <%= render 'rating', f: f %>
 
-  <%= render 'submit_button_and_description' %>
+  <%= render 'bottom_description' %>
+
+  <div class='text-center find-more-div'>
+    Questions about speeduplouisville.com? Find more information
+    <%= link_to 'here.', 'http://poweruplabs.co/introducing-speed-up-louisville/', target: '_blank' %>
+  </div>
 </div>

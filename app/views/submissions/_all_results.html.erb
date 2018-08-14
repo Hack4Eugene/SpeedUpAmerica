@@ -1,14 +1,26 @@
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/MarkerCluster.Default.css' rel='stylesheet' />
+
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
+
 <div id='all-results'>
+  <%= hidden_field_tag :root_url, root_url %>
+
   <div class='results-sharing-box'>
-    <h4 class=''>To help SpeedUp San Jose, share this site!</h4>
+    <h4 class=''>Share this website to bring better internet service to Louisville!</h4>
     <%= render partial: 'shared/social_sharing_links' %>
   </div>
 
-  <div class='hidden-xs'>
+  <div class='hidden-xs hide'>
+    <div class='text-center'>
+      <h2>City Wide Broadband Results</h2>
+    </div>
+
     <% if all_results.blank? %>
-      <p class='text-center hide'>There are no submissions yet.</p>
+      <p class='text-center'>There are no submissions yet.</p>
     <% else %>
-      <div class='container hide'>
+      <div class='container'>
         <div>
           <div class='col-md-12 col-centered'>
             <div class="table-responsive bdrNone">
@@ -39,31 +51,25 @@
     <% end %>
   </div>
 
-  <div class='container white-section'>
-    <div class='row'>
-      <div class='col-md-12'>
-        <h1 class='text-center margin-top-40 margin-bottom-40'>Measuring Internet Service in San Jose</h1>
-      </div>
-    </div>
+  <%= render 'stats_header' %>
+  <%= render 'statistics' %>
+  <%= render 'about_speedup' %>
+  <%= render 'stats_footer' %>
 
-    <div class='row'>
-      <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 banner-static'>
-        <%= image_tag 'banner.png' %>
-      </div>
-
-      <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
-        <div class='banner-text results-banner-text'>
-          Through www.speedupsanjose.com, San Jose residents have submitted over <%= number_with_delimiter(@total_submissions) %> internet speed tests to help improve internet service in our city!
+  <div class='modal fade' id='all_results_loading_bar' tabindex='-1' role='dialog' aria-labelledby='loadingbarlabel'>
+    <div class='modal-dialog modal-sm'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h4 class='modal-title'>Loading..</h4>
+        </div>
+        <div class='modal-body'>
+          <div class='row'>
+            <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+              <%= image_tag 'ring-alt.gif', class: 'loader-image' %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <%= render 'about_the_data' %>
-  <%= render 'home_test_report' %>
-  <%= render 'mobile_test_report' %>
-  <%= render 'public_test_report' %>
-  <%= render 'about_speedup' %>
-
-  <%= hidden_field_tag :selected_zipcode, nil %>
 </div>

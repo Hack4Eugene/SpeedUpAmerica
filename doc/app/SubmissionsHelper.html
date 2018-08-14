@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>module SubmissionsHelper - Rails Application Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-actual_speed_percentage">#actual_speed_percentage</a>
+    
+    <li ><a href="#method-i-average_cost">#average_cost</a>
+    
+    <li ><a href="#method-i-average_down_speed">#average_down_speed</a>
+    
+    <li ><a href="#method-i-compared_speed_percentage">#compared_speed_percentage</a>
+    
+    <li ><a href="#method-i-filter_rating">#filter_rating</a>
+    
+    <li ><a href="#method-i-get_list_values">#get_list_values</a>
+    
+    <li ><a href="#method-i-get_providers_list">#get_providers_list</a>
+    
+    <li ><a href="#method-i-internet_speed">#internet_speed</a>
+    
+    <li ><a href="#method-i-print_actual_cost">#print_actual_cost</a>
+    
+    <li ><a href="#method-i-print_ping">#print_ping</a>
+    
+    <li ><a href="#method-i-print_provider_cost">#print_provider_cost</a>
+    
+    <li ><a href="#method-i-print_provider_ratio">#print_provider_ratio</a>
+    
+    <li ><a href="#method-i-print_speed">#print_speed</a>
+    
+    <li ><a href="#method-i-set_color">#set_color</a>
+    
+    <li ><a href="#method-i-target_value">#target_value</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-SubmissionsHelper">
+  <h1 id="module-SubmissionsHelper" class="module">
+    module SubmissionsHelper
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-actual_speed_percentage" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">actual_speed_percentage</span><span
+            class="method-args">(submission)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="actual_speed_percentage-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 38</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">actual_speed_percentage</span>(<span class="ruby-identifier">submission</span>)
+  <span class="ruby-identifier">speed_difference</span> = <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">provider_down_speed</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">actual_down_speed</span>.<span class="ruby-identifier">to_f</span>
+  <span class="ruby-identifier">percentage</span> = <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">provider_down_speed</span>.<span class="ruby-identifier">zero?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">speed_difference</span><span class="ruby-operator">/</span><span class="ruby-identifier">submission</span>.<span class="ruby-identifier">provider_down_speed</span>.<span class="ruby-identifier">to_f</span><span class="ruby-operator">*</span><span class="ruby-value">100</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;&lt;span class=&#39;red-color&#39;&gt;&lt;span class=&#39;percent-val&#39;&gt;#{percentage.abs.round(2)}%&lt;/span&gt; slower&lt;/span&gt;&quot;</span>.<span class="ruby-identifier">html_safe</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">speed_difference</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">0</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;&lt;span class=&#39;green-color&#39;&gt;&lt;span class=&#39;percent-val&#39;&gt;#{percentage.abs.round(2)}%&lt;/span&gt; faster&lt;/span&gt;&quot;</span>.<span class="ruby-identifier">html_safe</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">speed_difference</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-average_cost" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">average_cost</span><span
+            class="method-args">(provider)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="average_cost-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">average_cost</span>(<span class="ruby-identifier">provider</span>)
+  <span class="ruby-constant">ProviderStatistic</span>.<span class="ruby-identifier">find_by_name</span>(<span class="ruby-identifier">provider</span>).<span class="ruby-identifier">try</span>(<span class="ruby-value">:average_price</span>).<span class="ruby-identifier">to_f</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-average_down_speed" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">average_down_speed</span><span
+            class="method-args">(provider)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="average_down_speed-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 56</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">average_down_speed</span>(<span class="ruby-identifier">provider</span>)
+  <span class="ruby-identifier">statistic</span> = <span class="ruby-constant">ProviderStatistic</span>.<span class="ruby-identifier">find_by_name</span>(<span class="ruby-identifier">provider</span>)
+  (<span class="ruby-identifier">statistic</span>.<span class="ruby-identifier">actual_speed_sum</span>.<span class="ruby-identifier">to_f</span><span class="ruby-operator">/</span><span class="ruby-identifier">statistic</span>.<span class="ruby-identifier">applications</span>).<span class="ruby-identifier">round</span>(<span class="ruby-value">2</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">statistic</span>.<span class="ruby-identifier">present?</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-compared_speed_percentage" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">compared_speed_percentage</span><span
+            class="method-args">(submission)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="compared_speed_percentage-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">compared_speed_percentage</span>(<span class="ruby-identifier">submission</span>)
+  <span class="ruby-identifier">lower_speed_count</span> = <span class="ruby-constant">Submission</span>.<span class="ruby-identifier">with_type_and_lower_speed</span>(<span class="ruby-identifier">submission</span>.<span class="ruby-identifier">testing_for</span>, <span class="ruby-identifier">submission</span>.<span class="ruby-identifier">actual_down_speed</span>).<span class="ruby-identifier">count</span>
+  <span class="ruby-identifier">total_speed_count</span> = <span class="ruby-constant">Submission</span>.<span class="ruby-identifier">with_connection_type</span>(<span class="ruby-identifier">submission</span>.<span class="ruby-identifier">testing_for</span>).<span class="ruby-identifier">count</span>
+  <span class="ruby-identifier">percentage</span> = <span class="ruby-identifier">lower_speed_count</span><span class="ruby-operator">/</span><span class="ruby-identifier">total_speed_count</span>.<span class="ruby-identifier">to_f</span><span class="ruby-operator">*</span><span class="ruby-value">100</span>
+  <span class="ruby-identifier">css_class</span> = <span class="ruby-identifier">percentage</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">50</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-string">&#39;green-color&#39;</span> <span class="ruby-operator">||</span> <span class="ruby-string">&#39;red-color&#39;</span>
+  <span class="ruby-node">&quot;&lt;span class=#{css_class}&gt;Faster than &lt;span class=&#39;percent-val&#39;&gt;#{percentage.round(2)}%&lt;/span&gt;&lt;/span&gt;&quot;</span>.<span class="ruby-identifier">html_safe</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-filter_rating" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">filter_rating</span><span
+            class="method-args">(rating)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="filter_rating-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 14</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">filter_rating</span>(<span class="ruby-identifier">rating</span>)
+  (<span class="ruby-identifier">rating</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>).<span class="ruby-identifier">ceil</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-get_list_values" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">get_list_values</span><span
+            class="method-args">(codes)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="get_list_values-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 70</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_list_values</span>(<span class="ruby-identifier">codes</span>)
+  <span class="ruby-identifier">all_option</span> = [<span class="ruby-string">&#39;All&#39;</span>, <span class="ruby-string">&#39;all&#39;</span>]
+  <span class="ruby-identifier">codes</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">code</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">code</span>, <span class="ruby-identifier">code</span>] }.<span class="ruby-identifier">unshift</span>(<span class="ruby-identifier">all_option</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-get_providers_list" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">get_providers_list</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="get_providers_list-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 65</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_providers_list</span>
+  <span class="ruby-identifier">all_option</span> = [<span class="ruby-string">&#39;All&#39;</span>, <span class="ruby-string">&#39;all&#39;</span>]
+  <span class="ruby-constant">ProviderStatistic</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">p</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>] }.<span class="ruby-identifier">unshift</span>(<span class="ruby-identifier">all_option</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-internet_speed" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">internet_speed</span><span
+            class="method-args">(submissions, type)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="internet_speed-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">internet_speed</span>(<span class="ruby-identifier">submissions</span>, <span class="ruby-identifier">type</span>)
+  <span class="ruby-identifier">speeds</span> = <span class="ruby-identifier">submissions</span>.<span class="ruby-identifier">pluck</span>(<span class="ruby-value">:actual_down_speed</span>).<span class="ruby-identifier">sort</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">speeds</span>.<span class="ruby-identifier">first</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;slowest&#39;</span>
+  <span class="ruby-keyword">return</span> (<span class="ruby-identifier">speeds</span>.<span class="ruby-identifier">sum</span><span class="ruby-operator">/</span><span class="ruby-identifier">speeds</span>.<span class="ruby-identifier">count</span>.<span class="ruby-identifier">to_f</span>).<span class="ruby-identifier">round</span>(<span class="ruby-value">2</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;average&#39;</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">speeds</span>.<span class="ruby-identifier">last</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;fastest&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-print_actual_cost" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">print_actual_cost</span><span
+            class="method-args">(cost)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="print_actual_cost-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 6</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_actual_cost</span>(<span class="ruby-identifier">cost</span>)
+  <span class="ruby-identifier">cost</span>.<span class="ruby-identifier">present?</span> <span class="ruby-operator">?</span> [<span class="ruby-string">&#39;$&#39;</span>, <span class="ruby-string">&#39;%.2f&#39;</span> <span class="ruby-operator">%</span> <span class="ruby-identifier">cost</span>].<span class="ruby-identifier">join</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;--&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-print_ping" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">print_ping</span><span
+            class="method-args">(ping)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="print_ping-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 22</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_ping</span>(<span class="ruby-identifier">ping</span>)
+  <span class="ruby-identifier">ping</span>.<span class="ruby-identifier">present?</span> <span class="ruby-operator">?</span> <span class="ruby-node">&quot;#{ping} ms&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;--&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-print_provider_cost" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">print_provider_cost</span><span
+            class="method-args">(cost)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="print_provider_cost-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_provider_cost</span>(<span class="ruby-identifier">cost</span>)
+  <span class="ruby-identifier">cost</span>.<span class="ruby-identifier">present?</span> <span class="ruby-operator">?</span> [<span class="ruby-string">&#39;$&#39;</span>, <span class="ruby-string">&#39;%.2f&#39;</span> <span class="ruby-operator">%</span> <span class="ruby-identifier">cost</span>].<span class="ruby-identifier">join</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;--&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-print_provider_ratio" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">print_provider_ratio</span><span
+            class="method-args">(amount)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="print_provider_ratio-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_provider_ratio</span>(<span class="ruby-identifier">amount</span>)
+  <span class="ruby-node">&quot;#{sprintf(&#39;%+.2f&#39;, amount)}%&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-print_speed" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">print_speed</span><span
+            class="method-args">(speed)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="print_speed-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_speed</span>(<span class="ruby-identifier">speed</span>)
+  <span class="ruby-identifier">speed</span>.<span class="ruby-identifier">present?</span> <span class="ruby-operator">?</span> <span class="ruby-node">&quot;#{speed} Mbps&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;--&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-set_color" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_color</span><span
+            class="method-args">(ratio)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="set_color-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_color</span>(<span class="ruby-identifier">ratio</span>)
+  <span class="ruby-identifier">ratio</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span> <span class="ruby-operator">?</span> <span class="ruby-string">&#39;red-color&#39;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;green-color&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-target_value" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">target_value</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="target_value-source">
+            <pre><span class="ruby-comment"># File app/helpers/submissions_helper.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">target_value</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-string">&#39;_blank&#39;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">action_name</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;embeddable_view&#39;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.3.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

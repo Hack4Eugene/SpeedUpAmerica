@@ -44,7 +44,6 @@ module SubmissionsHelper
 
   def internet_speed(submissions, type)
     speeds = submissions.pluck(:actual_down_speed).sort
-    return (speeds[(speeds.size.to_f - 1) / 2] + speeds[speeds.size.to_f / 2]) / 2.0 if type == 'median'
     return speeds.first if type == 'slowest'
     return (speeds.sum/speeds.count.to_f).round(2) if type == 'average'
     return speeds.last if type == 'fastest'
@@ -54,26 +53,22 @@ module SubmissionsHelper
     ProviderStatistic.find_by_name(provider).try(:average_price).to_f
   end
 
-  def median_down_speed(submissions, provider)
-    speeds = submissions.with_provider(provider).pluck(:actual_down_speed).sort
-    len = speeds.size.to_f
-    ((speeds[(len - 1) / 2] + speeds[len / 2]) / 2.0).round(2)
+  def average_down_speed(provider)
+    statistic = ProviderStatistic.find_by_name(provider)
+    (statistic.actual_speed_sum.to_f/statistic.applications).round(2) if statistic.present?
   end
 
-  def commercial_test_without_download_speed?(submission)
-    return false unless submission.testing_for == Submission::MAP_FILTERS[:connection_type][:commercial_data]
-    return false if submission.provider_down_speed
-    return true
+  def target_value
+    return '_blank' unless action_name == 'embeddable_view'
   end
 
-  def commercial_test_with_download_speed?(submission)
-    return false unless submission.testing_for == Submission::MAP_FILTERS[:connection_type][:commercial_data]
-    return false unless submission.provider_down_speed
-    return true
+  def get_providers_list
+    all_option = ['All', 'all']
+    ProviderStatistic.all.map { |p| [p.name, p.id] }.unshift(all_option)
   end
 
-  def export_csv_form_target
-    user_agent = UserAgent.parse(request.env['HTTP_USER_AGENT'])
-    '_blank' unless user_agent.browser == 'Chrome'
+  def get_list_values(codes)
+    all_option = ['All', 'all']
+    codes.map { |code| [code, code] }.unshift(all_option)
   end
 end

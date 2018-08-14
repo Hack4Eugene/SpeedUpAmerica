@@ -1,37 +1,28 @@
 <div id='form-step-1'>
   <div class='checkboxes-container'>
-    <p class='bold'>What kind of internet connection are you testing?</p>
+    <p class='bold'>What type of internet connection are you testing?</p>
     <div class='checkbox checkbox-info'>
       <%= f.check_box :testing_for, { id: 'home_wifi', data: { target: '#form-step-2a' } }, 'Home Wifi', false %>
-      <%= label_tag :home_wifi do %>
-        Residential internet plan I pay for
-      <% end %>
+      <%= label_tag :home_wifi, "<strong>Residential:</strong> I'm testing my internet speed at home".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
       <%= f.check_box :testing_for, { id: 'mobile_data', data: { target: '#form-step-2b' } }, 'Mobile Data', false %>
-      <%= label_tag :mobile_data do %>
-         Mobile internet plan I pay for
-      <% end %>
-    </div>
-
-    <div class='checkbox checkbox-info'>
-      <%= f.check_box :testing_for, { id: 'commercial_data', data: { target: '#form_step_3' } }, 'Commercial Data', false %>
-      <%= label_tag :commercial_data do %>
-         Business owner testing the internet plan I pay for
-      <% end %>
+      <%= label_tag :mobile_data, "<strong>Mobile data:</strong> I’m testing my data plan (phone or tablet)".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
       <%= f.check_box :testing_for, { id: 'public_wifi', data: { target: '#form-step-2c' } }, 'Public Wifi', false %>
-
-      <%= label_tag :public_wifi do %>
-        Public or work internet I don't pay for
-      <% end %>
+      <%= label_tag :public_wifi, "<strong>Work or Public:</strong> I’m connected to a public wifi service or I’m at work".html_safe %>
     </div>
   </div>
 
   <%= button_tag 'Let\'s do this!', type: 'button', id: 'testing_for_button', disabled: true, class: 'primaryBtn' %>
 
-  <%= render partial: 'shared/info_link' %>
+  <%= render 'bottom_description' %>
+
+  <div class='text-center find-more-div'>
+    Questions about speeduplouisville.com? Find more information
+    <%= link_to 'here.', 'http://poweruplabs.co/introducing-speed-up-louisville/', target: '_blank' %>
+  </div>
 </div>

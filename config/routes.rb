@@ -16,11 +16,14 @@ Rails.application.routes.draw do
   get 'all-results', to: 'submissions#result_page', as: :result_page
   get 'result/:id', to: 'submissions#show', as: :submission
   post 'mapbox_data', to: 'submissions#mapbox_data', defaults: { format: :json }
-  get 'change_zipcode', to: 'submissions#change_zipcode'
-  get 'internet-stats', to: redirect('/all-results')
   get 'speed_data', to: 'submissions#speed_data'
   get 'isps_data', to: 'submissions#isps_data'
+  get '/internet-stats', to: redirect('/all-results')
+  get 'embeddable_view', to: 'submissions#embeddable_view'
+  get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
   root 'home#index'
+
+  match '*invalid_path', to: 'application#rescue_from_invalid_url', via: [:get, :post]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

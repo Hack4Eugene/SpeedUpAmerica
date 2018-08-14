@@ -1,8 +1,8 @@
 bind_rating_stars = ->
   star_options =
-    stars: 5
+    stars: 7
     min: 0
-    max: 5
+    max: 7
     step: 0.5
     displayOnly: true
     showClear: false

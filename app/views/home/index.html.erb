@@ -1,4 +1,4 @@
-<%= render partial: 'shared/test_speed_header', locals: {title: 'Help SpeedUp San Jose'} %>
+<%= render partial: 'shared/test_speed_header', locals: {title: 'Test Your Internet Speed'} %>
 
 <div class='col-md-6 home-wrapper text-center col-sm-9'>
   <%= render 'introduction' %>
@@ -9,15 +9,18 @@
       <%= f.hidden_field :longitude %>
       <%= f.hidden_field :actual_down_speed %>
       <%= f.hidden_field :actual_upload_speed %>
+      <%= f.hidden_field :hostname %>
       <%= f.hidden_field :address %>
       <%= f.hidden_field :zip_code %>
       <%= f.hidden_field :ping %>
+      <%= f.hidden_field :ip_address %>
 
       <%= render 'form_step_1', f: f %>
       <%= render 'form_step_2a', f: f %>
       <%= render 'form_step_2b', f: f %>
       <%= render 'form_step_2c', f: f %>
-      <%= render 'form_step_3',  f: f %>
+
+      <%= hidden_field_tag :start_ndt_test %>
     <% end %>
   </div>
 </div>
@@ -25,16 +28,27 @@
 <div class='modal fade' id='testing_speed' tabindex='-1' role='dialog' aria-labelledby='mySmallModalLabel'>
   <div class='modal-dialog modal-sm'>
     <div class='modal-content'>
-      <div class="modal-header">
-        <h4 class="modal-title">Calculating Download Speed..</h4>
+      <div class='modal-header'>
+        <h4 id='ndt-status' class='modal-title'></h4>
       </div>
-      <div class="modal-body">
+
+      <div class='modal-body'>
         <div class='row'>
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <%= image_tag 'ring-alt.gif', class: 'loader-image' %>
+          <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+            <div id='welcome-container'>
+              <div id='sidebar'>
+                <div id='test-container'>
+                  <div id='ndt-div' data-width='150'>
+                    <div id='ndt-svg'></div>
+                    <div id='msg'></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class='clearfix'></div>
     </div>
   </div>
@@ -43,5 +57,6 @@
 <%= render 'error_geolocation' %>
 
 <% content_for :js_init do %>
+  NdtSpeedTest.init();
   BrowserBackDisable.init();
 <% end %>

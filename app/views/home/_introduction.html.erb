@@ -1,4 +1,7 @@
 <div id='introduction'>
+  <p>
+    The SpeedUp Louisville project is designed to help Louisville Metro understand the quality and cost of internet service provided to our citizens. By answering a few questions you can help increase transparency around internet speeds and costs for Louisville residents. We DO NOT collect personal data in any way, shape, or form. We do ask for your location to help determine if there are areas of Louisville that are consistently experiencing slow internet speeds.
+  </p>
 
   <div class='options-container'>
     <ul class='list-inline'>
@@ -6,36 +9,35 @@
         <%= button_tag type: 'button', disabled: true, id: 'take_test' do %>
           <%= image_tag 'take_the_test.png', class: 'take-test-img' %>
         <% end %>
-        <p class='take-test-text'>Take the Test!!</p>
+          <p>Take the Test!!</p>
       </li>
 
       <li>
         <%= link_to result_page_path, data: {no_turbolink: true} do %>
-          <%= image_tag 'view_results.png', width: '65%', id: 'view_results_link' %>
+          <%= image_tag 'view_results.png', width: '65%' %>
         <% end %>
-        <p class='view-result-text'>View Results</p>
+        <p>View Results</p>
       </li>
     </ul>
   </div>
 
-  <p>SpeedUp San Jose identifies the real life internet speed our residents experience. We need your help to learn which neighborhoods consistently have slow internet connections. All you have to do is answer a couple of questions and conduct a speed test.</p>
-  <p>We value your privacy, and will not collect any personal information. We will incorporate your general location in the aggregate data.</p>
-  <p>Once the testing period is over, we will have a more complete picture of internet speeds in every part of the city. From there we can take steps to ensure all San Jose residents have access to quality, high-speed internet.</p>
-
-  <%= render partial: 'shared/info_link' %>
+  <div class='text-center find-more-div'>
+    Questions about speeduplouisville.com? Find more information
+    <%= link_to 'here.', 'http://poweruplabs.co/introducing-speed-up-louisville/', target: '_blank' %>
+  </div>
 
   <div class='row'>
     <div class='col-lg-7 col-xs-11 col-sm-9 col-centered'>
       <div class='partnerLogos'>
-        <p>Brought to you by:</p>
+        <p>SpeedUpLouisville partners:</p>
 
         <div class='row'>
+          <%= link_to image_tag('companyLogos/logo4.png'), '#' %>
           <%= link_to image_tag('companyLogos/logo1.png'), '#' %>
+          <%= link_to image_tag('companyLogos/logo3.png'), '#' %>
+          <%= link_to image_tag('companyLogos/logo2.png'), '#' %>
         </div>
       </div>
-    </div>
-    <div class='col-lg-12 col-xs-12 col-sm-12'>
-      <div class='google-section'><div id='google_translate_element'></div></div>
     </div>
   </div>
 </div>

@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name='msvalidate.01' content='EC434975C5344922AB36E29997122DA9' />
-  <% content_for :title, 'SpeedUpSanJose | Test Your Internet Speed in San Jose' %>
-  <% content_for :description, 'Test your internet speed on SpeedUpSanJose to help bring better and faster internet service to San Jose.' %>
-
-  <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpSanJose.com - Bring better internet service to SanJose!'}",
-                description: "#{yield(:description).present? ? yield(:description) : 'SanJose internet speed test is brought to you by SanJose City'}",
+  <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpLouisville.com - Bring better internet service to Louisville!'}",
+                description: "#{yield(:description).present? ? yield(:description) : 'Louisville internet speed test is brought to you by PowerUp Labs'}",
                 twitter: {
                   site: "#{request.original_url}",
-                  title: "#{yield(:title).present? ? yield(:title) : 'Speed Up SanJose! - Internet Speed Test'}",
-                  description: "#{yield(:description).present? ? yield(:description) : 'SanJose internet speed test is brought to you by SanJose City'}",
+                  title: "#{yield(:title).present? ? yield(:title) : 'Speed Up Louisville - Internet Speed Test'}",
+                  description: "#{yield(:description).present? ? yield(:description) : 'Louisville internet speed test is brought to you by PowerUp Labs'}",
                   image: image_url('logo.png'),
                 },
                 og: {
-                  title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpSanJose.com - Bring better internet service to SanJose!'}",
+                  title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpLouisville.com - Bring better internet service to Louisville!'}",
                   type: 'website',
                   url: "#{request.original_url}",
-                  description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with #speedupsj! Find out if you\'re getting the internet speed you are paying for.'}",
+                  description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with #speeduplou! Find out if you\'re getting the internet speed you are paying for.'}",
                   image: image_url('logo.png'),
                 }
   %>
@@ -25,19 +21,19 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
-  <%= render partial: 'layouts/google_analytics' %>
+  <%= analytics_init if GoogleAnalytics.valid_tracker? %>
 
   <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
-  <script src='https://speedof.me/api/api.js' type='text/javascript'></script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
 </head>
 
 <body class='<%= body_css_class %>'>
   <div class='wrapper-container'>
-    <%= render 'shared/header' %>
+    <%= render "shared/#{header_file_name}" %>
+
+    <%= render partial: 'shared/messages' %>
 
     <div class='yield-container'>
       <%= yield %>
@@ -57,7 +53,4 @@
  $(function() {
    <%= yield :js_init %>
  });
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-}
 </script>

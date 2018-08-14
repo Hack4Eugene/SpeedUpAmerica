@@ -1,54 +1,36 @@
 module HomeHelper
-  def provider_list(form_type = {provider_list_type: 'residential-form'})
-    if form_type[:provider_list_type] == 'residential-form'
+  def provider_list(form_type = {first_step: true})
+    if form_type[:first_step]
       [
+        'Time Warner',
+        'Toast.net',
         'ATT',
-        'AccessOne',
-        'Comcast business',
-        'Comcast xfinity',
-        'Cruzio',
-        'Dish',
-        'Earthlink',
-        'Frontier',
-        'HughesNet',
-        'Integra',
-        'Level3',
-        'Megapath',
-        'Razzolink',
-        'Sonic',
-        'Sunesys',
-        'TelePacific',
-        'Unwired',
-        'Voyant',
+        'Shelby Broadband',
         'Windstream',
-        'XO Communications',
-        'Other',
+        'Broadband view',
+        'Inside Connect Cable',
+        'Aero',
+        'Lighttower',
+        'Level 3',
+        'MegaPath',
+        'Birch',
+        'Verizon',
+        'Us Signal',
+        'Earthlink',
+        'Bluegrass.net',
+        'Iglou',
+        'Silica Broadband',
       ]
-    elsif form_type[:provider_list_type] == 'mobile-form'
+    else
       [
         'ATT',
-        'Boost Mobile',
-        'Cricket Wireless',
-        'Sprint',
-        'T-Mobile',
         'Verizon',
+        'T-Mobile',
+        'Sprint',
+        'Cricket Wireless',
+        'Boost Mobile',
+        'US Cellular',
         'Other',
-      ]
-    elsif form_type[:provider_list_type] == 'public-form'
-      [
-        'Wickedly Fast San Jose Public',
-        'Library',
-        'Community Center',
-        'Work2Future Center',
-        'City Hall',
-        'Convention Center',
-        'Airport',
-        'Public Parks',
-        'Other Free San Jose Public',
-        'Center of Faith',
-        'Retail / Restaurant',
-        'School / University',
-        'At Work',
       ]
     end
   end
@@ -58,13 +40,6 @@ module HomeHelper
       'Wired connection',
       'Wireless connection, single device',
       'Wireless connection, multiple devices in household',
-    ]
-  end
-
-  def public_connected_list
-    [
-      'Wired',
-      'Wifi',
     ]
   end
 end
