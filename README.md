@@ -55,6 +55,10 @@ The SpeedUpYourCity project utilizes the following technologies for operation:
 ### Install & Configure Web Server
 We utilize Puma with this project, although it was tested locally with Passenger.
 
+Make absolute certain that after your web server is set up you've edited the /etc/httpd/conf/httpd.conf file to reflect your directory structure. You want to point DocumentRoot to your Rails project /public folder Anywhere in the httpd.conf file that has this sort of dir: /var/www/html/your_application/public needs to be updated or everything will get very frustrating.
+
+Reboot the server (or Apache at the very least - service httpd restart )
+
 ### Install & Configure MySQL
 
 ### Bundle Install
@@ -118,6 +122,8 @@ RDS_USERNAME=
 rake db:setup
 
 ### Migrate Database Changes
+Enter your Rails project folder /var/www/html/your_application and start the migration with rake db:migrate. Make certain that a database table exists, even if you plan on adding tables later.
+
 rake db:migrate:status  
 rake db:migrate                         # Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)
 
@@ -174,8 +180,17 @@ rake tmp:clear                          # Clear session, cache, and socket files
 rake tmp:create                         # Creates tmp directories for sessions, cache, sockets, and pids
 ~~~~
 
-### Push to Web Based Development Environment
+### Push to Web Based Environment
 This stage of implementation is dependent on what environment you will be deploying to. We currently have 3 methods that we're testing, with Heroku and dedicated hosting being operational.
+
+#### Preparing for production
+RAILS_ENV=production rake secret - this will create a secret_key that you can add to config/secrets.yml . You can copy/paste this into config/secrets.yml for the sake of getting things running, although I'd recommend you don't do this. Personally, I do this step to make sure everything else is working, then change it back and source it later.
+
+RAILS_ENV=production rake db:migrate
+
+RAILS_ENV=production rake assets:precompile if you are serving static assets. This will push js, css, image files into the /public folder.
+
+RAILS_ENV=production rails s
 
 ## Heroku
 This implementation of Speed Up Your City has been tested on Heroku, on a free dyno, with a small MySQL instance add-on ($9.99 a month, only recommend for testing purposes)
