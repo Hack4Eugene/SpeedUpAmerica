@@ -12,6 +12,7 @@
 # Configuration #
 #################
 .env
+local.env
 
 # Logs and databases #
 ######################

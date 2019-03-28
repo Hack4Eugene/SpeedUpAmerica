@@ -1,37 +1,18 @@
---- 
-default: 
+default: &default
   adapter: mysql2
-  encoding: utf8
   pool: 5
-development: 
-  adapter: mysql2
-  database: "<%= ENV['RDS_DEV_DB_NAME'] %>"
   encoding: utf8
-  host: "<%= ENV['RDS_DEV_HOSTNAME'] %>"
-  password: "<%= ENV['RDS_DEV_PASSWORD'] %>"
-  pool: 5
-  port: "<%= ENV['RDS_DEV_PORT'] %>"
-  username: "<%= ENV['RDS_DEV_USERNAME'] %>"
-production: 
-  adapter: mysql2
-  database: "<%= ENV['RDS_DB_NAME'] %>"
-  encoding: utf8
-  host: "<%= ENV['RDS_HOSTNAME'] %>"
-  password: "<%= ENV['RDS_PASSWORD'] %>"
-  pool: 5
-  port: "<%= ENV['RDS_PORT'] %>"
-  username: "<%= ENV['RDS_USERNAME'] %>"
-staging: 
-  adapter: mysql2
-  database: speed_test_staging
-  encoding: utf8
-  password: speed_test
-  pool: 5
-  username: speed_test
-test: 
-  adapter: mysql2
-  database: speed_test_test
-  encoding: utf8
-  password: speed_test
-  pool: 5
-  username: speed_test
+  database: "<%= ENV['DB_NAME'] %>"
+  host: "<%= ENV['DB_HOSTNAME'] %>"
+  port: "<%= ENV['DB_PORT'] %>"
+  username: "<%= ENV['DB_USERNAME'] %>"
+  password: "<%= ENV['DB_PASSWORD'] %>"
+
+development:
+  <<: *default
+ 
+staging:
+  <<: *default
+  
+production:
+  <<: *default
