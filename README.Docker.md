@@ -2,6 +2,8 @@
 
 ## Setup
 
+> Concrete instructions from a developer using Windows is needed. The unstructions below should work on Mac OS and Linux.
+
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/). 
 
     $ cp local.env.template local.env
@@ -15,7 +17,7 @@ Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in `local.en
 
     $ docker-compose up -d
 
-The site can be accessed at `http://localhost:3000/`
+The site can be accessed at `http://localhost:3000/`. Changes to `app/` shouldn't require a restart/rebuild. 
 
 ## Stopping 
 
