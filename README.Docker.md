@@ -2,20 +2,20 @@
 
 ## Setup
 
-These instructions work on Linux, Windows and MacOS. The setup instructions only need to be performed once, unless you reset your database or config files. 
+These instructions work on Linux, Windows and MacOS and only need to be performed once, unless you reset your database or config files. 
 
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/). 
 
-> Depending on your OS, you will have to make sure to use `copy` instead of `cp`.
+> Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
     $ cp local.env.template local.env
     $ docker-compose up -d mysql
     $ docker-compose run frontend rake db:setup
     $ docker-compose run frontend rake secret
 
-Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or make a new token.
+Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
 
-> These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker to work with the WSL is outside the scope of this document. 
+> These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
 
 ## Running
 
@@ -26,5 +26,3 @@ The site can be accessed at `http://localhost:3000/`. The Ruby app is configured
 ## Stopping 
 
     $ docker-compose stop
-
-
