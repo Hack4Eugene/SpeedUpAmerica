@@ -21,9 +21,7 @@ Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `loc
 
     $ docker-compose up -d
 
-The site can be accessed at `http://localhost:3000/`. Changes to `app/` shouldn't require a restart/rebuild. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
-
-The Ruby app is configured to not cache and it doesn't require restarting the Docker container. Just make your changes and reload the page.
+The site can be accessed at `http://localhost:3000/`. The Ruby app is configured to not cache and it doesn't require restarting the Docker container to load changes, unless it's a config change. Just make your changes and reload the page. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
 
 ## Stopping 
 
