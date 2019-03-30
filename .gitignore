@@ -32,3 +32,8 @@ Thumbs.db
 # Temp #
 ########
 tmp/*
+
+# Asset Pipeline #
+##################
+public/assets/application-*
+public/assets/.sprockets-manifest-*
