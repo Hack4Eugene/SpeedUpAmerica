@@ -4,7 +4,7 @@ The project vision is an open source nation-wide map that pulls individual inter
 
 The current implentation of SpeedUp has been deployed to these cities.
 
-- [Louisville, KY](https://www.speedupyourcity.com/)
+- [Louisville, KY](https://www.speeduplouisville.com/)
 - [San Jose, CA](https://www.speedupsanjose.com/all-results)
 - Montgomery County, MD
 

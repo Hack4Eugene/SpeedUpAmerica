@@ -1,6 +1,6 @@
 config:
   project:                mlab-speedup-integration
-  dataset:                MLab_America_Data
+  dataset:                MLab_Louisville_Data
   email:                  speedup-service-account@mlab-speedup-integration.iam.gserviceaccount.com
   private_key_path:       Mlab-SpeedUp-Integration-bd0a76086c36.p12
   private_key_passphrase: notasecret
