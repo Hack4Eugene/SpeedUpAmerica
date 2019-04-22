@@ -200,3 +200,20 @@ This project currently does not run on Elastic Beanstalk, although we do intend 
 
 ## Dedicated Hosting
 Speeduplouisville.com is currently running on a dedicated server hosted by Smart Data Systems.
+
+## Governance and contribution
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). 
+
+Committers:
+
+* Diego Kourchenko
+
+Technical Committee:
+
+* Matt Sayre
+* Chris Ritzo
+* Chris Sjoblom
+* Antonio Ortega
+* Mark Davis
+* Ryan Olds
