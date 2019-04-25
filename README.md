@@ -199,4 +199,21 @@ This implementation of Speed Up Your City has been tested on Heroku, on a free d
 This project currently does not run on Elastic Beanstalk, although we do intend to implement this. There is a placeholder .ebextensions folder in preparation for this. This would utilize Elastic Beanstalk, in conjunction with a small to medium EC2 instance, and a MySQL RDS instance.
 
 ## Dedicated Hosting
-speedupamerica.com is currently running on a dedicated server hosted by Smart Data Systems.
+Speeduplouisville.com is currently running on a dedicated server hosted by Smart Data Systems.
+
+## Governance and contribution
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). 
+
+Committers:
+
+* Diego Kourchenko
+
+Technical Committee:
+
+* Matt Sayre
+* Chris Ritzo
+* Chris Sjoblom
+* Antonio Ortega
+* Mark Davis
+* Ryan Olds
