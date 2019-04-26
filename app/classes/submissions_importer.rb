@@ -57,7 +57,12 @@ class SubmissionsImporter
   end
 
   def self.time_constraints
-    start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    if Submission.from_mlab.last.nil?
+      start_time = Date.today - 7 # Populate with last 7 days by default
+    else
+      start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    end
+
     end_time = Date.today.strftime("%Y-%m-%d %H:%M:%S")
     "web100_log_entry.log_time >= PARSE_UTC_USEC('#{start_time}') / POW(10, 6) AND
     web100_log_entry.log_time < PARSE_UTC_USEC('#{end_time}') / POW(10, 6) AND" if Submission.from_mlab.count > 0
