@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpLouisville.com - Bring better internet service to Louisville!'}",
-                description: "#{yield(:description).present? ? yield(:description) : 'Louisville internet speed test is brought to you by PowerUp Labs'}",
+  <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to America!'}",
+                description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test is brought to you by PowerUp Labs'}",
                 twitter: {
                   site: "#{request.original_url}",
-                  title: "#{yield(:title).present? ? yield(:title) : 'Speed Up Louisville - Internet Speed Test'}",
-                  description: "#{yield(:description).present? ? yield(:description) : 'Louisville internet speed test is brought to you by PowerUp Labs'}",
+                  title: "#{yield(:title).present? ? yield(:title) : 'Speed Up America - Internet Speed Test'}",
+                  description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test is brought to you by PowerUp Labs'}",
                   image: image_url('logo.png'),
                 },
                 og: {
-                  title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpLouisville.com - Bring better internet service to Louisville!'}",
+                  title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to Americans!'}",
                   type: 'website',
                   url: "#{request.original_url}",
-                  description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with #speeduplou! Find out if you\'re getting the internet speed you are paying for.'}",
+                  description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with SpeedUpAmerica! Find out if you\'re getting the internet speed you are paying for.'}",
                   image: image_url('logo.png'),
                 }
   %>

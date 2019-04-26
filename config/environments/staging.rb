@@ -80,14 +80,14 @@ Rails.application.configure do
     port: 587,
     authentication: :plain,
     user_name: 'postmaster@speedtest.staging63.com',
-    password: '642e3db083329d5a50c9b103f40a0830',
+    password: 'TEST_PASSWORD',
     domain: 'speedtest.staging63.com',
   }
 
   config.middleware.use ExceptionNotification::Rack,
   email: {
     email_prefix: '[Notification] ',
-    sender_address: %('notifier' <notifier@speedtestlouisvelle-testing.com>),
+    sender_address: %('notifier' <notifier@speedupamerica-testing.com>),
     exception_recipients: %w(dev1@contenttools.co dev2@contenttools.co dev3@contenttools.co)
   }
 

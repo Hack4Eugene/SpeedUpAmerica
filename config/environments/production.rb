@@ -79,19 +79,19 @@ Rails.application.configure do
     address: 'smtp.mailgun.org',
     port: 587,
     authentication: :plain,
-    user_name: 'postmaster@speeduplouisville.com',
-    password: '740629340bec07c903fca9d96e35325b',
-    domain: 'speeduplouisville.com',
+    user_name: 'postmaster@speedupamerica.com',
+    password: 'TEST_PASSWORD',
+    domain: 'speedupamerica.com',
   }
 
   config.middleware.use ExceptionNotification::Rack,
   email: {
     email_prefix: '[Notification] ',
-    sender_address: %('notifier' <notifier@speeduplouisvelle.com>),
+    sender_address: %('notifier' <notifier@speedupamerica.com>),
     exception_recipients: %w(dev1@contenttools.co dev2@contenttools.co dev3@contenttools.co)
   }
 
-  config.action_mailer.default_url_options = { host: 'speeduplouisville.com' }
+  config.action_mailer.default_url_options = { host: 'speedupamerica.com' }
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
