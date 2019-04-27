@@ -49,27 +49,34 @@ class SubmissionsImporter
     client = bigquery_init
     zip_codes = "'#{Submission::ZIP_CODES.join("','")}'"
 
-    upload_test_data = client.sql(upload_query(zip_codes))
-    download_test_data = client.sql(download_query(zip_codes))
+    upload_query = upload_query(zip_codes)
+    download_query = download_query(zip_codes)
+
+    # puts upload_query
+
+    upload_test_data = client.sql(upload_query)
+    download_test_data = client.sql(download_query)
 
     create_submissions(upload_test_data, 'upload')
     create_submissions(download_test_data, 'download')
   end
 
   def self.time_constraints
-    if Submission.from_mlab.last.nil?
-      start_time = Date.today - 7 # Populate with last 7 days by default
-    else
+    start_time = Date.today - 60 # Populate with last 60 days by default
+    start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
+
+    if Submission.from_mlab.last.nil? == false
       start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d %H:%M:%S")
     end
 
     end_time = Date.today.strftime("%Y-%m-%d %H:%M:%S")
-    "web100_log_entry.log_time >= PARSE_UTC_USEC('#{start_time}') / POW(10, 6) AND
-    web100_log_entry.log_time < PARSE_UTC_USEC('#{end_time}') / POW(10, 6) AND" if Submission.from_mlab.count > 0
+    "web100_log_entry.log_time >= UNIX_SECONDS('#{start_time}') AND
+      web100_log_entry.log_time < UNIX_SECONDS('#{end_time}') AND" 
   end
 
   def self.upload_query(zip_codes)
-    "SELECT
+    "#standardSQL
+    SELECT
       test_id,
       TIMESTAMP_MICROS(web100_log_entry.log_time) AS UTC_date_time,
       NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)) AS client_ip_numeric,

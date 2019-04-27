@@ -8,28 +8,28 @@ class Submission < ActiveRecord::Base
   CENSUS_STATUS = { pending: 'pending', saved: 'saved' }
 
   MAP_FILTERS = {
-                  connection_type: {
-                                      home_wifi: 'Home Wifi',
-                                      mobile_data: 'Mobile Data',
-                                      public_wifi: 'Public Wifi',
-                                      all: ['Home Wifi', 'Mobile Data', 'Public Wifi'],
-                                   },
+    connection_type: {
+      home_wifi: 'Home Wifi',
+      mobile_data: 'Mobile Data',
+      public_wifi: 'Public Wifi',
+      all: ['Home Wifi', 'Mobile Data', 'Public Wifi'],
+    },
 
-                  group_by: {
-                              zip_code: 'zip_code',
-                              census_tract: 'census_code',
-                            },
+    group_by: {
+      zip_code: 'zip_code',
+      census_tract: 'census_code',
+    },
 
-                  test_type: {
-                    download: 'download',
-                    upload: 'upload',
-                  },
+    test_type: {
+      download: 'download',
+      upload: 'upload',
+    },
 
-                  period: {
-                    month: 'Month',
-                    year: 'Year',
-                  },
-                }
+    period: {
+      month: 'Month',
+      year: 'Year',
+    },
+  }
 
   CSV_COLUMNS = [
                   'Response #', 'Source', 'Day', 'Time', 'How Are You Testing', 'Zip', 'Census Tract', 'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed', 'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps', 'Actual Price Per Mbps', 'Ping'
