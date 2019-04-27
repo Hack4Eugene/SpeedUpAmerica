@@ -109,7 +109,8 @@ class SubmissionsImporter
   end
 
   def self.download_query(zip_codes)
-    "SELECT
+    "#standardSQL
+    SELECT
       test_id,
       TIMESTAMP_MICROS(web100_log_entry.log_time) AS UTC_date_time,
       NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)) AS client_ip_numeric,
