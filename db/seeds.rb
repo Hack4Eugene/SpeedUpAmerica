@@ -7,6 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 providers = {
+              'XS Media' => 'broadband',
               'Century Link' => 'broadband',
               'Xfinity' => 'broadband',
               'Viasat' => 'broadband',
