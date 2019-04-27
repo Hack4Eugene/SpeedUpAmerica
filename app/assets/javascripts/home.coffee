@@ -30,8 +30,6 @@ set_coords = (position) ->
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
-        $('#take_test').prop('disabled', false)
-        $('#take_test').addClass('opacity-100')
         $.getJSON 'https://jsonip.com/?callback=?', (result_data) ->
           $('#submission_ip_address').val result_data.ip.split(',')[0]
 
@@ -108,13 +106,20 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
-$ ->
+###
+# Turbolinks handles our navigation so that the page is updated dynamically; so
+# DOMContentLoaded is only fired when the site is first visited.  Below, we're
+# using an event which Turbolinks fires each time it emulates a page load.
+# This allows us to emulate the behavior of DOMContentLoaded.
+#
+# https://github.com/turbolinks/turbolinks#observing-navigation-events
+###
+document.addEventListener('turbolinks:load', ->
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
 
   if window.location.pathname == '/'
-    get_location()
     start_speed_test()
     set_error_for_invalid_fields()
 
@@ -123,6 +128,7 @@ $ ->
   $('.test-speed-btn').prop('disabled', true)
 
   $('#take_test').on 'click', ->
+    get_location()
     $('.title-container').addClass('hidden');
     $('#form-container').removeClass('hide')
     $('#form-step-1 input').prop('disabled', false)
@@ -141,3 +147,4 @@ $ ->
     $(testing_for + ' input').prop('disabled', false)
     $(testing_for + ' select').prop('disabled', false)
     $('#form-step-1').addClass('hide')
+)
