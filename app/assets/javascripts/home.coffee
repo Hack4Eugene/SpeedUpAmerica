@@ -120,6 +120,7 @@ document.addEventListener('turbolinks:load', ->
   numeric_field_constraint()
 
   if window.location.pathname == '/'
+    get_location()
     start_speed_test()
     set_error_for_invalid_fields()
 
@@ -128,7 +129,6 @@ document.addEventListener('turbolinks:load', ->
   $('.test-speed-btn').prop('disabled', true)
 
   $('#take_test').on 'click', ->
-    get_location()
     $('.title-container').addClass('hidden');
     $('#form-container').removeClass('hide')
     $('#form-step-1 input').prop('disabled', false)
