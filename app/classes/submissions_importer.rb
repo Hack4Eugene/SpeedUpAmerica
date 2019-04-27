@@ -22,6 +22,8 @@ class SubmissionsImporter
   end
 
   def self.create_submissions(data, test_type)
+    puts "Importing #{data.count} #{test_type}s"
+
     data.each do |row|
       submission = Submission.where('DATE(created_at) = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
 
@@ -49,25 +51,34 @@ class SubmissionsImporter
     client = bigquery_init
     zip_codes = "'#{Submission::ZIP_CODES.join("','")}'"
 
-    upload_test_data = client.sql(upload_query(zip_codes))
-    download_test_data = client.sql(download_query(zip_codes))
+    upload_query = upload_query(zip_codes)
+    download_query = download_query(zip_codes)
+
+    upload_test_data = client.sql(upload_query)
+    download_test_data = client.sql(download_query)
 
     create_submissions(upload_test_data, 'upload')
     create_submissions(download_test_data, 'download')
   end
 
   def self.time_constraints
-    start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d %H:%M:%S")
-    end_time = Date.today.strftime("%Y-%m-%d %H:%M:%S")
-    "web100_log_entry.log_time >= PARSE_UTC_USEC('#{start_time}') / POW(10, 6) AND
-    web100_log_entry.log_time < PARSE_UTC_USEC('#{end_time}') / POW(10, 6) AND" if Submission.from_mlab.count > 0
+    start_time = Date.today - 7 # Populate with last 60 days by default
+    start_time = start_time.strftime("%Y-%m-%d")
+    end_time = Date.today.strftime("%Y-%m-%d")
+
+    if Submission.from_mlab.last.nil? == false
+      start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d")
+    end
+    
+    "partition_date BETWEEN '#{start_time}' AND '#{end_time}' AND"
   end
 
   def self.upload_query(zip_codes)
-    "SELECT
+    "#standardSQL
+    SELECT
       test_id,
-      STRFTIME_UTC_USEC(INTEGER(web100_log_entry.log_time) * 1000000, '%Y-%m-%d %T') AS UTC_date_time,
-      PARSE_IP(connection_spec.client_ip) AS client_ip_numeric,
+      FORMAT_TIMESTAMP('%F %H:%m:%s UTC', log_time) AS UTC_date_time,
+      IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
       connection_spec.client_geolocation.city AS city,
@@ -79,27 +90,23 @@ class SubmissionsImporter
       NULL AS downloadThroughput,
       web100_log_entry.snap.Duration AS duration,
       web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
-    FROM [plx.google:m_lab.ndt.all]
+    FROM `measurement-lab.release.ndt_uploads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -85.948441 AND
-      connection_spec.client_geolocation.longitude < -85.4051 AND
-      connection_spec.client_geolocation.latitude > 37.9971 AND
-      connection_spec.client_geolocation.latitude < 38.38051 AND
-      connection_spec.client_geolocation.postal_code IN (#{zip_codes}) AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.Duration) AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.HCThruOctetsReceived) AND
-      web100_log_entry.snap.HCThruOctetsReceived >= 8192 AND
-      web100_log_entry.snap.Duration >= 9000000 AND
-      web100_log_entry.snap.Duration < 3600000000 AND
-      blacklist_flags == 0;"
+      connection_spec.client_geolocation.longitude > -124.23023107 AND
+      connection_spec.client_geolocation.longitude < -121.76806168 AND
+      connection_spec.client_geolocation.latitude > 43.43714199 AND
+      connection_spec.client_geolocation.latitude < 44.29054797 AND
+      connection_spec.client_geolocation.postal_code IN (#{zip_codes})
+    ORDER BY partition_date DESC"
   end
 
   def self.download_query(zip_codes)
-    "SELECT
+    "#standardSQL
+    SELECT
       test_id,
-      STRFTIME_UTC_USEC((INTEGER(web100_log_entry.log_time) * 1000000), '%Y-%m-%d %T') AS UTC_date_time,
-      PARSE_IP(connection_spec.client_ip) AS client_ip_numeric,
+      FORMAT_TIMESTAMP('%F %H:%m:%s UTC', log_time) AS UTC_date_time,
+      IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
       connection_spec.client_geolocation.city AS city,
@@ -109,27 +116,17 @@ class SubmissionsImporter
       connection_spec.client_geolocation.area_code AS area_code,
       8 * web100_log_entry.snap.HCThruOctetsAcked/ (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS downloadThroughput,
       NULL AS uploadThroughput,
-      web100_log_entry.snap.HCThruOctetsAcked AS HCThruOctetsAcked,
-    FROM [plx.google:m_lab.ndt.all]
+      web100_log_entry.snap.Duration AS duration,
+      web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
+    FROM `measurement-lab.release.ndt_downloads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -85.948441 AND
-      connection_spec.client_geolocation.longitude < -85.4051 AND
-      connection_spec.client_geolocation.latitude > 37.9971 AND
-      connection_spec.client_geolocation.latitude < 38.38051 AND
-      connection_spec.client_geolocation.postal_code IN (#{zip_codes}) AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.SndLimTimeRwin) AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.SndLimTimeCwnd) AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.SndLimTimeSnd) AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.HCThruOctetsAcked) AND
-      IS_EXPLICITLY_DEFINED(connection_spec.data_direction) AND
-      connection_spec.data_direction = 1 AND
-      web100_log_entry.snap.HCThruOctetsAcked >= 8192 AND
-      (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) >= 9000000 AND
-      (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) < 3600000000 AND
-      IS_EXPLICITLY_DEFINED(web100_log_entry.snap.CongSignals) AND
-      web100_log_entry.snap.CongSignals > 0 AND
-      blacklist_flags == 0;"
+      connection_spec.client_geolocation.longitude > -124.23023107 AND
+      connection_spec.client_geolocation.longitude < -121.76806168 AND
+      connection_spec.client_geolocation.latitude > 43.43714199 AND
+      connection_spec.client_geolocation.latitude < 44.29054797 AND
+      connection_spec.client_geolocation.postal_code IN (#{zip_codes})
+    ORDER BY partition_date DESC"
   end
 
 end
