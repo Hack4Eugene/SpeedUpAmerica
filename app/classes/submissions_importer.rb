@@ -22,6 +22,8 @@ class SubmissionsImporter
   end
 
   def self.create_submissions(data, test_type)
+    puts "Importing #{data.count} #{test_type}s"
+
     data.each do |row|
       submission = Submission.where('DATE(created_at) = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
 
@@ -52,8 +54,6 @@ class SubmissionsImporter
     upload_query = upload_query(zip_codes)
     download_query = download_query(zip_codes)
 
-    # puts upload_query
-
     upload_test_data = client.sql(upload_query)
     download_test_data = client.sql(download_query)
 
@@ -62,24 +62,23 @@ class SubmissionsImporter
   end
 
   def self.time_constraints
-    start_time = Date.today - 60 # Populate with last 60 days by default
-    start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
+    start_time = Date.today - 7 # Populate with last 60 days by default
+    start_time = start_time.strftime("%Y-%m-%d")
+    end_time = Date.today.strftime("%Y-%m-%d")
 
     if Submission.from_mlab.last.nil? == false
-      start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d %H:%M:%S")
+      start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d")
     end
-
-    end_time = Date.today.strftime("%Y-%m-%d %H:%M:%S")
-    "web100_log_entry.log_time >= UNIX_SECONDS('#{start_time}') AND
-      web100_log_entry.log_time < UNIX_SECONDS('#{end_time}') AND" 
+    
+    "partition_date BETWEEN '#{start_time}' AND '#{end_time}' AND"
   end
 
   def self.upload_query(zip_codes)
     "#standardSQL
     SELECT
       test_id,
-      TIMESTAMP_MICROS(web100_log_entry.log_time) AS UTC_date_time,
-      NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)) AS client_ip_numeric,
+      FORMAT_TIMESTAMP('%F %H:%m:%s UTC', log_time) AS UTC_date_time,
+      IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
       connection_spec.client_geolocation.city AS city,
@@ -91,29 +90,23 @@ class SubmissionsImporter
       NULL AS downloadThroughput,
       web100_log_entry.snap.Duration AS duration,
       web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
-    FROM `measurement-lab.release.ndt_all`
+    FROM `measurement-lab.release.ndt_uploads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -85.948441 AND
-      connection_spec.client_geolocation.longitude < -85.4051 AND
-      connection_spec.client_geolocation.latitude > 37.9971 AND
-      connection_spec.client_geolocation.latitude < 38.38051 AND
-      connection_spec.client_geolocation.postal_code IN (#{zip_codes}) AND
-      connection_spec.data_direction = 0 AND
-      web100_log_entry.snap.HCThruOctetsReceived >= 8192 AND
-      web100_log_entry.snap.Duration >= 9000000 AND
-      web100_log_entry.snap.Duration < 600000000 AND
-      (web100_log_entry.snap.State = 1 OR (web100_log_entry.snap.State >= 5
-        AND web100_log_entry.snap.State <= 11)) AND
-      blacklist_flags = 0;"
+      connection_spec.client_geolocation.longitude > -124.23023107 AND
+      connection_spec.client_geolocation.longitude < -121.76806168 AND
+      connection_spec.client_geolocation.latitude > 43.43714199 AND
+      connection_spec.client_geolocation.latitude < 44.29054797 AND
+      connection_spec.client_geolocation.postal_code IN (#{zip_codes})
+    ORDER BY partition_date DESC"
   end
 
   def self.download_query(zip_codes)
     "#standardSQL
     SELECT
       test_id,
-      TIMESTAMP_MICROS(web100_log_entry.log_time) AS UTC_date_time,
-      NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)) AS client_ip_numeric,
+      FORMAT_TIMESTAMP('%F %H:%m:%s UTC', log_time) AS UTC_date_time,
+      IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
       connection_spec.client_geolocation.city AS city,
@@ -123,28 +116,17 @@ class SubmissionsImporter
       connection_spec.client_geolocation.area_code AS area_code,
       8 * web100_log_entry.snap.HCThruOctetsAcked/ (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS downloadThroughput,
       NULL AS uploadThroughput,
-      web100_log_entry.snap.HCThruOctetsAcked AS HCThruOctetsAcked
-    FROM `measurement-lab.release.ndt_all`
+      web100_log_entry.snap.Duration AS duration,
+      web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
+    FROM `measurement-lab.release.ndt_downloads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -85.948441 AND
-      connection_spec.client_geolocation.longitude < -85.4051 AND
-      connection_spec.client_geolocation.latitude > 37.9971 AND
-      connection_spec.client_geolocation.latitude < 38.38051 AND
-      connection_spec.client_geolocation.postal_code IN (#{zip_codes}) AND
-      connection_spec.data_direction = 1 AND
-      web100_log_entry.snap.HCThruOctetsAcked >= 8192 AND
-      (web100_log_entry.snap.SndLimTimeRwin +
-        web100_log_entry.snap.SndLimTimeCwnd +
-        web100_log_entry.snap.SndLimTimeSnd) >= 9000000 AND
-      (web100_log_entry.snap.SndLimTimeRwin +
-        web100_log_entry.snap.SndLimTimeCwnd +
-        web100_log_entry.snap.SndLimTimeSnd) < 600000000 AND
-      web100_log_entry.snap.CongSignals > 0 AND
-      (web100_log_entry.snap.State = 1 OR
-        (web100_log_entry.snap.State >= 5 AND
-        web100_log_entry.snap.State <= 11)) AND
-      blacklist_flags = 0;"
+      connection_spec.client_geolocation.longitude > -124.23023107 AND
+      connection_spec.client_geolocation.longitude < -121.76806168 AND
+      connection_spec.client_geolocation.latitude > 43.43714199 AND
+      connection_spec.client_geolocation.latitude < 44.29054797 AND
+      connection_spec.client_geolocation.postal_code IN (#{zip_codes})
+    ORDER BY partition_date DESC"
   end
 
 end

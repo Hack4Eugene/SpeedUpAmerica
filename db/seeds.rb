@@ -36,3 +36,11 @@ providers = {
 providers.each do |name, provider_type|
   ProviderStatistic.find_or_create_by(name: name, provider_type: provider_type)
 end
+
+unless Rails.env.production?
+  connection = ActiveRecord::Base.connection
+  connection.execute("TRUNCATE submissions;")
+
+  sql = File.read('db/submissions.sql')
+  connection.execute(sql)
+end
