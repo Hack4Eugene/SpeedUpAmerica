@@ -6,8 +6,6 @@ bind_ndt_speed_calculation = ->
   ndtUpdateInterval = 1000
 
   success = (position) ->
-    document.getElementById('submission_latitude').value = position.coords.latitude
-    document.getElementById('submission_longitude').value = position.coords.longitude
     xhr = new XMLHttpRequest
     currentLocationURL = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude + '&zoom=18&addressdetails=1'
     xhr.open 'GET', currentLocationURL, true
