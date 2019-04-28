@@ -59,10 +59,9 @@ set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_
       map.addLayer L.mapbox.tileLayer('mapbox.light')
 
       L.geoJson(data,
-        style: (feature) ->
-          feature.properties
         onEachFeature: (feature, layer) ->
           polygon = new (L.Polygon)(feature.geometry.coordinates[0]).addTo(map)
+          polygon.setStyle(feature.properties)
           bounds = polygon.getBounds()
           center = bounds.getCenter()
           content = '<h2>Test Results for ' + feature.properties.title + ':</h2>' +
@@ -98,10 +97,9 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
       map.addLayer L.mapbox.tileLayer('mapbox.light')
 
       L.geoJson(data,
-        style: (feature) ->
-          feature.properties
         onEachFeature: (feature, layer) ->
           polygon = new (L.Polygon)(feature.geometry.coordinates[0]).addTo(map)
+          polygon.setStyle(feature.properties)
           bounds = polygon.getBounds()
           center = bounds.getCenter()
           content = "<p>Tests in census block #{feature.properties.title}: <strong>(#{feature.properties.count})</strong></p>" +
@@ -372,8 +370,6 @@ update_statistics = (map, statistics, filter) ->
   set_mapbox_census_data(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
   draw_stats_charts(statistics, filter)
 
-  console.log statistics
-
 disable_filters = (container, disabled) ->
   $("##{container} .filter").attr('disabled', disabled).trigger('chosen:updated')
 
@@ -417,7 +413,6 @@ apply_filters = (map) ->
     date_range = [$('#start_date').val(), $('#end_date').val()].join(' - ')
     update_csv_link(date_range)
     disable_filters('map-filters', true)
-    console.log $(this).val()
 
     $('#mapbox_gl_map').addClass('hide')
     $('#all_results_map').removeClass('hide')
