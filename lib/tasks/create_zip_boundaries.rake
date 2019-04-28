@@ -3,19 +3,46 @@ require 'json'
 require 'rake'
 
 task :populate_zip_boundaries => [:environment] do
-  agent = Mechanize.new
-  Submission.where.not(zip_code: [nil, '']).group_by(&:zip_code).each do |zip_code, submissions|
-    next if ZipBoundary.where(name: zip_code).present?
-    zip_json = JSON.parse(agent.get(zip_json_url(zip_code)).body)
-    next if zip_json['q_results'].first['rows'].blank?
+  puts "Right now we're only including zip codes that overlap with Lane County, OR."
 
-    zip_coordinates = zip_json['q_results'].first['rows'].first['features'].first['geometry']['coordinates']
-    zip_type = zip_json['q_results'].first['rows'].first['features'].first['geometry']['type']
+  # keep track of the number of zip codes added to ZipBoundary
+  add_count = 0
 
-    ZipBoundary.create(name: zip_code, zip_type: zip_type, bounds: zip_coordinates)
-  end
+  # read in the JSON line by line
+  IO.foreach("/suyc/db/data/us_zip_codes.json") { |line|
+    
+    # parse the line
+    data = JSON.parse(line)
+
+    # if the zip code isn't in Oregon, ignore it
+    next if data["state_code"] != "OR"
+
+    # if the zip code doesn't include parts of Lane county, ignore it
+    next if !(data["county"].include? "Lane County")
+
+    # if it's already in ZipBoundary, ignore it
+    next if ZipBoundary.where(name: data["zip_code"]).present?
+
+    # clean up the lat long pairs
+    bounds = clean_bounds(data["zcta_geom"])
+
+    # otherwise, create a new record
+    # in the original file, it had "zip_type", I'm not sure what that means
+    ZipBoundary.create(name: data["zip_code"], zip_type: "Polygon", bounds: bounds)
+
+    # increment the count
+    add_count += 1
+  }
+
+  puts "Added #{add_count} zip codes."
+  
 end
 
-def zip_json_url(zip_code)
-  "http://data.washingtonpost.com/politics/superzips/?q={'zip':'#{zip_code}'}"
+def clean_bounds(b)
+  temp = b.gsub("POLYGON", "").gsub("(", "").gsub(")", "").gsub("MULTI", "").split(", ")
+  temp2 = Array.new
+  bounds = Array.new
+  temp.each {|x| temp2 << x.split()}
+  temp2.each { |s| bounds << [s[0].to_f, s[1].to_f]}
+  return bounds
 end
