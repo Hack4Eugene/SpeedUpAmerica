@@ -30,7 +30,7 @@ initialize_mapbox = (map) ->
   map = L.mapbox.map(map, 'mapbox.light', { maxZoom: maxZoom }).setView([
    44.0497
    -123.093
-  ], 11)
+  ], 10)
 
   map.scrollWheelZoom.disable();
 
