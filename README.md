@@ -4,6 +4,7 @@ The project vision is an open source nation-wide map that pulls individual inter
 
 The current implentation of SpeedUp has been deployed to these cities.
 
+- [Lane County](https://speedupamerica.com/)
 - [Louisville, KY](https://www.speeduplouisville.com/)
 - [San Jose, CA](https://www.speedupsanjose.com/all-results)
 - Montgomery County, MD
@@ -52,156 +53,61 @@ The SpeedUpAmerica project utilizes the following technologies for operation:
 - Map Technica (API Key Required)
 - MLab (Special configuration instructions)
 
-### Install & Configure Web Server
-We utilize Puma with this project, although it was tested locally with Passenger.
+# Setup
 
-Make absolute certain that after your web server is set up you've edited the /etc/httpd/conf/httpd.conf file to reflect your directory structure. You want to point DocumentRoot to your Rails project /public folder Anywhere in the httpd.conf file that has this sort of dir: /var/www/html/your_application/public needs to be updated or everything will get very frustrating.
+These instructions work on Linux, Windows and MacOS and only need to be performed once, unless you reset your database or config files. 
 
-Reboot the server (or Apache at the very least - service httpd restart )
+Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/). 
 
-### Install & Configure MySQL
+> Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
-### Bundle Install
+    $ cp local.env.template local.env
+    $ docker-compose up -d mysql
+    $ docker-compose run frontend rake db:setup
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/submissions.sql
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/zip_codes.sql
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/census_tracts.sql
+    $ docker-compose run frontend rake secret
 
-### Configure Environment Variables (local environment)
+Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
 
-Open and rename the .env_sample file to .env, and configure the listed options. By default, this application is set to "development" mode. 
+> These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
 
-~~~~
-# MLab's Big Query Configuration #
-##################################
-MLAB_BIGQUERY_DATASET:
-MLAB_BIGQUERY_EMAIL:
-MLAB_BIGQUERY_PRIVATE_KEY:
-MLAB_BIGQUERY_PRIVATE_KEY_PASSPHRASE:
-MLAB_BIGQUERY_AUTH_METHOD:
+## Running
 
-# General Configuration #
-#########################
-LANG=en_US.UTF-8
-RAILS_SERVE_STATIC_FILES=
-SECRET_KEY_BASE=
-SECRET_TOKEN=
+    $ docker-compose up -d
 
-# 3rd party API integrations #
-##############################
-MAPBOX_API_KEY=
-MAPTECHNICA_API_KEY=
+The site can be accessed at `http://localhost:3000/`. The Ruby app is configured to not cache and it doesn't require restarting the Docker container to load changes, unless it's a config change. Just make your changes and reload the page. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
 
-# Environment Configuration #
-#############################
-RACK_ENV=development
-RAILS_ENV=development
+## Stopping 
 
-# Development Environment Variables #
-#####################################
-RDS_DEV_DB_NAME=
-RDS_DEV_HOSTNAME=
-RDS_DEV_PASSWORD=
-RDS_DEV_PORT=
-RDS_DEV_USERNAME=
+    $ docker-compose stop
 
-# Staging Environment Variables #
-####################################
-RDS_DB_NAME=
-RDS_HOSTNAME=
-RDS_PASSWORD=
-RDS_PORT=
-RDS_USERNAME=
 
-# Production Environment Variables #
-####################################
-RDS_DB_NAME=
-RDS_HOSTNAME=
-RDS_PASSWORD=
-RDS_PORT=
-RDS_USERNAME=
-~~~~
+# Data tasks
 
-### Seed Database
-rake db:setup
+There are just the tasks that have been run to populate and prepate the data for operation. The other tasks need investigated and documented.
 
-### Migrate Database Changes
-Enter your Rails project folder /var/www/html/your_application and start the migration with rake db:migrate. Make certain that a database table exists, even if you plan on adding tables later.
+### Importing M-Lab submissions:
 
-rake db:migrate:status  
-rake db:migrate                         # Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)
+    $ docker-compose run frontend rake import_mlab_submissions
 
-### Run Local (optional)
-rails s
 
-### Familiarize yourself with rake tasks
-Run "rake -t" to get the following output of rake tasks:
+### Importing Census and Zip Code boundaries 
 
-~~~~
-rake about                              # List versions of all Rails frameworks and the environment
-rake assets:clean[keep]                 # Remove old compiled assets
-rake assets:clobber                     # Remove compiled assets
-rake assets:environment                 # Load asset compile environment
-rake assets:precompile                  # Compile all the assets named in config.assets.precompile / Create nondigest versions of all chosen digest assets
-rake cache_digests:dependencies         # Lookup first-level dependencies for TEMPLATE (like messages/show or comments/_comment.html)
-rake cache_digests:nested_dependencies  # Lookup nested dependencies for TEMPLATE (like messages/show or comments/_comment.html)
-rake db:create                          # Creates the database from DATABASE_URL or config/database.yml for the current RAILS_ENV (use db:create:all to create...
-rake db:drop                            # Drops the database from DATABASE_URL or config/database.yml for the current RAILS_ENV (use db:drop:all to drop all d...
-rake db:fixtures:load                   # Load fixtures into the current environment's database
-rake db:migrate                         # Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)
-rake db:migrate:status                  # Display status of migrations
-rake db:rollback                        # Rolls the schema back to the previous version (specify steps w/ STEP=n)
-rake db:schema:cache:clear              # Clear a db/schema_cache.dump file
-rake db:schema:cache:dump               # Create a db/schema_cache.dump file
-rake db:schema:dump                     # Create a db/schema.rb file that is portable against any DB supported by AR
-rake db:schema:load                     # Load a schema.rb file into the database
-rake db:seed                            # Load the seed data from db/seeds.rb
-rake db:setup                           # Create the database, load the schema, and initialize with the seed data (use db:reset to also drop the database first)
-rake db:structure:dump                  # Dump the database structure to db/structure.sql
-rake db:structure:load                  # Recreate the databases from the structure.sql file
-rake db:version                         # Retrieves the current schema version number
-rake doc:app                            # Generate docs for the app -- also available doc:rails, doc:guides (options: TEMPLATE=/rdoc-template.rb, TITLE="Custo...
-rake geocode:all                        # Geocode all objects without coordinates
-rake geocoder:maxmind:geolite:download  # Download MaxMind GeoLite City data
-rake geocoder:maxmind:geolite:extract   # Extract (unzip) MaxMind GeoLite City data
-rake geocoder:maxmind:geolite:insert    # Load/refresh MaxMind GeoLite City data
-rake geocoder:maxmind:geolite:load      # Download and load/refresh MaxMind GeoLite City data
-rake log:clear                          # Truncates all *.log files in log/ to zero bytes (specify which logs with LOGS=test,development)
-rake middleware                         # Prints out your Rack middleware stack
-rake notes                              # Enumerate all annotations (use notes:optimize, :fixme, :todo for focus)
-rake notes:custom                       # Enumerate a custom annotation, specify with ANNOTATION=CUSTOM
-rake rails:template                     # Applies the template supplied by LOCATION=(/path/to/template) or URL
-rake rails:update                       # Update configs and some other initially generated files (or use just update:configs or update:bin)
-rake routes                             # Print out all defined routes in match order, with names
-rake secret                             # Generate a cryptographically secure secret key (this is typically used to generate a secret for cookie sessions)
-rake stats                              # Report code statistics (KLOCs, etc) from the application or engine
-rake test                               # Runs all tests in test folder
-rake test:all                           # Run tests quickly by merging all types and not resetting db
-rake test:all:db                        # Run tests quickly, but also reset db
-rake test:db                            # Run tests quickly, but also reset db
-rake time:zones:all                     # Displays all time zones, also available: time:zones:us, time:zones:local -- filter with OFFSET parameter, e.g., OFFS...
-rake tmp:clear                          # Clear session, cache, and socket files from tmp/ (narrow w/ tmp:sessions:clear, tmp:cache:clear, tmp:sockets:clear)
-rake tmp:create                         # Creates tmp directories for sessions, cache, sockets, and pids
-~~~~
+Assumes you have these files in `db/data/`:
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
 
-### Push to Web Based Environment
-This stage of implementation is dependent on what environment you will be deploying to. We currently have 3 methods that we're testing, with Heroku and dedicated hosting being operational.
+    $ docker-compose run frontend rake populate_census_tracts
+    $ docker-compose run frontend rake populate_zip_boundaries
 
-#### Preparing for production
-RAILS_ENV=production rake secret - this will create a secret_key that you can add to config/secrets.yml . You can copy/paste this into config/secrets.yml for the sake of getting things running, although I'd recommend you don't do this. Personally, I do this step to make sure everything else is working, then change it back and source it later.
+### Populating submissions with Census Tract
 
-RAILS_ENV=production rake db:migrate
+    $ docker-compose run frontend rake update_pending_census_codes
 
-RAILS_ENV=production rake assets:precompile if you are serving static assets. This will push js, css, image files into the /public folder.
 
-RAILS_ENV=production rails s
-
-## Heroku
-This implementation of Speed Up Your City has been tested on Heroku, on a free dyno, with a small MySQL instance add-on ($9.99 a month, only recommend for testing purposes)
-
-## Elastic Beanstalk
-This project currently does not run on Elastic Beanstalk, although we do intend to implement this. There is a placeholder .ebextensions folder in preparation for this. This would utilize Elastic Beanstalk, in conjunction with a small to medium EC2 instance, and a MySQL RDS instance.
-
-## Dedicated Hosting
-Speeduplouisville.com is currently running on a dedicated server hosted by Smart Data Systems.
-
-## Governance and contribution
+# Governance and contribution
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). 
 

@@ -62,7 +62,7 @@ class SubmissionsImporter
   end
 
   def self.time_constraints
-    start_time = Date.today - 7 # Populate with last 60 days by default
+    start_time = Date.today - 60 # Populate with last 60 days by default
     start_time = start_time.strftime("%Y-%m-%d")
     end_time = Date.today.strftime("%Y-%m-%d")
 
