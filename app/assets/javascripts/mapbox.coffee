@@ -28,8 +28,8 @@ initialize_mapbox = (map) ->
   maxZoom = isIE() && 12 || 14
 
   map = L.mapbox.map(map, 'mapbox.light', { maxZoom: maxZoom }).setView([
-    38.2277224
-    -85.6728608
+   44.0497
+   -123.093
   ], 11)
 
   map.scrollWheelZoom.disable();

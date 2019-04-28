@@ -1,6 +1,7 @@
 # Special files #
 #################
 keys/*
+db/data/*
 
 # Elastic Beanstalk Files #
 ###########################

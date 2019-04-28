@@ -12,6 +12,8 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
     $ docker-compose up -d mysql
     $ docker-compose run frontend rake db:setup
     $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/submissions.sql
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/zip_codes.sql
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/census_tracts.sql
     $ docker-compose run frontend rake secret
 
 Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.

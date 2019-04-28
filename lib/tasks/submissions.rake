@@ -33,10 +33,10 @@ task :update_pending_census_codes => [:environment] do
   puts '*' * 50
 end
 
-task :populate_census_boundaries => [:environment] do
+task :populate_census_boundaries_old => [:environment] do
   puts 'Populating census boundaries...'
 
-  Submission::UAIs.each do |uai|
+  Submission::GEO_IDS.each do |uai|
     agent = Mechanize.new
     census_json = JSON.parse(agent.get(area_identifier_json_url(uai)).body)
     census_name = census_json['area']['TRACTCE']

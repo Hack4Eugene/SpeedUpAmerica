@@ -37,7 +37,7 @@ class Submission < ActiveRecord::Base
 
   ZIP_CODES = [
     '97405', '97401', '97424', '97403', '97439', '97463', '97438',
-    '97493', '97492', '97402', '97452', '97477', '97404', '97426',
+    '97493', '97492', '97452', '97477', '97404', '97426',
     '97487', '97408', '97448', '97478'
   ]
 
@@ -150,59 +150,44 @@ class Submission < ActiveRecord::Base
     polygon_data = polygon_data.with_census_code(params[:census_code])        if params[:census_code].present?
     polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
 
-    boundaries = Rails.cache.fetch('zip_boundaries', expires_in: 2.hours) do
+    #boundaries = Rails.cache.fetch('zip_boundaries', expires_in: 2.hours) do
       zip_boundaries = {}
       ZipBoundary.where(name: ZIP_CODES).each do |zip|
         zip_boundaries[zip.name] = { zip_type: zip.zip_type, bounds: zip.bounds }
       end
-      zip_boundaries
-    end
+      #zip_boundaries
+    #end
+
+    boundaries = zip_boundaries
 
     polygon_data.each do |zip_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
       median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
       zip_boundary = boundaries[zip_code]
 
-      if zip_boundary.present?
-        zip_coordinates = zip_boundary[:bounds]
-        zip_type = zip_boundary[:zip_type]
-      else
-        begin
-          zip_json = Timeout::timeout(2) do
-            JSON.parse(agent.get(zip_json_url(zip_code)).body)
-          end
+      next if zip_boundary.present? == false
 
-          next if zip_json['features'].blank?
-
-          zip_coordinates = zip_json['features'].first['geometry']['coordinates']
-          zip_type = zip_json['features'].first['geometry']['type']
-
-          zip = ZipBoundary.first_or_initialize(name: zip_code, zip_type: zip_type)
-          zip.bounds = zip_coordinates
-          zip.save
-        rescue Timeout::Error
-          next
-        end
-      end
+      zip_coordinates = zip_boundary[:bounds]
+      zip_type = zip_boundary[:zip_type]
 
       feature = {
-                  'type': 'Feature',
-                  'properties': {
-                    'title': zip_code,
-                    'count': number_with_delimiter(submissions.length, delimiter: ','),
-                    'median_speed': median_speed,
-                    'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
-                    'fillColor': set_color(median_speed),
-                    'fillOpacity': 0.5,
-                    'weight': 2,
-                    'opacity': 1,
-                    'color': set_color(median_speed),
-                  },
-                  'geometry': {
-                    'type': zip_type,
-                    'coordinates': zip_coordinates
-                  }
-                }
+        'type': 'Feature',
+        'properties': {
+          'title': zip_code,
+          'count': number_with_delimiter(submissions.length, delimiter: ','),
+          'median_speed': median_speed,
+          'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
+          'fillColor': set_color(median_speed),
+          'fillOpacity': 0.5,
+          'weight': 2,
+          'opacity': 1,
+          'color': set_color(median_speed),
+        },
+        'geometry': {
+          'type': zip_type,
+          'coordinates': zip_coordinates
+        }
+      }
 
       data << feature
     end
@@ -225,13 +210,15 @@ class Submission < ActiveRecord::Base
     polygon_data = polygon_data.with_census_code(params[:census_code]) if params[:census_code].present?
     polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
 
-    boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
+    #boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
       census_boundaries = {}
       CensusBoundary.where(geo_id: GEOS_IDS).each do |boundary|
         census_boundaries[boundary.name.to_i.to_s] = { bounds: boundary.bounds }
       end
-      census_boundaries
-    end
+      #census_boundaries
+    #end
+
+    boundaries = census_boundaries
 
     polygon_data.each do |census_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
@@ -278,7 +265,8 @@ class Submission < ActiveRecord::Base
         JSON.parse(agent.get(Submission.census_tract_url(latitude, longitude)).body)
       end
 
-      fips = response['Block']['FIPS']
+      fips = response['results'][0]['block_fips']
+      puts fips
       self.assign_attributes(census_code: fips[5..-5].to_i, census_status: CENSUS_STATUS[:saved]) if fips.present?
     rescue
       self.census_status = CENSUS_STATUS[:pending]
@@ -286,7 +274,7 @@ class Submission < ActiveRecord::Base
   end
 
   def self.census_tract_url(lat, long)
-    "http://data.fcc.gov/api/block/find?format=json&latitude=#{lat}&longitude=#{long}"
+    "https://geo.fcc.gov/api/census/area?lat=#{lat}&lon=#{long}&format=json"
   end
 
   def self.median(array)

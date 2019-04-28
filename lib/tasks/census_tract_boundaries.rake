@@ -38,10 +38,17 @@ task :populate_census_tracts => [:environment] do
 end
 
 def clean_bounds(b)
-  temp = b.gsub("POLYGON", "").gsub("(", "").gsub(")", "").gsub("MULTI", "").split(", ")
-  temp2 = Array.new
-  bounds = Array.new
-  temp.each {|x| temp2 << x.split()}
-  temp2.each { |s| bounds << [s[0].to_f, s[1].to_f]}
-  return bounds
+  if b.start_with?('MULTIPOLYGON')
+    #cords = b.gsub('MULTIPOLYGON(((', '').gsub(')))', '')
+    #cords = [cords.split(',').collect{|c| c.split(" ").map(&:to_f).reverse()}]
+
+    #puts cords
+    return [[]]
+  else
+    cords = b.gsub('POLYGON((', '').gsub('))', '')
+    cords = [cords.split(',').collect{|c| c.split(" ").map(&:to_f).reverse()}]
+
+    puts cords
+    return cords
+  end
 end

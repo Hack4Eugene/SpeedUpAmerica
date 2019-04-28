@@ -26,9 +26,13 @@ task :populate_zip_boundaries => [:environment] do
     # clean up the lat long pairs
     bounds = clean_bounds(data["zcta_geom"])
 
+    zip_type = "Polygon"
+    if data["zcta_geom"].start_with?('MULTIPOLYGON')
+      zip_type = "MultiPolygon"
+    end
+
     # otherwise, create a new record
-    # in the original file, it had "zip_type", I'm not sure what that means
-    ZipBoundary.create(name: data["zip_code"], zip_type: "Polygon", bounds: bounds)
+    ZipBoundary.create(name: data["zip_code"], zip_type: zip_type, bounds: bounds)
 
     # increment the count
     add_count += 1
@@ -39,10 +43,15 @@ task :populate_zip_boundaries => [:environment] do
 end
 
 def clean_bounds(b)
-  temp = b.gsub("POLYGON", "").gsub("(", "").gsub(")", "").gsub("MULTI", "").split(", ")
-  temp2 = Array.new
-  bounds = Array.new
-  temp.each {|x| temp2 << x.split()}
-  temp2.each { |s| bounds << [s[0].to_f, s[1].to_f]}
-  return bounds
+  if b.start_with?('MULTIPOLYGON')
+    cords = b.gsub('MULTIPOLYGON(((', '').gsub(')))', '')
+    cords = [cords.split(',').collect{|c| c.split(" ").map(&:to_f).reverse()}]
+
+    return cords
+  else
+    cords = b.gsub('POLYGON((', '').gsub('))', '')
+    cords = [cords.split(',').collect{|c| c.split(" ").map(&:to_f).reverse()}]
+
+    return cords
+  end
 end
