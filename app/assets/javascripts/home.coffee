@@ -64,7 +64,7 @@ check_fields_validity = ->
 is_mobile_data = ->
   $(".checkboxes-container input[name='submission[testing_for]']:checked").val() == 'Mobile Data'
 
-start_speed_test = ->
+enable_speed_test = ->
   $('.test-speed-btn').on 'click', ->
     if check_fields_validity()
       $('#testing_speed').modal('show');
@@ -121,7 +121,7 @@ document.addEventListener('turbolinks:load', ->
 
   if window.location.pathname == '/'
     get_location()
-    start_speed_test()
+    enable_speed_test()
     set_error_for_invalid_fields()
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
