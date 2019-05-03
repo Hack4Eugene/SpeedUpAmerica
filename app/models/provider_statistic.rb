@@ -9,4 +9,5 @@ class ProviderStatistic < ActiveRecord::Base
 
   scope :not_empty, -> { where.not(applications: 0) }
   scope :get_by_name, -> (name) { where(name: name) }
+  default_scope { order(name: :asc) }
 end
