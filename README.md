@@ -61,6 +61,9 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
+    $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
+    $ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
+    $ cd SpeedUpAmerica
     $ cp local.env.template local.env
     $ docker-compose up -d mysql
     $ docker-compose up migrator
