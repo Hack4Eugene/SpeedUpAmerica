@@ -63,14 +63,18 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
     $ cp local.env.template local.env
     $ docker-compose up -d mysql
-    $ docker-compose run frontend rake db:setup
-    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/submissions.sql
-    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/zip_codes.sql
-    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < db/census_tracts.sql
+    $ docker-compose up migrator
+    $ docker-compose run migrator rake db:seed
     $ docker-compose run frontend rake secret
 
 Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
 
+If you want a basic dataset to work with run:
+
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
+    $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
+    
 > These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
 
 ## Running
@@ -92,7 +96,6 @@ There are just the tasks that have been run to populate and prepate the data for
 
     $ docker-compose run frontend rake import_mlab_submissions
 
-
 ### Importing Census and Zip Code boundaries 
 
 Assumes you have these files in `db/data/`:
@@ -105,7 +108,6 @@ Assumes you have these files in `db/data/`:
 ### Populating submissions with Census Tract
 
     $ docker-compose run frontend rake update_pending_census_codes
-
 
 # Governance and contribution
 

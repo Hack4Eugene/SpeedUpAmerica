@@ -9,6 +9,15 @@ services:
       MYSQL_DATABASE: suyc
     ports:
       - "3306:3306"
+  migrator:
+    build: ../speedupamerica-migrator
+    env_file:
+      - local.env
+    command: ["rake", "db:setup"]
+    links:
+      - mysql
+    depends_on:
+      - mysql
   frontend:
     build: .
     env_file:
