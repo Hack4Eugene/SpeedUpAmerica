@@ -78,7 +78,7 @@
       }
 
       li {
-        padding-left: 0px;
+        padding-left: 0;
         float: left;
         width: 100%;
         padding-bottom: 10px;
@@ -91,7 +91,7 @@
         display: block;
         float: left;
         margin-right: 10px;
-        margin-top: 0px;
+        margin-top: 0;
       }
     }
 
@@ -187,7 +187,7 @@
   .chosen-container-multi .chosen-choices,
   .chosen-container-single .chosen-single {
     input[type="text"] {
-      border: 0px !important;
+      border: 0 !important;
     }
   }
 

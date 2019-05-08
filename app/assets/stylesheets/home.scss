@@ -240,9 +240,9 @@ body.in-stats .background-container,
   }
 
   .social-share-btn {
-    padding: 4px 0px 4px 14px;
+    padding: 4px 0 4px 14px;
     margin-bottom: 9px;
-    margin-left: 0px;
+    margin-left: 0;
     text-align: left;
   }
 }
@@ -426,7 +426,7 @@ body.in-stats .background-container,
 }
 
 .form-separator-margin {
-  margin: 10px 0 25px 0px;
+  margin: 10px 0 25px 0;
   font-weight: normal;
 }
 
@@ -643,7 +643,7 @@ body.in-stats {
   background: #f9f9f9;
 }
 body.in-stats .title-container {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 body.in-stats h1 {
@@ -666,7 +666,7 @@ body.in-stats h2 {
 
 .white-section {
   background: white;
-  box-shadow: 0px 0px 5px 0px rgb( 226, 226, 226 );
+  box-shadow: 0 0 5px 0 rgb( 226, 226, 226 );
   margin-bottom: 65px;
   padding-bottom: 60px;
 }
@@ -679,7 +679,7 @@ body.in-stats h2 {
   float: left;
   width: 100%;
   box-sizing: border-box;
-  padding: 40px 0px 62px 0px;
+  padding: 40px 0 62px 0;
   font-size: 24px;
   line-height: 34px;
   color: #4c4343;
@@ -712,7 +712,7 @@ body.in-stats h2 {
 .residential-tests {
   float: left;
   width: 100%;
-  padding: 60px 0px 30px 0;
+  padding: 60px 0 30px 0;
 }
 
 .residential-tests h4 {
@@ -736,12 +736,12 @@ body.in-stats h2 {
 .zipcode-section {
   float:  left;
   width: 100%;
-  padding: 50px 0px 30px 0px;
+  padding: 50px 0 30px 0;
 }
 
 .zipcodes-table .table tr td,
 .zipcodes-table .table tr th {
-  border: 0px;
+  border: 0;
   text-align: center;
 }
 .zipcodes-table .table tr th {
@@ -768,7 +768,7 @@ body.in-stats h2 {
 .avrg-section {
   float: left;
   width: 100%;
-  padding: 120px 0 0px 0px;
+  padding: 120px 0 0 0;
 }
 
 .avrg-section h4 {
@@ -784,7 +784,7 @@ body.in-stats h2 {
 .brought-by {
   font-size: 24px;
   text-align: center;
-  padding: 20px 0px;
+  padding: 20px 0;
 }
 
 .footer-logo img {
@@ -840,7 +840,7 @@ body.in-stats h2 {
 
 .explore-data-desc {
   font-size: 16px;
-  margin: 25px 0px;
+  margin: 25px 0;
 }
 
 .messages {
