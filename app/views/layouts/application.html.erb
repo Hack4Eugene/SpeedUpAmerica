@@ -22,7 +22,7 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <%= analytics_init if GoogleAnalytics.valid_tracker? %>
-  <% if Rails.env.production! %>
+  <% if Rails.env.production? == false %>
     <meta name="robots" content="noindex,nofollow">
   <% end %>
 
