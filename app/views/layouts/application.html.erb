@@ -22,11 +22,15 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <%= analytics_init if GoogleAnalytics.valid_tracker? %>
+  <% if Rails.env.production? == false %>
+    <meta name="robots" content="noindex,nofollow">
+  <% end %>
 
   <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
   <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
   <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
+
 </head>
 
 <body class='<%= body_css_class %>'>
