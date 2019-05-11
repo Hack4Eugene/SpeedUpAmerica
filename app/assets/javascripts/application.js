@@ -13,7 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
-//= require turbolinks
 //= require chosen-jquery
 //= require bootstrap-datepicker
 //= require ndt.js
