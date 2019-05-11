@@ -102,6 +102,6 @@ Rails.application.configure do
     'X-Frame-Options' => 'ALLOWALL'
   }
 
-  GA.tracker = 'UA-76999024-2'
+  GA.tracker = 'UA-139988252-1'
 
 end
