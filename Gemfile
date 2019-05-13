@@ -42,6 +42,7 @@ gem 'actionpack-page_caching'
 gem 'whenever', require: false
 gem 'geoip'
 gem 'ipaddress'
+gem 'georuby', '~> 2.5', '>= 2.5.2'
 
 group :production do
   gem 'unicorn'

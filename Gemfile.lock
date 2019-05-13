@@ -92,6 +92,7 @@ GEM
       sass (>= 3.2)
     geocoder (1.5.1)
     geoip (1.6.4)
+    georuby (2.5.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     google-analytics-rails (1.1.0)
@@ -278,6 +279,7 @@ DEPENDENCIES
   font-awesome-sass (~> 4.5.0)
   geocoder
   geoip
+  georuby (~> 2.5, >= 2.5.2)
   google-analytics-rails (= 1.1.0)
   ipaddress
   jbuilder (~> 2.0)

@@ -232,23 +232,23 @@ class Submission < ActiveRecord::Base
       end
 
       feature = {
-                  'type': 'Feature',
-                  'properties': {
-                    'title': census_code,
-                    'count': number_with_delimiter(submissions.length, delimiter: ','),
-                    'median_speed': median_speed,
-                    'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
-                    'fillColor': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
-                    'fillOpacity': 0.5,
-                    'weight': 2,
-                    'opacity': 1,
-                    'color': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
-                  },
-                  'geometry': {
-                    'type': 'Polygon',
-                    'coordinates': census_coordinates,
-                  }
-                }
+        'type': 'Feature',
+        'properties': {
+          'title': census_code,
+          'count': number_with_delimiter(submissions.length, delimiter: ','),
+          'median_speed': median_speed,
+          'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
+          'fillColor': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
+          'fillOpacity': 0.5,
+          'weight': 2,
+          'opacity': 1,
+          'color': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
+        },
+        'geometry': {
+          'type': 'Polygon',
+          'coordinates': census_coordinates,
+        }
+      }
 
       data << feature
     end
