@@ -1,6 +1,7 @@
 require 'mechanize'
 require 'json'
 require 'rake'
+require 'georuby'
 
 task :populate_census_tracts => [:environment] do
   puts "Right now we're only including census tracts that overlap with Lane County, OR."
@@ -9,7 +10,7 @@ task :populate_census_tracts => [:environment] do
   add_count = 0
 
   # read in the JSON line by line
-  IO.foreach("/suyc/db/data/cb_2016_us_census_tracts") { |line|
+  IO.foreach("/suyc/data/cb_2016_us_census_tracts.json") { |line|
     
     # parse the line
     data = JSON.parse(line)
@@ -23,11 +24,11 @@ task :populate_census_tracts => [:environment] do
     # if it's already in ZipBoundary, ignore it
     next if CensusBoundary.where(name: data["TRACTCE"]).present?
 
-    # clean up the lat long pairs
-    bounds = clean_bounds(data["tract_polygons"])
+    # get polygon
+    polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["tract_polygons"])
 
     # otherwise, create a new record
-    CensusBoundary.create(name: data["TRACTCE"], geo_id: data["GEOID"], bounds: bounds)
+    CensusBoundary.create(name: data["TRACTCE"], geo_id: data["GEOID"], bounds: polygon.to_coordinates())
 
     # increment the count
     add_count += 1
@@ -35,20 +36,4 @@ task :populate_census_tracts => [:environment] do
 
   puts "Added #{add_count} census tracts."
   
-end
-
-def clean_bounds(b)
-  if b.start_with?('MULTIPOLYGON')
-    #cords = b.gsub('MULTIPOLYGON(((', '').gsub(')))', '')
-    #cords = [cords.split(',').collect{|c| c.split(" ").map(&:to_f).reverse()}]
-
-    #puts cords
-    return [[]]
-  else
-    cords = b.gsub('POLYGON((', '').gsub('))', '')
-    cords = [cords.split(',').collect{|c| c.split(" ").map(&:to_f).reverse()}]
-
-    puts cords
-    return cords
-  end
 end

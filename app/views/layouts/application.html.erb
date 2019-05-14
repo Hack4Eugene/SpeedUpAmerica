@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
   <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to America!'}",
-                description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test is brought to you by PowerUp Labs'}",
-                twitter: {
-                  site: "#{request.original_url}",
-                  title: "#{yield(:title).present? ? yield(:title) : 'Speed Up America - Internet Speed Test'}",
-                  description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test is brought to you by PowerUp Labs'}",
-                  image: image_url('logo.png'),
-                },
-                og: {
-                  title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to Americans!'}",
-                  type: 'website',
-                  url: "#{request.original_url}",
-                  description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with SpeedUpAmerica! Find out if you\'re getting the internet speed you are paying for.'}",
-                  image: image_url('logo.png'),
-                }
+    description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test brought to you by SpeedUpAmerica and M-Lab open source projects'}",
+    twitter: {
+      site: "#{request.original_url}",
+      title: "#{yield(:title).present? ? yield(:title) : 'Speed Up America - Internet Speed Test'}",
+      description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test brought to you by SpeedUpAmerica and M-Lab open source projects'}",
+      image: image_url('logo.png'),
+    },
+    og: {
+      title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to Americans!'}",
+      type: 'website',
+      url: "#{request.original_url}",
+      description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with SpeedUpAmerica! Find out if you\'re getting the internet speed you are paying for.'}",
+      image: image_url('logo.png'),
+    }
   %>
+
   <%= favicon_link_tag 'logo.png' %>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
   <%= analytics_init if GoogleAnalytics.valid_tracker? %>
+
   <% if Rails.env.production? == false %>
     <meta name="robots" content="noindex,nofollow">
   <% end %>
 
   <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
   <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
-  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
 
 </head>

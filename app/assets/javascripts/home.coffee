@@ -106,15 +106,7 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
-###
-# Turbolinks handles our navigation so that the page is updated dynamically; so
-# DOMContentLoaded is only fired when the site is first visited.  Below, we're
-# using an event which Turbolinks fires each time it emulates a page load.
-# This allows us to emulate the behavior of DOMContentLoaded.
-#
-# https://github.com/turbolinks/turbolinks#observing-navigation-events
-###
-document.addEventListener('turbolinks:load', ->
+window.addEventListener('load', ->
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()

@@ -206,8 +206,6 @@ class Submission < ActiveRecord::Base
     polygon_data = valid_test
     polygon_data = polygon_data.where(provider: providers)
     polygon_data = polygon_data.with_date_range(start_date, end_date) if date_range.present?
-    polygon_data = polygon_data.with_zip_code(params[:zip_code]) if params[:zip_code].present?
-    polygon_data = polygon_data.with_census_code(params[:census_code]) if params[:census_code].present?
     polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
 
     #boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
@@ -232,23 +230,23 @@ class Submission < ActiveRecord::Base
       end
 
       feature = {
-                  'type': 'Feature',
-                  'properties': {
-                    'title': census_code,
-                    'count': number_with_delimiter(submissions.length, delimiter: ','),
-                    'median_speed': median_speed,
-                    'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
-                    'fillColor': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
-                    'fillOpacity': 0.5,
-                    'weight': 2,
-                    'opacity': 1,
-                    'color': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
-                  },
-                  'geometry': {
-                    'type': 'Polygon',
-                    'coordinates': census_coordinates,
-                  }
-                }
+        'type': 'Feature',
+        'properties': {
+          'title': census_code,
+          'count': number_with_delimiter(submissions.length, delimiter: ','),
+          'median_speed': median_speed,
+          'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
+          'fillColor': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
+          'fillOpacity': 0.5,
+          'weight': 2,
+          'opacity': 1,
+          'color': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
+        },
+        'geometry': {
+          'type': 'Polygon',
+          'coordinates': census_coordinates,
+        }
+      }
 
       data << feature
     end

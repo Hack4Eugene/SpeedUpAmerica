@@ -59,9 +59,10 @@ set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_
       map.addLayer L.mapbox.tileLayer('mapbox.light')
 
       L.geoJson(data,
+        style: (feature) ->
+          feature.properties
         onEachFeature: (feature, layer) ->
           polygon = new (L.Polygon)(feature.geometry.coordinates[0]).addTo(map)
-          polygon.setStyle(feature.properties)
           bounds = polygon.getBounds()
           center = bounds.getCenter()
           content = '<h2>Test Results for ' + feature.properties.title + ':</h2>' +
@@ -97,9 +98,10 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
       map.addLayer L.mapbox.tileLayer('mapbox.light')
 
       L.geoJson(data,
+        style: (feature) ->
+          feature.properties
         onEachFeature: (feature, layer) ->
           polygon = new (L.Polygon)(feature.geometry.coordinates[0]).addTo(map)
-          polygon.setStyle(feature.properties)
           bounds = polygon.getBounds()
           center = bounds.getCenter()
           content = "<p>Tests in census block #{feature.properties.title}: <strong>(#{feature.properties.count})</strong></p>" +
