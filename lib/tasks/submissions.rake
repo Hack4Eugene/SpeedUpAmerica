@@ -33,6 +33,25 @@ task :update_pending_census_codes => [:environment] do
   puts '*' * 50
 end
 
+task :create_test_data => [:environment] do
+  puts "Creating test data from existing submissions"
+
+  tracts = CensusBoundary.all()
+  countTracts = tracts.length
+
+  zips = ZipBoundary.all()
+  countZips = zips.length
+
+  submissions = Submission.all()
+  submissions.each_with_index do |s, index|
+    s.census_code = tracts[index % countTracts].name
+    s.zip_code = zips[index % countZips].name
+    s.save
+  end
+
+  puts "Done"
+end
+
 task :populate_census_boundaries_old => [:environment] do
   puts 'Populating census boundaries...'
 
