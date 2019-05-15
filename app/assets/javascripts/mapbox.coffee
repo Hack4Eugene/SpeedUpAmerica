@@ -406,9 +406,7 @@ set_multiple_selected_values = ->
     $("#selected_#{id}").val($("##{id}").val())
 
 apply_filters = (map) ->
-  $('#map-filters .filter').on 'change', ->
-    set_date_filters_value($(this)) if $(this).val() == ''
-    update_all_option($(this))
+  update_map = ->
     provider = $('#provider').val()
     group_by = $('#group_by').val()
     test_type = $('#test_type').val()
@@ -427,6 +425,13 @@ apply_filters = (map) ->
       set_mapbox_gl_data(map, provider, date_range, group_by, test_type)
     else if group_by == 'all_responses' && isIE()
       set_mapbox_markers_data(map, provider, date_range, group_by, test_type)
+
+  $('#map-filters .filter').on 'change', ->
+    set_date_filters_value($(this)) if $(this).val() == ''
+    update_all_option($(this))
+    update_map()
+
+  update_map()
 
 get_stats_filters = ->
   {
@@ -493,13 +498,21 @@ bind_datetimepicker = ->
 
 $(document).ready ->
   if window.location.pathname.indexOf('result') >= 0 || window.location.pathname.indexOf('embed') >= 0
+
+    # Create maps
     all_results_map = initialize_mapbox('all_results_map')
     zip_code_map = initialize_mapbox('zip_code_map')
-    apply_submission_filters()
-    apply_filters(all_results_map)
+
+    # Initialize filter values
     bind_chosen_select()
-    bind_datetimepicker()
     set_multiple_selected_values()
+
+    # Draw polygons on the map
+    apply_filters(all_results_map)
+
+    # Add functionality to UI
+    apply_submission_filters()
+    bind_datetimepicker()
 
     $.loadScript 'https://code.highcharts.com/highcharts.js', ->
       apply_stats_filters(zip_code_map)
