@@ -21,14 +21,19 @@ task :populate_census_tracts => [:environment] do
     # if the zip code doesn't include parts of Lane county, ignore it
     next if !(data["COUNTYFP"].include? "39")
 
-    # if it's already in ZipBoundary, ignore it
+    # if it's already in CensusBoundary, ignore it
     next if CensusBoundary.where(name: data["TRACTCE"]).present?
 
-    # get polygon
-    polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["tract_polygons"])
+    geom_type = "Polygon"
+    polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(data["tract_polygons"])
+    if data["tract_polygons"].start_with?('MULTIPOLYGON')
+      geom_type = "MultiPolygon"
+      polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["tract_polygons"])
+    end
 
     # otherwise, create a new record
-    CensusBoundary.create(name: data["TRACTCE"], geo_id: data["GEOID"], bounds: polygon.to_coordinates())
+    CensusBoundary.create(name: data["TRACTCE"], geo_id: data["GEOID"], geom_type: geom_type,
+      bounds: polygon.to_coordinates())
 
     # increment the count
     add_count += 1

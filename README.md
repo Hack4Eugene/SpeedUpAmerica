@@ -136,6 +136,12 @@ $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc censu
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
 ```
 
+### Creating test data
+
+After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
+
+    $ docker-compose run frontend rake create_test_data
+
 # Governance and contribution
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). 

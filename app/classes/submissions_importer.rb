@@ -49,7 +49,9 @@ class SubmissionsImporter
 
   def self.import
     client = bigquery_init
-    zip_codes = "'#{Submission::ZIP_CODES.join("','")}'"
+
+    zips = ZipBoundary.pluck(:name)
+    zip_codes = "'#{zips.join("','")}'"
 
     upload_query = upload_query(zip_codes)
     download_query = download_query(zip_codes)

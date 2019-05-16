@@ -45,6 +45,7 @@ task :create_test_data => [:environment] do
   submissions = Submission.all()
   submissions.each_with_index do |s, index|
     s.census_code = tracts[index % countTracts].name
+    s.census_status = 'saved'
     s.zip_code = zips[index % countZips].name
     s.save
   end
