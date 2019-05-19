@@ -4,6 +4,9 @@
 #################
 keys/*
 db/data/*
+data/cb_2016_us_census_tracts
+data/cb_2016_us_census_tracts.json
+data/us_zip_codes.json
 
 # Elastic Beanstalk Files #
 ###########################
