@@ -152,8 +152,6 @@ class Submission < ActiveRecord::Base
 
     boundaries = zip_boundaries
 
-    puts polygon_data.length()
-
     polygon_data.each do |zip_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
       median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
@@ -259,11 +257,7 @@ class Submission < ActiveRecord::Base
         JSON.parse(agent.get(Submission.census_tract_url(latitude, longitude)).body)
       end
 
-      puts response['results']
-
       fips = response['results'][0]['block_fips']
-      puts fips
-      puts fips[0..-5]
       self.assign_attributes(census_code: fips[0..-5], census_status: CENSUS_STATUS[:saved]) if fips.present?
     rescue
       self.census_status = CENSUS_STATUS[:pending]
