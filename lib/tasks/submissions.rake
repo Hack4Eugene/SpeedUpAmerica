@@ -44,34 +44,13 @@ task :create_test_data => [:environment] do
 
   submissions = Submission.all()
   submissions.each_with_index do |s, index|
-    s.census_code = tracts[index % countTracts].name
+    s.census_code = tracts[index % countTracts].geo_id
     s.census_status = 'saved'
     s.zip_code = zips[index % countZips].name
     s.save
   end
 
   puts "Done"
-end
-
-task :populate_census_boundaries_old => [:environment] do
-  puts 'Populating census boundaries...'
-
-  Submission::GEO_IDS.each do |uai|
-    agent = Mechanize.new
-    census_json = JSON.parse(agent.get(area_identifier_json_url(uai)).body)
-    census_name = census_json['area']['TRACTCE']
-    area_identifier_id = census_json['area']['UAID']
-    census_geo_id = census_json['area']['GEOID']
-    census_coordinates = census_json['geom'].gsub('POLYGON ((', '').gsub('))', '')
-    census_coordinates = [census_coordinates.split(',').collect{|c| c.split(" ").map(&:to_f)}]
-
-    boundary = CensusBoundary.where(name: census_name.to_i, geo_id: census_geo_id).first_or_initialize
-    boundary.area_identifier = area_identifier_id
-    boundary.bounds = census_coordinates
-    boundary.save
-  end
-
-  puts 'Census boundaries successfully populated'
 end
 
 task :populate_median_speeds => [:environment] do

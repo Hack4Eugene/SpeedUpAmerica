@@ -39,8 +39,7 @@ class Submission < ActiveRecord::Base
   ]
 
   ZIP_CODES = ZipBoundary.pluck(:name)
-  CENSUS_CODES = CensusBoundary.pluck(:name)
-  GEOS_IDS = CensusBoundary.pluck(:geo_id)
+  CENSUS_CODES = CensusBoundary.pluck(:geo_id)
 
   validates :testing_for, length: { maximum: 20 }
   validates :provider, :connected_with, length: { maximum: 50 }
@@ -205,8 +204,8 @@ class Submission < ActiveRecord::Base
 
     #boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
       census_boundaries = {}
-      CensusBoundary.where(geo_id: GEOS_IDS).each do |boundary|
-        census_boundaries[boundary.name.to_i.to_s] = {
+      CensusBoundary.where(geo_id: CENSUS_CODES).each do |boundary|
+        census_boundaries[boundary.geo_id] = {
            geom_type: boundary.geom_type,
            bounds: boundary.bounds
         }
@@ -219,7 +218,7 @@ class Submission < ActiveRecord::Base
     polygon_data.each do |census_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
       median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
-      census_boundary = boundaries[census_code.to_s]
+      census_boundary = boundaries[census_code]
 
       next if census_boundary.present? == false
 
@@ -260,9 +259,12 @@ class Submission < ActiveRecord::Base
         JSON.parse(agent.get(Submission.census_tract_url(latitude, longitude)).body)
       end
 
+      puts response['results']
+
       fips = response['results'][0]['block_fips']
       puts fips
-      self.assign_attributes(census_code: fips[5..-5].to_i, census_status: CENSUS_STATUS[:saved]) if fips.present?
+      puts fips[0..-5]
+      self.assign_attributes(census_code: fips[0..-5], census_status: CENSUS_STATUS[:saved]) if fips.present?
     rescue
       self.census_status = CENSUS_STATUS[:pending]
     end
