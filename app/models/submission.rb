@@ -136,7 +136,7 @@ class Submission < ActiveRecord::Base
     params[:census_code] = CENSUS_CODES if params[:census_code] == ['all']
 
     polygon_data = valid_test
-    #polygon_data = polygon_data.where(provider: providers)
+    polygon_data = polygon_data.where(provider: providers)
     polygon_data = polygon_data.with_date_range(start_date, end_date)         if date_range.present?
     polygon_data = polygon_data.with_zip_code(params[:zip_code])              if params[:zip_code].present?
     polygon_data = polygon_data.with_census_code(params[:census_code])        if params[:census_code].present?
@@ -198,7 +198,7 @@ class Submission < ActiveRecord::Base
     params[:census_code] = CENSUS_CODES if params[:census_code] == ['all']
 
     polygon_data = valid_test
-    #polygon_data = polygon_data.where(provider: providers)
+    polygon_data = polygon_data.where(provider: providers)
     polygon_data = polygon_data.with_date_range(start_date, end_date) if date_range.present?
     polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
 
