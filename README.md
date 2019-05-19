@@ -67,7 +67,7 @@ $ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
 $ cd SpeedUpAmerica
 $ cp local.env.template local.env
 $ docker-compose up -d mysql
-$ docker-compose up migrator
+$ docker-compose up --build migrator
 $ docker-compose run migrator rake db:seed
 $ docker-compose run frontend rake secret
 ```    
@@ -116,6 +116,10 @@ There are just the tasks that have been run to populate and prepate the data for
 ### Populating submissions with Census Tract
 
     $ docker-compose run frontend rake update_pending_census_codes
+
+### Creating new submissions.sql
+
+    $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
 
 ### Importing Census and Zip Code boundaries
 
