@@ -1,13 +1,18 @@
-<div class='container white-section bottom-banner'>
-  <div class='row margin-top-60'>
-    <div>
-      <div class='ccol-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <%= image_tag 'bottom_banner.png' %>
-      </div>
-      <div class='ccol-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <h2 class="text-center">About SpeedUpAmerica</h2>
-        <div class="banner-text">
-        The SpeedUpAmerica project is designed to help Americans understand the quality and cost of internet service provided to our citizens. By answering a few questions you can help increase transparency around internet speeds and costs for residents. We DO NOT collect personal data in any way, shape, or form. We do ask for your location to help determine if there are areas of America that are consistently experiencing slow internet speeds.        </div>
+<div class='container white-section'>
+  <div class='row'>
+    <div class='col-md-12'>
+      <h2 class='text-center margin-top-40 margin-bottom-40'>About SpeedUpAmerica</h2>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 banner-static'>
+      <%= image_tag 'banner.png' %>
+    </div>
+
+    <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+      <div class='banner-text results-banner-text'>
+        SpeedUpAmerica helps Americans understand the quality and cost of their internet service. We do not collect any personal data. By providing your location, you can help reveal which areas of America have slow or overpriced internet. 
       </div>
     </div>
   </div>
@@ -18,5 +23,5 @@
   <div class='text-center find-more-div'>
     Questions about speedupamerica.com? Find more information
     <%= link_to 'here.', 'https://github.com/Hack4Eugene/SpeedUpAmerica', target: '_blank' %>
-  </div>
+</div>
 </div>
