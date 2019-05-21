@@ -393,8 +393,14 @@ class Submission < ActiveRecord::Base
       in_zip_code_list.with_date_range(Time.parse(range[0]), Time.parse(range[1])).find_in_batches(batch_size: 1000) do |submissions|
         submissions.each do |submission|
           csv <<  [
-                    submission.id, submission.source, submission.created_at.strftime('%B %d, %Y'), submission.created_at.in_time_zone('EST').strftime('%R %Z'), testing_for_mapping(submission.testing_for), submission.zip_code, submission.census_code, submission.provider, submission.connected_with, submission.monthly_price, submission.provider_down_speed, submission.rating, submission.actual_down_speed, submission.actual_upload_speed, submission.provider_price, submission.actual_price, submission.ping
-                  ]
+            submission.id, submission.source, submission.created_at.strftime('%B %d, %Y'),
+            submission.created_at.in_time_zone('EST').strftime('%R %Z'),
+            testing_for_mapping(submission.testing_for), submission.zip_code,
+            submission.census_code, submission.provider, submission.connected_with,
+            submission.monthly_price, submission.provider_down_speed, submission.rating,
+            submission.actual_down_speed, submission.actual_upload_speed,
+            submission.provider_price, submission.actual_price, submission.ping
+          ]
         end
       end
     end
