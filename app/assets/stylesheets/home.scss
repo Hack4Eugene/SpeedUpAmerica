@@ -394,28 +394,21 @@ body.in-stats .background-container,
 }
 
 .partnerLogos {
+  .logo-container {
+    text-align: center;
+  }
   a {
+    display: inline-block;
+    width: 20%;
+    margin: 0 2%;
+
     img {
       display: inline-block;
-      margin-right: 2%;
-    }
-    &:first-child img {
-      width: 14%;
-    }
-    &:nth-child(2) img {
-      width: 15%;
-    }
-    &:nth-child(3) img {
-      width: 25%;
-    }
-    &:last-child img {
-      width: 30%;
-      margin-right: 0;
+      width: 100%;
     }
   }
   p {
-    margin-top: 10px;
-    margin-bottom: 0
+    margin: 0.75em 0 0.5em;
   }
   ul {
     padding: 0 5%;
@@ -809,7 +802,7 @@ body.in-stats h2 {
 .brought-by {
   font-size: 24px;
   text-align: center;
-  padding: 20px 0;
+  padding-bottom: 0.25em;
 }
 
 .footer-logo img {
