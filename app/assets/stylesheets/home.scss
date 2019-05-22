@@ -60,6 +60,7 @@ body.result-page {
 .bold {
   font-weight: bold
 }
+
 .options-container a {
   color: #546e7a;
 }
@@ -111,7 +112,6 @@ body.result-page {
 
 .checkbox label::after {
   top: -5px;
-
 }
 
 .checkbox label::before {
@@ -120,7 +120,10 @@ body.result-page {
   margin-left: -21px
 }
 
-.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+.radio input[type="radio"],
+.radio-inline input[type="radio"],
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
   margin-left: -15px
 }
 
@@ -149,7 +152,7 @@ body.result-page {
 
 body.in-stats .background-container,
 .background-container  {
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   height: 100%;
   width: 100%;
   display: inline-block;
@@ -170,7 +173,9 @@ body.in-stats .background-container,
   width: 100%;
 }
 
-.social-share-button-twitter, .social-share-button-facebook, .social-share-button-linkedin {
+.social-share-button-twitter,
+.social-share-button-facebook,
+.social-share-button-linkedin {
   background: none;
   width: 50px;
   height: 50px;
@@ -200,7 +205,7 @@ body.in-stats .background-container,
 }
 
 #introduction {
-  >p{
+  >p {
     margin: 20px 20px 0;
     font-size: 16px;
     line-height: 28px;
@@ -212,13 +217,13 @@ body.in-stats .background-container,
     margin-left: 0;
     margin-top: 15px;
   }
-    li {
-      width: 40%;
+  li {
+    width: 40%;
 
-      img {
-        max-width: 100%
-      }
+    img {
+      max-width: 100%
     }
+  }
 }
 
 .resultTable {
@@ -251,33 +256,38 @@ body.in-stats .background-container,
   padding-bottom: 10px
 }
 
-.primaryBtn, .test-speed-btn {
+.primaryBtn,
+.test-speed-btn {
   background: #efefef;
   background: -moz-linear-gradient(top, #efefef 0%, #d2d2d2 100%);
   background: -webkit-linear-gradient(top, #efefef 0%,#d2d2d2 100%);
-  background: linear-gradient(to bottom, #efefef 0%,#d2d2d2 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#d2d2d2',GradientType=0 );
+  background: linear-gradient(to bottom, #efefef 0%, #d2d2d2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#efefef', endColorstr='#d2d2d2', GradientType=0);
   border: 1px solid #ababab;
   color: #000;
   padding: 8px 15px;
   border-radius: 5px;
   transition: all 0.5s ease;
+
   &:hover {
     background: #d2d2d2;
     background: -moz-linear-gradient(top, #d2d2d2 0%, #efefef 100%);
-    background: -webkit-linear-gradient(top, #d2d2d2 0%,#efefef 100%);
-    background: linear-gradient(to bottom, #d2d2d2 0%,#efefef 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2d2d2', endColorstr='#efefef',GradientType=0 );
+    background: -webkit-linear-gradient(top, #d2d2d2 0%, #efefef 100%);
+    background: linear-gradient(to bottom, #d2d2d2 0%, #efefef 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d2d2d2', endColorstr='#efefef', GradientType=0);
   }
 }
+
 .rating-container .filled-stars {
   color: #30b2a8;
   text-shadow: 1px 1px #30b2a8
 }
+
 .rating-container {
   .glyphicon-star-empty:before {
   }
 }
+
 .rating-container .filled-stars {
   .glyphicon-star:before {
     color: #30b2a8;
@@ -296,12 +306,14 @@ body.in-stats .background-container,
     }
   }
 }
+
 .form-control:focus {
   border-color: #1b9087 !important;
   box-shadow: none !important;
 }
 
-.checkbox input[type="checkbox"]:focus + label::before, .checkbox input[type="radio"]:focus + label::before {
+.checkbox input[type="checkbox"]:focus + label::before,
+.checkbox input[type="radio"]:focus + label::before {
   outline: none;
 }
 
@@ -343,13 +355,13 @@ body.in-stats .background-container,
 }
 
 .navbar-brand {
-&.color-white {
-  span {
-    margin-left: 5px;
-    vertical-align: sub;
-    font-weight: 300
+  &.color-white {
+    span {
+      margin-left: 5px;
+      vertical-align: sub;
+      font-weight: 300
+    }
   }
-}
 }
 
 .progress-list {
@@ -380,22 +392,23 @@ body.in-stats .background-container,
 .negative-margin-left-20 {
   margin-left: -20px;
 }
+
 .partnerLogos {
   a {
     img {
-    display: inline-block;
-    margin-right: 2%;
+      display: inline-block;
+      margin-right: 2%;
     }
-  &:first-child img{
+    &:first-child img {
       width: 14%;
     }
-    &:nth-child(2) img{
+    &:nth-child(2) img {
       width: 15%;
     }
-    &:nth-child(3) img{
+    &:nth-child(3) img {
       width: 25%;
     }
-    &:last-child img{
+    &:last-child img {
       width: 30%;
       margin-right: 0;
     }
@@ -405,22 +418,25 @@ body.in-stats .background-container,
     margin-bottom: 0
   }
   ul {
-  padding: 0 5%;
-  li {
-    width: 23% !important;
-    display: inline-block;
-    list-style: none;
-    a {
-      margin-right: 20px;
+    padding: 0 5%;
+
+    li {
+      width: 23% !important;
       display: inline-block;
-      vertical-align: middle;
-     img {
-      max-width: 100%;
+      list-style: none;
+
+      a {
+        margin-right: 20px;
+        display: inline-block;
+        vertical-align: middle;
+
+        img {
+          max-width: 100%;
+        }
       }
-    }
-   &:last-child a {
-      margin-right: 0
-    }
+      &:last-child a {
+        margin-right: 0
+      }
     }
   }
 }
@@ -464,8 +480,14 @@ body.in-stats .background-container,
   }
 }
 
-.social-share-btn:hover, .social-share-btn:link, .social-share-btn:visited, .social-share-btn:active,
-.social-share-btn a:hover, .social-share-btn a:link, .social-share-btn a:visited, .social-share-btn a:active {
+.social-share-btn:hover,
+.social-share-btn:link,
+.social-share-btn:visited,
+.social-share-btn:active,
+.social-share-btn a:hover,
+.social-share-btn a:link,
+.social-share-btn a:visited,
+.social-share-btn a:active {
   color: white;
   text-decoration: none;
   cursor: pointer;
@@ -642,6 +664,7 @@ body.in-stats .background-container,
 body.in-stats {
   background: #f9f9f9;
 }
+
 body.in-stats .title-container {
   margin-bottom: 0;
 }
@@ -666,7 +689,7 @@ body.in-stats h2 {
 
 .white-section {
   background: white;
-  box-shadow: 0 0 5px 0 rgb( 226, 226, 226 );
+  box-shadow: 0 0 5px 0 rgb(226, 226, 226);
   margin-bottom: 65px;
   padding-bottom: 60px;
 }
@@ -687,7 +710,7 @@ body.in-stats h2 {
 }
 
 .improve-btn {
-  background: rgb( 10, 189, 158 );
+  background: rgb(10, 189, 158);
   padding: 10px 20px;
   font-size: 20px;
   text-align: center;
@@ -727,6 +750,7 @@ body.in-stats h2 {
   text-align: center;
   color: #3b3535;
 }
+
 .speed-participation {
   float: left;
   width: 100%;
@@ -744,6 +768,7 @@ body.in-stats h2 {
   border: 0;
   text-align: center;
 }
+
 .zipcodes-table .table tr th {
   background: #f0f0f0;
 }
@@ -827,7 +852,9 @@ body.in-stats h2 {
   margin-bottom: 10px;
 }
 
-.chosen-single, .chosen-choices, .date-range.filter {
+.chosen-single,
+.chosen-choices,
+.date-range.filter {
   border: 1px solid black !important;
   min-height: 30px !important;
   padding-left: 10px !important;
