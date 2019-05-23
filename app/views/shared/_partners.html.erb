@@ -1,0 +1,23 @@
+<div class="partnerLogos">
+  <%= content_tag :p, label, class: (class_name if local_assigns[:class_name]) %>
+
+  <div class="logo-container">
+    <%= link_to(
+      image_tag('companyLogos/tao.png', alt: 'Technology Association of Oregon'),
+      'http://www.techoregon.org/',
+      target: '_blank'
+    ) %>
+
+    <%= link_to(
+      image_tag('companyLogos/us_ignite.jpg', alt: 'US Ignite'),
+      'https://www.us-ignite.org/',
+      target: '_blank'
+    ) %>
+
+    <%= link_to(
+      image_tag('companyLogos/m_lab.png', alt: 'M-Lab'),
+      'https://www.measurementlab.net/',
+      target: '_blank'
+    ) %>
+  </div>
+</div>

@@ -1,17 +1,10 @@
 <div class="container">
   <div class='row'>
     <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 footer-logo'>
-      <div class="brought-by">This infographic and SpeedUpAmerica, are brought to you by:</div>
-
-      <div class="row">
-      <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8 col-centered">
-        <div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
-          <%= link_to 'https://www.measurementlab.net/', target: '_blank' do %>
-            <%= image_tag 'companyLogos/m_lab.png' %>
-          <% end %>
-        </div>
-      </div>
-      </div>
+      <%= render partial: 'shared/partners', locals: {
+        label: 'This infographic and SpeedUpAmerica, are brought to you by:',
+        class_name: 'brought-by'
+      } %>
     </div>
   </div>
 </div>

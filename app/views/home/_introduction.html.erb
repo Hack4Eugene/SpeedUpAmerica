@@ -28,15 +28,9 @@
 
   <div class='row'>
     <div class='col-lg-7 col-xs-11 col-sm-9 col-centered'>
-      <div class='partnerLogos'>
-        <p>SpeedUpAmerica partners:</p>
-
-        <div class='row'>
-          <%= link_to image_tag('companyLogos/tao.png'), 'http://www.techoregon.org/' %>
-          <%= link_to image_tag('companyLogos/us_ignite.jpg'), 'https://www.us-ignite.org/' %>
-          <%= link_to image_tag('companyLogos/m_lab.png'), 'https://www.measurementlab.net/' %>
-        </div>
-      </div>
+      <%= render partial: 'shared/partners', locals: {
+        label: 'SpeedUpAmerica partners:'
+      } %>
     </div>
   </div>
 </div>
