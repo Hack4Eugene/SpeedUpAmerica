@@ -67,7 +67,7 @@ $ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
 $ cd SpeedUpAmerica
 $ cp local.env.template local.env
 $ docker-compose up -d mysql
-$ docker-compose up migrator
+$ docker-compose up --build migrator
 $ docker-compose run migrator rake db:seed
 $ docker-compose run frontend rake secret
 ```    
@@ -117,6 +117,10 @@ There are just the tasks that have been run to populate and prepate the data for
 
     $ docker-compose run frontend rake update_pending_census_codes
 
+### Creating new submissions.sql
+
+    $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+
 ### Importing Census and Zip Code boundaries
 
 Assumes you have these files in `data/`:
@@ -135,6 +139,12 @@ Once imported you can update the SQL files by:
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc census_boundaries > data/census_tracts.sql
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
 ```
+
+### Creating test data
+
+After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
+
+    $ docker-compose run frontend rake create_test_data
 
 # Governance and contribution
 

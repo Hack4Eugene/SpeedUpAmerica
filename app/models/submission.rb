@@ -32,18 +32,14 @@ class Submission < ActiveRecord::Base
   }
 
   CSV_COLUMNS = [
-    'Response #', 'Source', 'Day', 'Time', 'How Are You Testing', 'Zip', 'Census Tract', 'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed', 'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps', 'Actual Price Per Mbps', 'Ping'
+    'Response #', 'Source', 'Day', 'Time', 'How Are You Testing', 'Zip', 'Census Tract',
+    'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed',
+    'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps',
+    'Actual Price Per Mbps', 'Ping'
   ]
 
-  ZIP_CODES = [
-    '97405', '97401', '97424', '97403', '97439', '97463', '97438',
-    '97493', '97492', '97452', '97477', '97404', '97426',
-    '97487', '97408', '97448', '97478'
-  ]
-
-  GEOS_IDS = ['41039003700','41039001202','41039000402','41039001400','41039003201','41039003202','41039001500','41039001001','41039001302','41039002403','41039002404','41039003800','41039005200','41039003000','41039003900','41039000708','41039003600','41039004700','41039002800','41039002401','41039000500','41039002904','41039001101','41039001600','41039002902','41039001904','41039003301','41039001801','41039005000','41039001804','41039004501','41039003302','41039005300','41039000100','41039002302','41039002600','41039002002','41039003101','41039004200','41039000706','41039002001','41039000705','41039001902','41039000702','41039001903','41039004100','41039001700','41039002503','41039002201','41039000300','41039001102','41039002202','41039005100','41039003102','41039000200','41039000902','41039002102','41039004800','41039004404','41039000403','41039003400','41039000707','41039002501','41039003500','41039002101','41039004900','41039002301','41039004000','41039002903','41039001803','41039002700','41039001002','41039004502','41039004300','41039002504','41039000800','41039004403','41039004600','41039004401','41039005400','41039000904','41039004405','41039000404','41039001201','41039001301','41039000903']
-
-  CENSUS_CODES = ['3700','1202','402 ','1400','3201','3202','1500','1001','1302','2403','2404','3800','5200','3000','3900','708 ','3600','4700','2800','2401','500 ','2904','1101','1600','2902','1904','3301','1801','5000','1804','4501','3302','5300','100 ','2302','2600','2002','3101','4200','706 ','2001','705 ','1902','702 ','1903','4100','1700','2503','2201','300 ','1102','2202','5100','3102','200 ','902 ','2102','4800','4404','403 ','3400','707 ','2501','3500','2101','4900','2301','4000','2903','1803','2700','1002','4502','4300','2504','800 ','4403','4600','4401','5400','904 ','4405','404 ','1201','1301','903']
+  ZIP_CODES = ZipBoundary.pluck(:name)
+  CENSUS_CODES = CensusBoundary.pluck(:geo_id)
 
   validates :testing_for, length: { maximum: 20 }
   validates :provider, :connected_with, length: { maximum: 50 }
@@ -92,11 +88,7 @@ class Submission < ActiveRecord::Base
   end
 
   def valid_attributes?
-    has_required_fields? && valid_zip_code?
-  end
-
-  def valid_zip_code?
-    ZIP_CODES.include?(zip_code)
+    has_required_fields?
   end
 
   def has_required_fields?
@@ -210,8 +202,11 @@ class Submission < ActiveRecord::Base
 
     #boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
       census_boundaries = {}
-      CensusBoundary.where(geo_id: GEOS_IDS).each do |boundary|
-        census_boundaries[boundary.name.to_i.to_s] = { bounds: boundary.bounds }
+      CensusBoundary.where(geo_id: CENSUS_CODES).each do |boundary|
+        census_boundaries[boundary.geo_id] = {
+           geom_type: boundary.geom_type,
+           bounds: boundary.bounds
+        }
       end
       #census_boundaries
     #end
@@ -221,13 +216,12 @@ class Submission < ActiveRecord::Base
     polygon_data.each do |census_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
       median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
-      census_boundary = boundaries[census_code.to_s]
+      census_boundary = boundaries[census_code]
 
-      if census_boundary.present?
-        census_coordinates = census_boundary[:bounds]
-      else
-        census_coordinates = CensusBoundary.first.bounds
-      end
+      next if census_boundary.present? == false
+
+      census_coordinates = census_boundary[:bounds]
+      geom_type = census_boundary[:geom_type]
 
       feature = {
         'type': 'Feature',
@@ -243,7 +237,7 @@ class Submission < ActiveRecord::Base
           'color': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
         },
         'geometry': {
-          'type': 'Polygon',
+          'type': geom_type,
           'coordinates': census_coordinates,
         }
       }
@@ -264,8 +258,7 @@ class Submission < ActiveRecord::Base
       end
 
       fips = response['results'][0]['block_fips']
-      puts fips
-      self.assign_attributes(census_code: fips[5..-5].to_i, census_status: CENSUS_STATUS[:saved]) if fips.present?
+      self.assign_attributes(census_code: fips[0..-5], census_status: CENSUS_STATUS[:saved]) if fips.present?
     rescue
       self.census_status = CENSUS_STATUS[:pending]
     end

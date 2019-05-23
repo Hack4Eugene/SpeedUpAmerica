@@ -13,7 +13,7 @@ services:
     build: ../speedupamerica-migrator
     env_file:
       - local.env
-    command: ["rake", "db:setup"]
+    command: ["rake", "db:migrate"]
     links:
       - mysql
     depends_on:
