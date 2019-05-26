@@ -1,7 +1,7 @@
 config:
   project:                measurement-lab
   dataset:                release
-  email:                  speedupamerica-lanecounty-mvp@mlab-sandbox.iam.gserviceaccount.com
-  private_key_path:       keys/speedupamerica-lanecounty-mvp@mlab-sandbox.iam.gserviceaccount.com.p12
-  private_key_passphrase: notasecret
+  email:                  <%= ENV['MLAB_BIGQUERY_EMAIL'] %>                      
+  private_key_path:       <%= ENV['MLAB_BIGQUERY_PRIVATE_KEY'] %>   
+  private_key_passphrase: <%= ENV['MLAB_BIGQUERY_PRIVATE_KEY_PASSPHRASE'] %>   
   auth_method:            private_key

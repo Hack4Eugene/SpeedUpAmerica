@@ -42,6 +42,7 @@ initialize_mapbox = (map) ->
   map
 
 set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+  $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -77,6 +78,7 @@ set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_
       disable_filters('map-filters', false)
 
 set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
+  $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -114,8 +116,10 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
       disable_filters('map-filters', false)
 
 set_mapbox_markers_data = (map, provider, date_range, group_by='all_responses', test_type='download') ->
+  $('#loader').removeClass('hide')
   $('#mapbox_gl_map').addClass('hide')
   $('#all_results_map').removeClass('hide')
+  
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -154,6 +158,7 @@ set_mapbox_markers_data = (map, provider, date_range, group_by='all_responses', 
       disable_filters('map-filters', false)
 
 set_mapbox_gl_data = (map, provider, date_range, group_by='all_responses', test_type='download') ->
+  $('#loader').removeClass('hide')
   $('#mapbox_gl_map').removeClass('hide')
   $('#all_results_map').addClass('hide')
 

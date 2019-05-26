@@ -44,15 +44,15 @@ class Submission < ActiveRecord::Base
   validates :testing_for, length: { maximum: 20 }
   validates :provider, :connected_with, length: { maximum: 50 }
 
-  after_create :update_provider_statistics, if: Proc.new { |submission| submission.provider.present? },
-                                            unless: :invalid_test_result
-  after_create :update_median_speeds_and_census
+  #after_create :update_provider_statistics, if: Proc.new { |submission| submission.provider.present? },
+  #                                          unless: :invalid_test_result
+  #after_create :update_median_speeds
 
   default_scope { where('from_mlab = 0 OR (from_mlab = 1 AND provider IS NOT NULL)') }
 
   scope :mapbox_filter, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('latitude, longitude, zip_code, actual_down_speed, actual_upload_speed, upload_median, download_median') }
   scope :mapbox_filter_by_zip_code, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code) }
-  scope :with_date_range, -> (start_date, end_date) { where('created_at >= ? AND created_at <= ?', start_date, end_date.end_of_day) }
+  scope :with_date_range, -> (start_date, end_date) { where('test_date >= ? AND test_date <= ?', start_date, end_date.end_of_day) }
   scope :with_test_type, -> (test_type) { where(test_type: [test_type, 'both']) }
   scope :completed, -> { where(completed: true) }
   scope :in_zip_code_list, -> { valid_test.where(zip_code: ZIP_CODES).where.not(zip_code: [nil, '']) }
@@ -70,7 +70,7 @@ class Submission < ActiveRecord::Base
   scope :with_census_code, -> (census_code) { where(census_code: census_code) }
 
   def self.create_submission(params)
-    duplicate_ipa_tests = Submission.where('DATE(created_at) = ? AND ip_address = ?', Date.today, params[:ip_address])
+    duplicate_ipa_tests = Submission.where('test_date = ? AND ip_address = ?', Date.today, params[:ip_address])
 
     submission = Submission.new(params)
 
@@ -79,6 +79,7 @@ class Submission < ActiveRecord::Base
       submission.actual_price = submission.monthly_price / submission.actual_down_speed
     end
 
+    submission.test_date = Date.today
     submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
     submission.completed = true if submission.valid_attributes?
     submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
@@ -386,8 +387,11 @@ class Submission < ActiveRecord::Base
       in_zip_code_list.with_date_range(Time.parse(range[0]), Time.parse(range[1])).find_in_batches(batch_size: 1000) do |submissions|
         submissions.each do |submission|
           csv <<  [
-                    submission.id, submission.source, submission.created_at.strftime('%B %d, %Y'), submission.created_at.in_time_zone('EST').strftime('%R %Z'), testing_for_mapping(submission.testing_for), submission.zip_code, submission.census_code, submission.provider, submission.connected_with, submission.monthly_price, submission.provider_down_speed, submission.rating, submission.actual_down_speed, submission.actual_upload_speed, submission.provider_price, submission.actual_price, submission.ping
-                  ]
+            submission.id, submission.source, submission.test_date.strftime('%B %d, %Y'), submission.test_date.in_time_zone('EST').strftime('%R %Z'),
+            testing_for_mapping(submission.testing_for), submission.zip_code, submission.census_code, submission.provider, submission.connected_with,
+            submission.monthly_price, submission.provider_down_speed, submission.rating, submission.actual_down_speed, submission.actual_upload_speed,
+            submission.provider_price, submission.actual_price, submission.ping
+          ]
         end
       end
     end
@@ -432,12 +436,11 @@ class Submission < ActiveRecord::Base
     provider_statistic.save
   end
 
-  def update_median_speeds_and_census
+  def update_median_speeds
     upload_speeds = Submission.where(latitude: latitude, longitude: longitude).pluck(:actual_upload_speed)
     download_speeds = Submission.where(latitude: latitude, longitude: longitude).pluck(:actual_down_speed)
     self.upload_median = Submission.median upload_speeds
     self.download_median = Submission.median download_speeds
-    self.set_census_code(latitude, longitude)
 
     self.save
   end

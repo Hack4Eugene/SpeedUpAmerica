@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   post 'mapbox_data', to: 'submissions#mapbox_data', defaults: { format: :json }
   get 'speed_data', to: 'submissions#speed_data'
   get 'isps_data', to: 'submissions#isps_data'
-  get '/internet-stats', to: redirect('/all-results')
+  get 'internet-stats', to: redirect('all-results')
   get 'embeddable_view', to: 'submissions#embeddable_view'
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
   root 'home#index'
