@@ -13,10 +13,6 @@ task update_providers_statistics: [:environment] do
     provider_statistic.actual_speed_sum = submissions.collect(&:actual_down_speed).compact.sum
     provider_statistic.provider_speed_sum = submissions.collect(&:provider_down_speed).compact.sum
 
-    if provider_statistic.provider_speed_sum > 0 && provider_statistic.actual_speed_sum > 0
-      provider_statistic.advertised_to_actual_ratio = get_actual_to_provider_difference(provider_statistic.actual_speed_sum, provider_statistic.provider_speed_sum)
-    end
-
     actual_prices = submissions.collect(&:actual_price).compact
     if actual_prices.count > 0
       provider_statistic.average_price = actual_prices.sum / actual_prices.count

@@ -4,9 +4,9 @@ phases:
   pre_build:
     commands:
   build:
-    commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...          
-      - docker build .
+    commands:      
+      - docker-compose run frontend rake import_mlab_submissions
+      - docker-compose run frontend rake update_pending_census_codes
+      - docker-compose run frontend rake update_providers_statistics
   post_build:
     commands:

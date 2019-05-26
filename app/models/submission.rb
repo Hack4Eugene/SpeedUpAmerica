@@ -44,10 +44,6 @@ class Submission < ActiveRecord::Base
   validates :testing_for, length: { maximum: 20 }
   validates :provider, :connected_with, length: { maximum: 50 }
 
-  #after_create :update_provider_statistics, if: Proc.new { |submission| submission.provider.present? },
-  #                                          unless: :invalid_test_result
-  #after_create :update_median_speeds
-
   default_scope { where('from_mlab = 0 OR (from_mlab = 1 AND provider IS NOT NULL)') }
 
   scope :mapbox_filter, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('latitude, longitude, zip_code, actual_down_speed, actual_upload_speed, upload_median, download_median') }
@@ -83,7 +79,13 @@ class Submission < ActiveRecord::Base
     submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
     submission.completed = true if submission.valid_attributes?
     submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
-    submission.provider = submission.get_provider
+
+    provider = submission.get_provider    
+    if provider.present?
+      submission.provider = provider
+    end
+
+    submission.census_status = Submission::CENSUS_STATUS[:pending]
     submission.save
     submission
   end
@@ -249,26 +251,6 @@ class Submission < ActiveRecord::Base
     data
   end
 
-  def set_census_code(latitude, longitude)
-    agent = Mechanize.new
-    return nil if latitude.blank? || longitude.blank?
-
-    begin
-      response = Timeout::timeout(30) do
-        JSON.parse(agent.get(Submission.census_tract_url(latitude, longitude)).body)
-      end
-
-      fips = response['results'][0]['block_fips']
-      self.assign_attributes(census_code: fips[0..-5], census_status: CENSUS_STATUS[:saved]) if fips.present?
-    rescue
-      self.census_status = CENSUS_STATUS[:pending]
-    end
-  end
-
-  def self.census_tract_url(lat, long)
-    "https://geo.fcc.gov/api/census/area?lat=#{lat}&lon=#{long}&format=json"
-  end
-
   def self.median(array)
     sorted = array.compact.sort
     len = sorted.length
@@ -416,33 +398,6 @@ class Submission < ActiveRecord::Base
     }[provider]
 
     original_provider.present? && original_provider || provider
-  end
-
-  def update_provider_statistics
-    return if provider.blank?
-    provider_name = provider
-    provider_statistic = ProviderStatistic.get_by_name(provider_name).first_or_initialize
-    provider_statistic.from_mlab = true unless provider_statistic.persisted?
-    provider_applications = provider_statistic.applications
-    provider_statistic.rating = calculate_average(rating.to_i, provider_statistic.rating, provider_applications)
-
-    provider_statistic.actual_speed_sum += actual_down_speed.to_f
-    provider_statistic.provider_speed_sum += provider_down_speed.to_f
-
-    provider_statistic.advertised_to_actual_ratio = get_actual_to_provider_difference(provider_statistic.actual_speed_sum, provider_statistic.provider_speed_sum) unless provider_statistic.provider_speed_sum.zero?
-
-    provider_statistic.average_price = calculate_average(actual_price.to_f, provider_statistic.average_price , provider_applications)
-    provider_statistic.increment(:applications)
-    provider_statistic.save
-  end
-
-  def update_median_speeds
-    upload_speeds = Submission.where(latitude: latitude, longitude: longitude).pluck(:actual_upload_speed)
-    download_speeds = Submission.where(latitude: latitude, longitude: longitude).pluck(:actual_down_speed)
-    self.upload_median = Submission.median upload_speeds
-    self.download_median = Submission.median download_speeds
-
-    self.save
   end
 
   def self.filter_rating(rating)
