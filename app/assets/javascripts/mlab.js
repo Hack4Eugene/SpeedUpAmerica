@@ -31,15 +31,6 @@ function addLegend() {
     return div;
   };
 
-/*
-      for ( var i = 0; i < grades.length; i++ ) {
-          div.innerHTML +=
-              '<i style="background:' + getPolygonColor(grades[i] + 1) +
-        '"></i> ' + (i == 0 ? '0' : grades[i]) + (grades[i + 1] ?
-        '&ndash;' + grades[i + 1] + ' Mbps<br/>' : '+ Mbps');
-      }
-      return div;
-*/
   legend.addTo(map);
 }
 
@@ -394,18 +385,6 @@ function closeAllTheThings() {
   $('#ndt, #ndt-results, #extra-data, #about-ndt').hide();
 }
 
-
-
-function showHideControls() {
-  $('.leaflet-bottom.leaflet-left, #sidebar, #approx-loc').toggle();
-  if ($('#header').hasClass('initial')) {
-    $('.leaflet-bottom.leaflet-right').hide();
-  } else if ($(document).width() > 700) {
-    $('#layers-box, .leaflet-bottom.leaflet-right').show();
-    $('.leaflet-top.leaflet-left').show();
-  }
-}
-
 function showTestingPanel() {
   // are there results yet?
   var results = document.getElementById('s2cRate');
@@ -433,41 +412,6 @@ function showTestingPanel() {
     $('.metricControls, .sliderElements, .leaflet-control-layers').hide();
   }
 
-}
-
-/* New functions */
-function runTest() {
-  $('#ndt-div').removeClass('hidden');
-  $('#ndt-div').addClass('visible');
-  $('#extra-data').removeClass('visible');
-  $('#extra-data').addClass('hidden');
-  $('#approx-loc').removeClass('hidden');
-  $('#approx-loc').addClass('visible');
-  $('#ndt-results').removeClass('hidden');
-  $('#ndt-results').addClass('visible');
-  $('#intro').addClass('hidden');
-  $('#icons').addClass('hidden');
-  $('#header').removeClass('initial');
-  $('#header').addClass('hidden');
-  window.scrollTo(0, 0);
-}
-function showMap() {
-  $('#icons img').removeClass('selected');
-  $('#header').removeClass('initial');
-  $('#welcome-container, #header, #intro, #sidebar, #approx-loc, #ndt-div').addClass('hidden');
-  $('#mobile-container').addClass('hidden');
-  if ($(document).width() < 700) {
-    $('.leaflet-control-layers').addClass('hidden');
-  }
-  $('#layers-box').show();
-  $('.leaflet-top.leaflet-left, .leaflet-top.leaflet-right').show();
-  // for #114
-  getCurrentValues();
-
-}
-function showSocialShare() {
-  $('#socialshare').removeClass('hidden');
-  $('#socialshare').addClass('visible');
 }
 
 $( window ).resize(function() {
@@ -509,29 +453,7 @@ $(function() {
     closeAllTheThings();
     $('#mobile-container, .sliderElements, .metricControls, #desktop-legend, .leaflet-control-layers').toggle();
   });
-  /*
-  $('#exploreMap').click(function() {
-    showHideControls();
-    $('#header').addClass('hidden');
-    $('#layers-box').show();
-    $('.leaflet-top.leaflet-left, .leaflet-top.leaflet-right').show();
-    $('#testSpeed, #exploreMap').toggle();
-  });
-  $('#testSpeed').click(function() {
-    showHideControls();
-    showTestingPanel();
-    $('#header').addClass('hidden');
-    $('#layers-box').show();
-    $('.leaflet-top.leaflet-left').show();
-    $('#testSpeed, #exploreMap').toggle();
-  });
-  $('#testSpeedEmptyPrompt').click(function() {
-    $('#header').removeClass('initial');
-    showHideControls();
-    showTestingPanel();
-    $('#testSpeed, #exploreMap').toggle();
-  });
-  */
+
   $('#isp_user, #connection_type, #cost_of_service, #data_acknowledgement').change(function() {
     var formState = validateExtraDataForm();
     $('#take-test').toggle(formState);
