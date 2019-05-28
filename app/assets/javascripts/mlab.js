@@ -428,7 +428,7 @@ $( window ).resize(function() {
 
 $(function() {
   /* Sets initial status on load for various divs */
-  $('#testSpeed, #desktop-legend, .info.legend.leaflet-control, .leaflet-bottom.leaflet-left, .info.controls.leaflet-control, #socialshare, .leaflet-top.leaflet-left, .leaflet-top.leaflet-right, .leaflet-control-layers').addClass('hidden');
+  $('#testSpeed, #desktop-legend, .info.legend.leaflet-control, .leaflet-bottom.leaflet-left, .info.controls.leaflet-control, #socialshare, .leaflet-top.leaflet-right, .leaflet-control-layers').addClass('hidden');
   //$('.leaflet-top.leaflet-right').attr('id','layers-box');
   $('#header').addClass('initial');
 
