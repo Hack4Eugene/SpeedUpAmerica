@@ -385,12 +385,15 @@ update_all_option = (elem) ->
   return if $.inArray(elem.prop('id'), ['provider', 'stats_provider', 'zip_code', 'census_code']) < 0
   selected_elem_value = $("#selected_#{elem.prop('id')}").val().split(',')
 
-  if $.inArray('all', selected_elem_value) >= 0
+  new_selected = elem.val()
+
+  if new_selected != null && 
+    ($.inArray('all', selected_elem_value) != -1 ||
+     $.inArray('all', new_selected) != -1)
     new_selected = elem.val().filter (v) -> v != 'all'
-  else if $.inArray('all', selected_elem_value) < 0 && $.inArray('all', elem.val()) >= 0
-    new_selected = 'all'
-  else
-    new_selected = elem.val()
+
+  if new_selected == null || new_selected.length == 0
+      new_selected = 'all'
 
   elem.val(new_selected)
   $("#selected_#{elem.prop('id')}").val("#{[new_selected]}")
@@ -492,21 +495,20 @@ bind_datetimepicker = ->
 
 $(document).ready ->
   if window.location.pathname.indexOf('result') >= 0 || window.location.pathname.indexOf('embed') >= 0
+    # Initialize filter values
+    bind_chosen_select()
+    set_multiple_selected_values()
+    bind_datetimepicker()
 
     # Create maps
     all_results_map = initialize_mapbox('all_results_map')
     zip_code_map = initialize_mapbox('zip_code_map')
-
-    # Initialize filter values
-    bind_chosen_select()
-    set_multiple_selected_values()
 
     # Draw polygons on the map
     apply_filters(all_results_map)
 
     # Add functionality to UI
     apply_submission_filters()
-    bind_datetimepicker()
 
     $.loadScript 'https://code.highcharts.com/highcharts.js', ->
       apply_stats_filters(zip_code_map)

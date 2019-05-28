@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
   root 'home#index'
 
-  match '*invalid_path', to: 'application#rescue_from_invalid_url', via: [:get, :post]
+  #match '*invalid_path', to: errors#not_found
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
