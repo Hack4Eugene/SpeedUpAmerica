@@ -497,21 +497,20 @@ bind_datetimepicker = ->
 
 $(document).ready ->
   if window.location.pathname.indexOf('result') >= 0 || window.location.pathname.indexOf('embed') >= 0
+    # Initialize filter values
+    bind_chosen_select()
+    set_multiple_selected_values()
+    bind_datetimepicker()
 
     # Create maps
     all_results_map = initialize_mapbox('all_results_map')
     zip_code_map = initialize_mapbox('zip_code_map')
-
-    # Initialize filter values
-    bind_chosen_select()
-    set_multiple_selected_values()
 
     # Draw polygons on the map
     apply_filters(all_results_map)
 
     # Add functionality to UI
     apply_submission_filters()
-    bind_datetimepicker()
 
     $.loadScript 'https://code.highcharts.com/highcharts.js', ->
       apply_stats_filters(zip_code_map)
