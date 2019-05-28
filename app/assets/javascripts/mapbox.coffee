@@ -389,8 +389,9 @@ update_all_option = (elem) ->
 
   new_selected = elem.val()
 
-  if ($.inArray('all', selected_elem_value) != -1 ||
-     $.inArray('all', new_selected) != -1) && new_selected != null
+  if new_selected != null && 
+    ($.inArray('all', selected_elem_value) != -1 ||
+     $.inArray('all', new_selected) != -1)
     new_selected = elem.val().filter (v) -> v != 'all'
 
   if new_selected == null || new_selected.length == 0
