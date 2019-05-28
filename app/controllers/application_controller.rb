@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_authenticity_token
 
   def rescue_from_invalid_url
-    redirect_to root_url, alert: 'We are sorry, this is an invalid URL.'
+    redirect_to root_url
   end
 
   private

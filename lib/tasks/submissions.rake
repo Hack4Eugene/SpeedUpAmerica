@@ -22,11 +22,18 @@ task :update_pending_census_codes => [:environment] do
   puts 'Updating pending census_codes for submissions'
 
   count = 0
-  submissions = Submission.where(census_status: Submission::CENSUS_STATUS[:pending])
+  submissions = Submission.select("latitude, longitude").where(census_status: Submission::CENSUS_STATUS[:pending]).group("latitude, longitude")
 
   submissions.each do |s|
-    s.set_census_code(s.latitude, s.longitude)
-    s.save && count += 1 if s.census_code.present?
+    census_tract = get_census_code(s.latitude, s.longitude)
+    next if census_tract.nil?
+
+    # This is a dirty hack and I feel bad about it. We will need to correct how we store
+    # lat+long, like as a POINT data type, so we can accurately compare points (floats are bad)
+    latlong = Submission.unscoped.where('cast(latitude as decimal(6,4)) = ? AND cast(longitude as decimal(6,3)) = ?', s.latitude, s.longitude)
+    latlong.update_all({:census_code => census_tract, :census_status => Submission::CENSUS_STATUS[:saved]})
+
+    count += 1
   end
 
   puts "Updated census_codes of #{count} submissions from #{submissions.size} submissions."
@@ -80,4 +87,24 @@ end
 
 def area_identifier_json_url(area_identifier)
   "http://www.usboundary.com/api/areadata/geom/?id=#{area_identifier}"
+end
+
+
+def get_census_code(latitude, longitude)
+  agent = Mechanize.new
+  return nil if latitude.blank? || longitude.blank?
+
+  begin
+    response = Timeout::timeout(30) do
+      JSON.parse(agent.get(census_tract_url(latitude, longitude)).body)
+    end
+
+    response['results'][0]['block_fips'][0..-5]
+  rescue
+    nil
+  end
+end
+
+def census_tract_url(lat, long)
+  "https://geo.fcc.gov/api/census/area?lat=#{lat}&lon=#{long}&format=json"
 end

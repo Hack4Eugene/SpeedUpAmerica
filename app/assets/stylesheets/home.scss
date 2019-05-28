@@ -128,7 +128,6 @@ body.result-page {
 }
 
 .title-container {
-  //background: image-url('louisville_skyline.png');
   border-bottom: 1px solid #1f9289;
   color: #fff;
   text-align: center;
@@ -395,6 +394,10 @@ body.in-stats .background-container,
 
 .partnerLogos {
   .logo-container {
+    text-align: center;
+  }
+  .maxmind-container {
+    margin-top: 2em;
     text-align: center;
   }
   a {

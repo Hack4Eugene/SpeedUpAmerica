@@ -3,7 +3,8 @@ class SubmissionsImporter
   require 'bigquery-client'
 
   def self.bigquery_init
-    opts = YAML.load_file("#{Rails.root}/config/bigquery.yml")
+    template = ERB.new File.new("#{Rails.root}/config/bigquery.yml").read
+    opts = YAML.load template.result(binding)
     BigQuery::Client.new(opts['config'])
   end
 
@@ -25,14 +26,15 @@ class SubmissionsImporter
     puts "Importing #{data.count} #{test_type}s"
 
     data.each do |row|
-      submission = Submission.where('DATE(created_at) = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
+      submission = Submission.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
 
       next if submission.persisted?
 
       submission.from_mlab           = true
       submission.completed           = true
+      submission.test_type           = test_type
       submission.ip_address          = row['client_ip_numeric']
-      submission.created_at          = row['UTC_date_time']
+      submission.test_date           = row['UTC_date_time']
       submission.address             = row['city']
       submission.area_code           = row['area_code']
       submission.zip_code            = row['postal_code']
@@ -42,7 +44,7 @@ class SubmissionsImporter
       submission.provider            = Submission.provider_mapping(submission.get_provider)
       submission.actual_down_speed   = row['downloadThroughput']
       submission.actual_upload_speed = row['uploadThroughput']
-      submission.set_census_code(row['client_latitude'], row['client_longitude'])
+      submission.census_status       = Submission::CENSUS_STATUS[:pending]
       submission.save
     end
   end
@@ -69,7 +71,7 @@ class SubmissionsImporter
     end_time = Date.today.strftime("%Y-%m-%d")
 
     if Submission.from_mlab.last.nil? == false
-      start_time = Submission.from_mlab.last.created_at.strftime("%Y-%m-%d")
+      start_time = Submission.from_mlab.last.test_date.strftime("%Y-%m-%d")
     end
     
     "partition_date BETWEEN '#{start_time}' AND '#{end_time}' AND"
@@ -79,7 +81,7 @@ class SubmissionsImporter
     "#standardSQL
     SELECT
       test_id,
-      FORMAT_TIMESTAMP('%F %H:%m:%s UTC', log_time) AS UTC_date_time,
+      FORMAT_TIMESTAMP('%F %H:%m:%S', log_time) AS UTC_date_time,
       IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
@@ -95,19 +97,19 @@ class SubmissionsImporter
     FROM `measurement-lab.release.ndt_uploads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -124.23023107 AND
-      connection_spec.client_geolocation.longitude < -121.76806168 AND
-      connection_spec.client_geolocation.latitude > 43.43714199 AND
-      connection_spec.client_geolocation.latitude < 44.29054797 AND
+      connection_spec.client_geolocation.longitude > -125.3976 AND
+      connection_spec.client_geolocation.longitude < -116.0812 AND
+      connection_spec.client_geolocation.latitude > 41.7650 AND
+      connection_spec.client_geolocation.latitude < 46.3916 AND
       connection_spec.client_geolocation.postal_code IN (#{zip_codes})
-    ORDER BY partition_date DESC"
+    ORDER BY partition_date ASC, log_time ASC"
   end
 
   def self.download_query(zip_codes)
     "#standardSQL
     SELECT
       test_id,
-      FORMAT_TIMESTAMP('%F %H:%m:%s UTC', log_time) AS UTC_date_time,
+      FORMAT_TIMESTAMP('%F %H:%m:%S', log_time) AS UTC_date_time,
       IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
@@ -123,12 +125,12 @@ class SubmissionsImporter
     FROM `measurement-lab.release.ndt_downloads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -124.23023107 AND
-      connection_spec.client_geolocation.longitude < -121.76806168 AND
-      connection_spec.client_geolocation.latitude > 43.43714199 AND
-      connection_spec.client_geolocation.latitude < 44.29054797 AND
+      connection_spec.client_geolocation.longitude > -125.3976 AND
+      connection_spec.client_geolocation.longitude < -116.0812 AND
+      connection_spec.client_geolocation.latitude > 41.7650 AND
+      connection_spec.client_geolocation.latitude < 46.3916 AND
       connection_spec.client_geolocation.postal_code IN (#{zip_codes})
-    ORDER BY partition_date DESC"
+    ORDER BY partition_date ASC, log_time ASC"
   end
 
 end

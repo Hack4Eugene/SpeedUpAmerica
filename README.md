@@ -80,6 +80,7 @@ If you want a basic dataset to work with run:
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
+$ docker-compose run frontend rake update_providers_statistics
 ```
     
 > These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
@@ -104,7 +105,6 @@ The site can be accessed at `http://localhost:3000/`. The Ruby app is configured
 
     $ docker-compose stop
 
-
 # Data tasks
 
 There are just the tasks that have been run to populate and prepate the data for operation. The other tasks need investigated and documented.
@@ -117,9 +117,9 @@ There are just the tasks that have been run to populate and prepate the data for
 
     $ docker-compose run frontend rake update_pending_census_codes
 
-### Creating new submissions.sql
+### Updating provider statistics
 
-    $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+    $ docker-compose run frontend rake update_providers_statistics
 
 ### Importing Census and Zip Code boundaries
 
@@ -140,6 +140,10 @@ $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc censu
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
 ```
 
+### Creating new submissions.sql
+
+    $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+
 ### Creating test data
 
 After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
@@ -153,6 +157,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 Committers:
 
 * Diego Kourchenko
+* Noah Brenner
+* Kirk Hutchison
+* Bishop Lafer
+* Cory Borman
 
 Technical Committee:
 

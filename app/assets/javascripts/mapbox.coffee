@@ -27,10 +27,7 @@ initialize_mapbox = (map) ->
   L.mapbox.accessToken = 'pk.eyJ1IjoiY29udGVudHRvb2xzIiwiYSI6ImRjNzE0OTlkYjk2NGJkZWEwMTZmY2QwMTJlYjdjMGI1In0.qKp5IAUQySQHQoT8JBd3ew'
   maxZoom = isIE() && 12 || 14
 
-  map = L.mapbox.map(map, 'mapbox.light', { maxZoom: maxZoom }).setView([
-   44.0497
-   -123.093
-  ], 10)
+  map = L.mapbox.map(map, 'mapbox.light', { maxZoom: maxZoom }).setView([44.0639066, -120.67382], 7)
 
   map.scrollWheelZoom.disable();
 
@@ -42,6 +39,7 @@ initialize_mapbox = (map) ->
   map
 
 set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+  $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -69,14 +67,13 @@ set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_
                     '<p>Median Speed: <strong>' + feature.properties.median_speed + ' Mbps</strong></p>' +
                     '<p>Fastest Speed: <strong>' + feature.properties.fast_speed + ' Mbps</strong></p>'
           layer.bindPopup content, closeButton: false
-          myIcon = L.divIcon(className: 'my-div-icon', html: '<strong>' + feature.properties.count + '</strong>')
-          L.marker([parseFloat(center.lng), parseFloat(center.lat)], {icon: myIcon}).addTo(map)
       ).addTo map
 
       $('#loader').addClass('hide')
       disable_filters('map-filters', false)
 
 set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
+  $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -106,16 +103,16 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
                     '<p>Median Speed: <strong>' + feature.properties.median_speed + ' Mbps</strong></p>' +
                     '<p>Fastest Speed: <strong>' + feature.properties.fast_speed + ' Mbps</strong></p>'
           layer.bindPopup content, closeButton: false
-          myIcon = L.divIcon(className: 'my-div-icon', html: '<strong>' + feature.properties.count + '</strong>')
-          L.marker([parseFloat(center.lng), parseFloat(center.lat)], {icon: myIcon}).addTo(map)
       ).addTo map
 
       $('#loader').addClass('hide')
       disable_filters('map-filters', false)
 
 set_mapbox_markers_data = (map, provider, date_range, group_by='all_responses', test_type='download') ->
+  $('#loader').removeClass('hide')
   $('#mapbox_gl_map').addClass('hide')
   $('#all_results_map').removeClass('hide')
+
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -154,6 +151,7 @@ set_mapbox_markers_data = (map, provider, date_range, group_by='all_responses', 
       disable_filters('map-filters', false)
 
 set_mapbox_gl_data = (map, provider, date_range, group_by='all_responses', test_type='download') ->
+  $('#loader').removeClass('hide')
   $('#mapbox_gl_map').removeClass('hide')
   $('#all_results_map').addClass('hide')
 
