@@ -4,7 +4,12 @@ phases:
   pre_build:
     commands:
   build:
-    commands:      
+    commands:  
+      - echo "DB_HOSTNAME=$DB_HOSTNAME" >> local.env 
+      - echo "DB_NAME=$DB_NAME" >> local.env 
+      - echo "DB_PASSWORD=$DB_PASSWORD" >> local.env 
+      - echo "DB_PORT=$DB_PORT" >> local.env 
+      - echo "DB_USERNAME=$DB_USERNAME" >> local.env 
       - docker-compose run frontend rake import_mlab_submissions
       - docker-compose run frontend rake update_pending_census_codes
       - docker-compose run frontend rake update_providers_statistics
