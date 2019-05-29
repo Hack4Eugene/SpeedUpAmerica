@@ -9,10 +9,13 @@ phases:
       - echo "DB_NAME=$DB_NAME" >> local.env 
       - echo "DB_PASSWORD=$DB_PASSWORD" >> local.env 
       - echo "DB_PORT=$DB_PORT" >> local.env 
-      - echo "DB_USERNAME=$DB_USERNAME" >> local.env 
-      - cat local.env
+      - echo "DB_USERNAME=$DB_USERNAME" >> local.env
+      - mkdir keys
+      - aws s3 cp s3://sua-private/speedupamerica-lanecounty-mvp@mlab-sandbox.iam.gserviceaccount.com.p12 keys/speedupamerica-lanecounty-mvp@mlab-sandbox.iam.gserviceaccount.com.p12
       - docker-compose run frontend rake import_mlab_submissions
       - docker-compose run frontend rake update_pending_census_codes
       - docker-compose run frontend rake update_providers_statistics
+    finally:
+
   post_build:
     commands:
