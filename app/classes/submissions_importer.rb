@@ -26,8 +26,8 @@ class SubmissionsImporter
     puts "Importing #{data.count} #{test_type}s"
 
     data.each do |row|
-      submission = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).limit(1)
-      next if submission.size > 0
+      submission = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).size
+      next if submission > 0
 
       submission = Submission.new
       submission.from_mlab           = true
