@@ -26,7 +26,7 @@ class SubmissionsImporter
     puts "Importing #{data.count} #{test_type}s"
 
     data.each do |row|
-      submission = Submission.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
+      submission = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
 
       next if submission.persisted?
 
