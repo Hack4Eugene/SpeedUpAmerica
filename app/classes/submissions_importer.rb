@@ -26,10 +26,10 @@ class SubmissionsImporter
     puts "Importing #{data.count} #{test_type}s"
 
     data.each do |row|
-      submission = Submission.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).first_or_initialize
+      count = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).count
+      next if count > 0
 
-      next if submission.persisted?
-
+      submission = Submission.new
       submission.from_mlab           = true
       submission.completed           = true
       submission.test_type           = test_type
@@ -94,7 +94,7 @@ class SubmissionsImporter
       NULL AS downloadThroughput,
       web100_log_entry.snap.Duration AS duration,
       web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
-    FROM `measurement-lab.release.ndt_uploads`
+    FROM `measurement-lab.ndt.uploads`
     WHERE
       #{time_constraints.to_s}
       connection_spec.client_geolocation.longitude > -125.3976 AND
@@ -122,7 +122,7 @@ class SubmissionsImporter
       NULL AS uploadThroughput,
       web100_log_entry.snap.Duration AS duration,
       web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
-    FROM `measurement-lab.release.ndt_downloads`
+    FROM `measurement-lab.ndt.downloads`
     WHERE
       #{time_constraints.to_s}
       connection_spec.client_geolocation.longitude > -125.3976 AND

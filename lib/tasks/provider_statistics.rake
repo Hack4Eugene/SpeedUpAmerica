@@ -1,6 +1,8 @@
 require 'rake'
 
 task update_providers_statistics: [:environment] do
+  puts 'Updating provider statistics'
+
   Submission.completed.in_zip_code_list.group_by(&:provider).each do |provider, submissions|
     provider_statistic = ProviderStatistic.get_by_name(provider).first
     
