@@ -94,7 +94,7 @@ class SubmissionsImporter
       NULL AS downloadThroughput,
       web100_log_entry.snap.Duration AS duration,
       web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
-    FROM `measurement-lab.release.ndt_uploads`
+    FROM `measurement-lab.ndt.uploads`
     WHERE
       #{time_constraints.to_s}
       connection_spec.client_geolocation.longitude > -125.3976 AND
@@ -122,7 +122,7 @@ class SubmissionsImporter
       NULL AS uploadThroughput,
       web100_log_entry.snap.Duration AS duration,
       web100_log_entry.snap.HCThruOctetsReceived AS HCThruOctetsRecv
-    FROM `measurement-lab.release.ndt_downloads`
+    FROM `measurement-lab.ndt.downloads`
     WHERE
       #{time_constraints.to_s}
       connection_spec.client_geolocation.longitude > -125.3976 AND
