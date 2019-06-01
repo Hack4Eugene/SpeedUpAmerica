@@ -67,7 +67,16 @@ module SubmissionsHelper
     ProviderStatistic.all.map { |p| [p.name, p.id] }.unshift(all_option)
   end
 
+  def get_stats_providers_list
+    ProviderStatistic.all.map { |p| [p.name, p.id] }
+  end
+
   def get_list_values(codes)
+    all_option = ['All', 'all']
+    codes.map { |code| [code, code] }.unshift(all_option)
+  end
+
+  def get_census_list_values(codes)
     all_option = ['All', 'all']
     codes.map { |code| [code, code] }.unshift(all_option)
   end

@@ -18,6 +18,8 @@ services:
       - mysql
     depends_on:
       - mysql
+    volumes:
+      - ../speedupamerica-migrator:/migrator
   frontend:
     build: .
     env_file:
