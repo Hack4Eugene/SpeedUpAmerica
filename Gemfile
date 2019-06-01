@@ -40,9 +40,9 @@ gem 'chosen-rails'
 gem 'bootstrap-datepicker-rails'
 gem 'actionpack-page_caching'
 gem 'whenever', require: false
-gem 'geoip'
 gem 'ipaddress'
 gem 'georuby', '~> 2.5', '>= 2.5.2'
+gem 'maxminddb'
 
 group :production do
   gem 'unicorn'

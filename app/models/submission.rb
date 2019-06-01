@@ -2,6 +2,8 @@ class Submission < ActiveRecord::Base
   extend ActionView::Helpers::NumberHelper
   require 'csv'
 
+  ISP_DB = MaxMindDB.new('GeoLite2-ASN.mmdb')
+
   obfuscate_id spin: 81238123
   MOBILE_MAXIMUM_SPEED = 50
 
@@ -79,12 +81,7 @@ class Submission < ActiveRecord::Base
     submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
     submission.completed = true if submission.valid_attributes?
     submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
-
-    provider = submission.get_provider    
-    if provider.present?
-      submission.provider = provider
-    end
-
+    submission.provider = submission.get_provider
     submission.census_status = Submission::CENSUS_STATUS[:pending]
     submission.save
     submission
@@ -347,11 +344,6 @@ class Submission < ActiveRecord::Base
       when 3...5 then 'Neutral'
       when 5..7 then 'Positive'
     end
-  end
-
-  def self.zip_json_url(zip_code)
-    api_key = ENV['MAPTECHNICA_API_KEY']
-    "https://api.maptechnica.com/v1/zip5/bounds?zip5=#{zip_code}&key=#{api_key}"
   end
 
   def self.get_location_data(params)
@@ -662,9 +654,8 @@ class Submission < ActiveRecord::Base
   end
 
   def get_provider
-    ipa = from_mlab? && Submission.int_to_ip(ip_address) || ip_address
-    provider_obj = GeoIP.new('GeoIPASNum.dat').asn(ipa)
-    Submission.provider_mapping(provider_obj.asn) if provider_obj.present?
+    result = ISP_DB.lookup(ip_address)
+    Submission.provider_mapping(result["autonomous_system_organization"]) if result.found?
   end
 
   def self.stats_data

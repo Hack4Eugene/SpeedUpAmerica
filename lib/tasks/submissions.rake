@@ -7,13 +7,12 @@ end
 
 task :import_mlab_submissions => [:environment] do
   puts 'Started job to import MLab speed test submissions'
-  count_with_isps = Submission.count
-  count_without_isps = Submission.unscoped.count
 
   SubmissionsImporter.import
 
-  puts "Tests with ISPs: #{Submission.count - count_with_isps}"
-  puts "Tests without ISPs: #{Submission.unscoped.count - count_without_isps}"
+  count_with_isps = Submission.count
+  puts "Tests with ISPs: #{count_with_isps}"
+  puts "Tests without ISPs: #{Submission.unscoped.count - count_with_isps}"
   puts "MLab speed test submissions imported successfully at #{Time.now}!"
   puts '*' * 50
 end
