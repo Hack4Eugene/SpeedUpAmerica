@@ -75,9 +75,4 @@ module SubmissionsHelper
     all_option = ['All', 'all']
     codes.map { |code| [code, code] }.unshift(all_option)
   end
-
-  def get_census_list_values(codes)
-    all_option = ['All', 'all']
-    codes.map { |code| [code, code] }.unshift(all_option)
-  end
 end
