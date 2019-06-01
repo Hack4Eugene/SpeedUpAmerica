@@ -18,7 +18,7 @@
           <p>Internet Service Providers:</p>
 
           <div class='isps-filter'>
-            <%= select_tag :provider, options_for_select(get_providers_list), { class: 'chosen-select filter', multiple: true, data: { placeholder: 'Select Client ISP to view' } } %>
+            <%= select_tag :provider, options_for_select(get_providers_list), { class: 'chosen-select filter', disabled: true, multiple: true, data: { placeholder: 'Select Client ISP to view' } } %>
             <%= hidden_field_tag :selected_provider %>
           </div>
         </div>
@@ -31,7 +31,7 @@
           <p>Group By:</p>
 
           <div class='group-by-filter'>
-            <%= select_tag :group_by, options_for_select(Submission::MAP_FILTERS[:group_by].map { |k, v| [k.to_s.titleize, v] }), { class: 'chosen-select filter' } %>
+            <%= select_tag :group_by, options_for_select(Submission::MAP_FILTERS[:group_by].map { |k, v| [k.to_s.titleize, v] }), { disabled: true, class: 'chosen-select filter' } %>
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@
           <p>Type:</p>
 
           <div class='group-by-filter'>
-            <%= select_tag :test_type, options_for_select(Submission::MAP_FILTERS[:test_type].map { |k, v| ["#{k.to_s.titleize} Speed", v] }), { class: 'chosen-select filter' } %>
+            <%= select_tag :test_type, options_for_select(Submission::MAP_FILTERS[:test_type].map { |k, v| ["#{k.to_s.titleize} Speed", v] }), { disabled: true, class: 'chosen-select filter' } %>
           </div>
         </div>
       </div>
@@ -56,12 +56,12 @@
 
           <div class='row'>
             <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 date-select'>
-              <%= text_field_tag :start_date, '', class: 'filter date-range', placeholder: 'Start Date', readonly: true %>
+              <%= text_field_tag :start_date, '', disabled: true, class: 'filter date-range', placeholder: 'Start Date', readonly: true %>
                 <span class="glyphicon glyphicon-calendar"></span>
             </div>
 
             <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 date-select'>
-              <%= text_field_tag :end_date, '', class: 'filter date-range', placeholder: 'End Date', readonly: true %>
+              <%= text_field_tag :end_date, '', disabled: true, class: 'filter date-range', placeholder: 'End Date', readonly: true %>
                 <span class="glyphicon glyphicon-calendar"></span>
             </div>
            </div>

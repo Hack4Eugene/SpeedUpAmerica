@@ -372,8 +372,10 @@ disable_filters = (container, disabled) ->
 set_date_filters_value = (elem) ->
   date = new Date()
   month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  
   formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear()}"
   elem.val(formatted_date) if elem.prop('id') == 'end_date' || elem.prop('id') == 'stats_end_date'
+
   formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear() - 1}"
   elem.val(formatted_date) if elem.prop('id') == 'start_date' || elem.prop('id') == 'stats_start_date'
 
@@ -493,7 +495,7 @@ bind_datetimepicker = ->
     setDate: default_date
     autoclose: true
 
-$(document).ready ->
+$ ->
   if window.location.pathname.indexOf('result') >= 0 || window.location.pathname.indexOf('embed') >= 0
     # Initialize filter values
     bind_chosen_select()
