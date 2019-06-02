@@ -156,7 +156,7 @@ GEM
     minitest (5.11.3)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    mysql2 (0.3.21)
+    mysql2 (0.5.2)
     net-http-digest_auth (1.4.1)
     net-http-persistent (3.0.0)
       connection_pool (~> 2.2)
@@ -287,7 +287,7 @@ DEPENDENCIES
   loofah (>= 2.2.3)
   mechanize
   meta-tags-helpers (~> 0.2.0)
-  mysql2 (~> 0.3.19)
+  mysql2 (~> 0.5.2)
   nokogiri (>= 1.8.5)
   obfuscate_id
   puma
@@ -303,7 +303,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 2.3.3p222
+   ruby 2.6.3p62
 
 BUNDLED WITH
-   1.14.6
+   1.17.2
