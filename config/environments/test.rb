@@ -12,13 +12,27 @@ Rails.application.configure do
   # preloads Rails for running tests, you may have to set it to true.
   config.eager_load = false
 
+  # Use the lowest log level to ensure availability of diagnostic information
+  # when problems arise.
+  config.log_level = :info
+
+  # Do not fallback to assets pipeline if a precompiled asset is missed.
+  config.assets.compile = true
+
+  # Asset digests allow you to set far-future HTTP expiration dates on all assets,
+  # yet still be able to expire them through the digest params.
+  config.assets.digest = true
+
+  config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+
   # Configure static file server for tests with Cache-Control for performance.
   config.serve_static_files   = true
   config.static_cache_control = 'public, max-age=3600'
 
   # Show full error reports and disable caching.
-  config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+  config.consider_all_requests_local       = false
+  config.action_controller.perform_caching = true
+  config.action_controller.page_cache_directory = "#{Rails.root.to_s}/public/cache"
 
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false

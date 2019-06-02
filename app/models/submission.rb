@@ -33,13 +33,6 @@ class Submission < ActiveRecord::Base
     },
   }
 
-  CSV_COLUMNS = [
-    'Response #', 'Source', 'Day', 'Time', 'How Are You Testing', 'Zip', 'Census Tract',
-    'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed',
-    'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps',
-    'Actual Price Per Mbps', 'Ping'
-  ]
-
   ZIP_CODES = ZipBoundary.pluck(:name)
   CENSUS_CODES = CensusBoundary.pluck(:geo_id)
 
