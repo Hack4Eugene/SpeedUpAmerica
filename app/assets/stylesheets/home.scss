@@ -392,14 +392,16 @@ body.in-stats .background-container,
   margin-left: -20px;
 }
 
+.maxmind-container {
+  margin-top: 2em;
+  text-align: center;
+}
+
 .partnerLogos {
   .logo-container {
     text-align: center;
   }
-  .maxmind-container {
-    margin-top: 2em;
-    text-align: center;
-  }
+
   a {
     display: inline-block;
     width: 20%;

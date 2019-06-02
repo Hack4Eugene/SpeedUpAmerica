@@ -26,14 +26,14 @@ class SubmissionsImporter
     puts "Importing #{data.count} #{test_type}s"
 
     data.each do |row|
-      count = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip_numeric'], test_type).count
+      count = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?', Date.parse(row['UTC_date_time']), row['client_ip'], test_type).count
       next if count > 0
 
       submission = Submission.new
       submission.from_mlab           = true
       submission.completed           = true
       submission.test_type           = test_type
-      submission.ip_address          = row['client_ip_numeric']
+      submission.ip_address          = row['client_ip']
       submission.test_date           = row['UTC_date_time']
       submission.address             = row['city']
       submission.area_code           = row['area_code']
@@ -82,7 +82,7 @@ class SubmissionsImporter
     SELECT
       test_id,
       FORMAT_TIMESTAMP('%F %H:%m:%S', log_time) AS UTC_date_time,
-      IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
+      connection_spec.client_ip,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
       connection_spec.client_geolocation.city AS city,
@@ -110,7 +110,7 @@ class SubmissionsImporter
     SELECT
       test_id,
       FORMAT_TIMESTAMP('%F %H:%m:%S', log_time) AS UTC_date_time,
-      IF(connection_spec.client_af = 2, NET.IPV4_TO_INT64(NET.IP_FROM_STRING(connection_spec.client_ip)), NULL) AS client_ip_numeric,
+      connection_spec.client_ip,
       connection_spec.client_hostname AS client_hostname,
       connection_spec.client_application AS client_app,
       connection_spec.client_geolocation.city AS city,
