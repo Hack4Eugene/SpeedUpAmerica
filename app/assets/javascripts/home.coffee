@@ -106,7 +106,7 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
-window.addEventListener('DOMContentLoaded', ->
+$ ->
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
@@ -139,4 +139,4 @@ window.addEventListener('DOMContentLoaded', ->
     $(testing_for + ' input').prop('disabled', false)
     $(testing_for + ' select').prop('disabled', false)
     $('#form-step-1').addClass('hide')
-)
+
