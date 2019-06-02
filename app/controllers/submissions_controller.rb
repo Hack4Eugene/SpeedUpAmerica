@@ -24,10 +24,6 @@ class SubmissionsController < ApplicationController
   def embeddable_view
   end
 
-  def export_csv
-    send_data Submission.to_csv(params[:date_range]), filename: "submissions - #{Time.now}.csv"
-  end
-
   def speed_data
     data = params[:statistics].present? && Submission.internet_stats_data(params[:statistics]) || []
     render json: data
@@ -38,7 +34,45 @@ class SubmissionsController < ApplicationController
     render json: data
   end
 
+  def export_csv
+    # send_data Submission.to_csv(params[:date_range]), filename: "submissions - #{Time.now}.csv"
+    render_csv
+  end
+
   private
+
+    def render_csv    
+      set_file_headers
+      set_streaming_headers
+
+      response.status = 200
+
+      #setting the body to an enumerator, rails will iterate this enumerator
+      self.response_body = csv_lines(params)
+    end
+
+    def set_file_headers
+      file_name = "submissions_#{Time.now}.csv"
+      headers["Content-Type"] = "text/csv"
+      headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
+    end
+
+    def set_streaming_headers
+      headers["Cache-Control"] ||= "no-cache"
+      headers.delete("Content-Length")
+    end
+
+    def csv_lines(params)
+      Enumerator.new do |out|
+        out << Submission.csv_header.to_s
+
+        #ideally you'd validate the params, skipping here for brevity
+        Submission.find_in_batches(params[:date_range]) do |submission|
+          out << submission.to_csv_row.to_s
+        end
+      end
+    end
+
     def submission_params
       params.require(:submission).permit(:latitude, :longitude, :actual_down_speed, :actual_upload_speed, :testing_for, :address, :zip_code, :provider, :connected_with, :monthly_price, :provider_down_speed, :rating, :ping, :ip_address, :hostname)
     end
