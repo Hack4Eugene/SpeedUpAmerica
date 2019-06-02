@@ -1,6 +1,4 @@
 class SubmissionsController < ApplicationController
-  before_action :validate_referer, only: [:show]
-  before_action :initialize_stats_data, only: [:show, :embeddable_view]
   before_action :set_selected_providers, only: [:show, :result_page]
   skip_before_action :verify_authenticity_token, only: [:embed]
 
@@ -41,10 +39,6 @@ class SubmissionsController < ApplicationController
   private
     def submission_params
       params.require(:submission).permit(:latitude, :longitude, :actual_down_speed, :actual_upload_speed, :testing_for, :address, :zip_code, :provider, :connected_with, :monthly_price, :provider_down_speed, :rating, :ping, :ip_address, :hostname)
-    end
-
-    def validate_referer
-      redirect_to root_path if request.referer.blank? || request.referer != root_url
     end
 
     def initialize_stats_data
