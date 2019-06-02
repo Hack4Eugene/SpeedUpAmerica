@@ -2,6 +2,8 @@ class Submission < ActiveRecord::Base
   extend ActionView::Helpers::NumberHelper
   require 'csv'
 
+  ISP_DB = MaxMindDB.new('GeoLite2-ASN.mmdb')
+
   obfuscate_id spin: 81238123
   MOBILE_MAXIMUM_SPEED = 50
 
@@ -79,12 +81,7 @@ class Submission < ActiveRecord::Base
     submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
     submission.completed = true if submission.valid_attributes?
     submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
-
-    provider = submission.get_provider    
-    if provider.present?
-      submission.provider = provider
-    end
-
+    submission.provider = submission.get_provider
     submission.census_status = Submission::CENSUS_STATUS[:pending]
     submission.save
     submission
@@ -115,7 +112,7 @@ class Submission < ActiveRecord::Base
 
   def self.fetch_mapbox_data(params)
     if params[:group_by] == MAP_FILTERS[:group_by][:zip_code]
-      set_mapbox_polygon_data(params)
+      set_mapbox_zip_data(params)
     elsif params[:group_by] == MAP_FILTERS[:group_by][:census_tract]
       set_mapbox_census_data(params)
     elsif params[:group_by] == MAP_FILTERS[:group_by][:individual_responses] && params[:is_ie] == 'no'
@@ -126,23 +123,23 @@ class Submission < ActiveRecord::Base
   end
 
   def self.provider_names(provider_ids)
-    return ProviderStatistic.pluck(:name) if provider_ids == ['all']
+    return [] if provider_ids == ['all']
     ProviderStatistic.where(id: provider_ids).pluck(:name)
   end
 
-  def self.set_mapbox_polygon_data(params, data=[])
+  def self.set_mapbox_zip_data(params, data=[])
     agent = Mechanize.new
     date_range = params[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
     providers = provider_names(params[:provider])
-    params[:zip_code] = ZIP_CODES if params[:zip_code] == ['all']
-    params[:census_code] = CENSUS_CODES if params[:census_code] == ['all']
+    params[:zip_code] = [] if params[:zip_code] == ['all']
+    params[:census_code] = [] if params[:census_code] == ['all']
 
     polygon_data = valid_test
-    polygon_data = polygon_data.where(provider: providers)
+    polygon_data = polygon_data.where(provider: providers)                    if providers.present? && providers.any?
+    polygon_data = polygon_data.with_zip_code(params[:zip_code])              if params[:zip_code].present? && params[:zip_code].any?
+    polygon_data = polygon_data.with_census_code(params[:census_code])        if params[:census_code].present? && params[:census_code].any?    
     polygon_data = polygon_data.with_date_range(start_date, end_date)         if date_range.present?
-    polygon_data = polygon_data.with_zip_code(params[:zip_code])              if params[:zip_code].present?
-    polygon_data = polygon_data.with_census_code(params[:census_code])        if params[:census_code].present?
     polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
 
     #boundaries = Rails.cache.fetch('zip_boundaries', expires_in: 2.hours) do
@@ -195,11 +192,11 @@ class Submission < ActiveRecord::Base
     date_range = params[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
     providers = provider_names(params[:provider])
-    params[:zip_code] = ZIP_CODES if params[:zip_code] == ['all']
-    params[:census_code] = CENSUS_CODES if params[:census_code] == ['all']
+    params[:zip_code] = [] if params[:zip_code] == ['all']
+    params[:census_code] = [] if params[:census_code] == ['all']
 
     polygon_data = valid_test
-    polygon_data = polygon_data.where(provider: providers)
+    polygon_data = polygon_data.where(provider: providers) if providers.present? && providers.any?
     polygon_data = polygon_data.with_date_range(start_date, end_date) if date_range.present?
     polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
 
@@ -349,17 +346,12 @@ class Submission < ActiveRecord::Base
     end
   end
 
-  def self.zip_json_url(zip_code)
-    api_key = ENV['MAPTECHNICA_API_KEY']
-    "https://api.maptechnica.com/v1/zip5/bounds?zip5=#{zip_code}&key=#{api_key}"
-  end
-
   def self.get_location_data(params)
     geocoder = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
     data =  {
-              'address' => geocoder.city,
-              'zip_code' => geocoder.postal_code,
-            }
+      'address' => geocoder.city,
+      'zip_code' => geocoder.postal_code,
+    }
   end
 
   def self.to_csv(date_range)
@@ -376,6 +368,40 @@ class Submission < ActiveRecord::Base
           ]
         end
       end
+    end
+  end
+
+  CSV_COLUMNS = [
+    'Response #', 'Source', 'Date', 'How Are You Testing', 'Zip', 'Census Tract',
+    'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed',
+    'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps',
+    'Actual Price Per Mbps', 'Ping'
+  ]
+
+  CSV_KEYS = [
+    :id, :source, :date, :testing_for, :zip_code, :census_code, :provider, :connected_with,
+    :monthly_price, :provider_down_speed, :rating,:actual_down_speed, :actual_upload_speed,
+    :provider_price, :actual_price, :ping 
+  ]
+
+  def self.csv_header
+    #Using ruby's built-in CSV::Row class
+    #true - means its a header
+    CSV::Row.new(CSV_KEYS, CSV_COLUMNS, true)
+  end
+
+  def to_csv_row
+    CSV::Row.new(CSV_KEYS, [id, source, test_date.strftime('%B %d, %Y'), Submission::testing_for_mapping(testing_for),
+      zip_code, census_code, provider, connected_with, monthly_price, provider_down_speed, rating, actual_down_speed,
+      actual_upload_speed, provider_price, actual_price, ping])
+  end
+
+  def self.find_in_batches(date_range)
+    range = date_range.split(' - ')
+
+    data = in_zip_code_list.with_date_range(Time.parse(range[0]), Time.parse(range[1]))
+    data.find_each(batch_size: 1000) do |transaction|
+      yield transaction
     end
   end
 
@@ -662,9 +688,8 @@ class Submission < ActiveRecord::Base
   end
 
   def get_provider
-    ipa = from_mlab? && Submission.int_to_ip(ip_address) || ip_address
-    provider_obj = GeoIP.new('GeoIPASNum.dat').asn(ipa)
-    Submission.provider_mapping(provider_obj.asn) if provider_obj.present?
+    result = ISP_DB.lookup(ip_address)
+    Submission.provider_mapping(result["autonomous_system_organization"]) if result.found?
   end
 
   def self.stats_data

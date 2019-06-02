@@ -38,7 +38,7 @@ initialize_mapbox = (map) ->
 
   map
 
-set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
   $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
@@ -72,7 +72,7 @@ set_mapbox_polygon_data = (map, provider, date_range, group_by='zip_code', test_
       $('#loader').addClass('hide')
       disable_filters('map-filters', false)
 
-set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
+set_mapbox_census_data = (map, provider, date_range, group_by='census_code', test_type='download') ->
   $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
@@ -81,11 +81,8 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
     data:
       provider: provider
       date_range: date_range
-      group_by: 'census_code'
+      group_by: group_by
       test_type: test_type
-      zip_code: zip_code
-      census_code: census_code
-      type: type
     success: (data) ->
       map.eachLayer (layer) ->
         map.removeLayer layer
@@ -104,48 +101,6 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
                     '<p>Fastest Speed: <strong>' + feature.properties.fast_speed + ' Mbps</strong></p>'
           layer.bindPopup content, closeButton: false
       ).addTo map
-
-      $('#loader').addClass('hide')
-      disable_filters('map-filters', false)
-
-set_mapbox_markers_data = (map, provider, date_range, group_by='all_responses', test_type='download') ->
-  $('#loader').removeClass('hide')
-  $('#mapbox_gl_map').addClass('hide')
-  $('#all_results_map').removeClass('hide')
-
-  $.ajax
-    url: '/mapbox_data'
-    type: 'POST'
-    dataType: 'json'
-    data:
-      provider: provider
-      date_range: date_range
-      group_by: group_by
-      test_type: test_type
-      is_ie: 'yes'
-    success: (data) ->
-      map.eachLayer (layer) ->
-        map.removeLayer layer
-
-      map.addLayer L.mapbox.tileLayer('mapbox.light')
-
-      markers = new (L.MarkerClusterGroup)(
-        spiderfyOnMaxZoom: false
-        showCoverageOnHover: true
-        zoomToBoundsOnClick: true)
-
-      i = 0
-      while i < data.length
-        feature = data[i]
-        title = feature.title
-        marker = L.marker(new (L.LatLng)(feature.geometry.latitude, feature.geometry.longitude),
-          icon: L.mapbox.marker.icon(feature.properties)
-          title: title)
-        marker.bindPopup title, closeButton: false
-        markers.addLayer marker
-        i++
-
-      map.addLayer markers
 
       $('#loader').addClass('hide')
       disable_filters('map-filters', false)
@@ -375,8 +330,10 @@ disable_filters = (container, disabled) ->
 set_date_filters_value = (elem) ->
   date = new Date()
   month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  
   formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear()}"
   elem.val(formatted_date) if elem.prop('id') == 'end_date' || elem.prop('id') == 'stats_end_date'
+
   formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear() - 1}"
   elem.val(formatted_date) if elem.prop('id') == 'start_date' || elem.prop('id') == 'stats_start_date'
 
@@ -418,13 +375,11 @@ apply_filters = (map) ->
     $('#all_results_map').removeClass('hide')
 
     if group_by == 'zip_code'
-      set_mapbox_polygon_data(map, provider, date_range, group_by, test_type)
+      set_mapbox_zip_data(map, provider, date_range, group_by, test_type)
     else if group_by == 'census_code'
-      set_mapbox_census_data(map, provider, date_range, test_type, '', '', '')
-    else if group_by == 'all_responses' && !isIE()
+      set_mapbox_census_data(map, provider, date_range, group_by, test_type)
+    else if group_by == 'all_responses'
       set_mapbox_gl_data(map, provider, date_range, group_by, test_type)
-    else if group_by == 'all_responses' && isIE()
-      set_mapbox_markers_data(map, provider, date_range, group_by, test_type)
 
   $('#map-filters .filter').on 'change', ->
     set_date_filters_value($(this)) if $(this).val() == ''
@@ -496,7 +451,7 @@ bind_datetimepicker = ->
     setDate: default_date
     autoclose: true
 
-$(document).ready ->
+$ ->
   if window.location.pathname.indexOf('result') >= 0 || window.location.pathname.indexOf('embed') >= 0
     # Initialize filter values
     bind_chosen_select()

@@ -10,7 +10,7 @@ body.result-page {
 
 #loader {
   padding-top: 200px;
-  height: 702px;
+  height: 668px;
   position: absolute;
   z-index: 2000; // Mapbox zoom controls have a z-index of 1000
   background-color: white;
@@ -392,14 +392,16 @@ body.in-stats .background-container,
   margin-left: -20px;
 }
 
+.maxmind-container {
+  margin-top: 2em;
+  text-align: center;
+}
+
 .partnerLogos {
   .logo-container {
     text-align: center;
   }
-  .maxmind-container {
-    margin-top: 2em;
-    text-align: center;
-  }
+
   a {
     display: inline-block;
     width: 20%;
