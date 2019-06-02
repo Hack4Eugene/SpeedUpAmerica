@@ -1,9 +1,9 @@
-ruby '2.3.3'
+ruby '2.6.3'
 source 'https://rubygems.org'
 gem 'dotenv-rails', groups: [:production, :development, :test]
 
 gem 'rails', '>= 4.2.11.1'
-gem 'mysql2', '~> 0.3.19'
+gem 'mysql2', '~> 0.5.2'
 gem 'puma'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'

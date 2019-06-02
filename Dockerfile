@@ -1,4 +1,4 @@
-FROM ruby:2.3.3-alpine
+FROM ruby:2.6.3-alpine
 
 RUN apk add --no-cache mariadb-dev make g++ linux-headers nodejs tzdata
 
