@@ -43,7 +43,3 @@ gem 'whenever', require: false
 gem 'ipaddress'
 gem 'georuby', '~> 2.5', '>= 2.5.2'
 gem 'maxminddb'
-
-group :production do
-  gem 'unicorn'
-end

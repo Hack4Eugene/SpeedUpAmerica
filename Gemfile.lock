@@ -247,9 +247,6 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    unicorn (5.5.0)
-      kgio (~> 2.6)
-      raindrops (~> 0.7)
     web-console (2.3.0)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
@@ -298,7 +295,6 @@ DEPENDENCIES
   social-share-button
   spring
   uglifier (>= 1.3.0)
-  unicorn
   web-console (~> 2.0)
   whenever
 

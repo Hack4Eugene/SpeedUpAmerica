@@ -188,7 +188,7 @@ class Submission < ActiveRecord::Base
     polygon_data = polygon_data.where(provider: providers) if providers.present? && providers.any?
     polygon_data = polygon_data.with_date_range(start_date, end_date) if date_range.present?
     polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
-
+    
     #boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
       census_boundaries = {}
       CensusBoundary.where(geo_id: CENSUS_CODES).each do |boundary|
@@ -269,12 +269,12 @@ class Submission < ActiveRecord::Base
 
   def self.set_stats_color(speed)
     case speed
-      when 0..10.9999999999 then '#EFF3FF'
-      when 11..50.9999999999 then '#C6DBEF'
-      when 51..100.9999999999 then '#9ECAE1'
-      when 101..250.9999999999 then '#6BAED6'
-      when 251..500.9999999999 then '#4292C6'
-      when 501..1000.9999999999 then '#2171B5'
+      when 0..10.9999999999 then '#D73027'
+      when 11..50.9999999999 then '#FDAE61'
+      when 51..100.9999999999 then '#A6D96A'
+      when 101..250.9999999999 then '#A6D96A'
+      when 251..500.9999999999 then '#1A9641'
+      when 501..1000.9999999999 then '#1A9641'
       else '#084594'
     end
   end

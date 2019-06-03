@@ -72,7 +72,7 @@ set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type
       $('#loader').addClass('hide')
       disable_filters('map-filters', false)
 
-set_mapbox_census_data = (map, provider, date_range, group_by='census_code', test_type='download') ->
+set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
   $('#loader').removeClass('hide')
   $.ajax
     url: '/mapbox_data'
@@ -81,8 +81,11 @@ set_mapbox_census_data = (map, provider, date_range, group_by='census_code', tes
     data:
       provider: provider
       date_range: date_range
-      group_by: group_by
+      group_by: 'census_code'
       test_type: test_type
+      zip_code: zip_code
+      census_code: census_code
+      type: type
     success: (data) ->
       map.eachLayer (layer) ->
         map.removeLayer layer
@@ -270,7 +273,7 @@ apply_filters = (map) ->
     if group_by == 'zip_code'
       set_mapbox_zip_data(map, provider, date_range, group_by, test_type)
     else if group_by == 'census_code'
-      set_mapbox_census_data(map, provider, date_range, group_by, test_type)
+      set_mapbox_census_data(map, provider, date_range, test_type, '', '', '')
 
   $('#map-filters .filter').on 'change', ->
     set_date_filters_value($(this)) if $(this).val() == ''
