@@ -286,6 +286,7 @@ tests_per_isp_chart = (data) ->
     series: data.series
 
 draw_stats_charts = (statistics, filter) ->
+  disable_filters('stats_filters', true)
   $.ajax
     url: '/speed_data'
     type: 'GET'
@@ -299,10 +300,11 @@ draw_stats_charts = (statistics, filter) ->
         median_speed_by_isp_chart(data.median_speed_chart_data)
         tests_per_isp_chart(data.tests_count_data)
         $('.total-tests').text(data.total_tests)
+        disable_filters('stats_filters', false)
       else
         $('.stats-section').removeClass('blurred')
         $('#stats_loader').addClass('hidden')
-        disable_filters('stats_filters', false)
+        disable_filters('stats_filters', true) 
 
 average = (data) ->
   data.reduce(((p, c, i, a) ->
@@ -322,7 +324,8 @@ update_statistics = (map, statistics, filter) ->
   draw_stats_charts(statistics, filter)
 
 disable_filters = (container, disabled) ->
-  $("##{container} .filter").attr('disabled', disabled).trigger('chosen:updated')
+  filters = $("##{container} .filter")
+  filters.attr('disabled', disabled).trigger('chosen:updated')
 
 set_date_filters_value = (elem) ->
   date = new Date()

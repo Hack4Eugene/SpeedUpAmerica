@@ -86,6 +86,7 @@ class SubmissionsController < ApplicationController
     end
 
     def set_selected_providers
-      @selected_provider_ids = ProviderStatistic.order(:applications).last(3).map(&:id)
+      ids = ProviderStatistic.unscoped.order(:applications).last(3).map(&:id)
+      @selected_provider_ids = ids
     end
 end
