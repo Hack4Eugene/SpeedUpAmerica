@@ -115,10 +115,6 @@ class Submission < ActiveRecord::Base
       set_mapbox_zip_data(params)
     elsif params[:group_by] == MAP_FILTERS[:group_by][:census_tract]
       set_mapbox_census_data(params)
-    elsif params[:group_by] == MAP_FILTERS[:group_by][:individual_responses] && params[:is_ie] == 'no'
-      set_mapbox_gl_data(params)
-    elsif params[:group_by] == MAP_FILTERS[:group_by][:individual_responses] && params[:is_ie] == 'yes'
-      set_mapbox_markers_data(params)
     end
   end
 
@@ -265,45 +261,6 @@ class Submission < ActiveRecord::Base
     submissions = submissions.with_date_range(start_date, end_date) if date_range.present?
 
     submissions
-  end
-
-  def self.set_mapbox_gl_data(params, data=[])
-    submissions = search(params[:provider], params[:test_type], params[:date_range])
-
-    submissions.each do |submission|
-      attribute_name = "#{params[:test_type]}_median"
-      speed = submission.send(attribute_name)
-
-      data << { 'type': 'Feature', 'properties': { 'description': "Median #{params[:test_type].titleize} Speed: <strong>#{speed} Mbps</strong>" }, 'geometry': { 'type': 'Point', 'coordinates': [ submission.longitude, submission.latitude ] } }
-    end
-
-    { features: data }
-  end
-
-  def self.set_mapbox_markers_data(params, data=[])
-    submissions = search(params[:provider], params[:test_type], params[:date_range])
-
-    submissions.each do |submission|
-      attribute_name = speed_attribute(params[:test_type])
-      speed = submission.send(attribute_name)
-
-      feature = {
-                  title: "#{params[:test_type].titleize} Speed: <strong>#{speed} Mbps</strong>",
-                  geometry: {
-                    latitude: submission.latitude,
-                    longitude: submission.longitude,
-                  },
-                  properties: {
-                    'marker-color': set_color(speed),
-                    'marker-size': 'small',
-                    'marker-symbol': 'star',
-                  }
-                }
-
-      data << feature
-    end
-
-    data
   end
 
   def self.set_color(speed)

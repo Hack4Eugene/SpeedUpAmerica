@@ -3,6 +3,10 @@
 
 <%= render partial: 'shared/test_speed_header', locals: {title: 'SpeedUpAmerica Results'} %>
 
+<script type='application/javascript'>
+var MAPBOX_API_KEY = '<%= ENV['MAPBOX_API_KEY'] %>';
+</script>
+
 <%= render 'mapbox' %>
 
 <%= render 'all_results', all_results: @all_results %>
