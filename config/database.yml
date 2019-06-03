@@ -10,6 +10,9 @@ default: &default
 
 development:
   <<: *default
+
+test:
+  <<: *default
  
 staging:
   <<: *default

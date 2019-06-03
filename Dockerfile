@@ -5,7 +5,9 @@ RUN apk add --no-cache mariadb-dev make g++ linux-headers nodejs tzdata
 WORKDIR /suyc
 COPY . .
 
+ENV RAILS_ENV production
 RUN bundle install
+RUN rake assets:clean
 RUN rake assets:precompile
 
 EXPOSE 3000
