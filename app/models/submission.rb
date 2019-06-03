@@ -471,16 +471,6 @@ class Submission < ActiveRecord::Base
     test_type == 'upload' && 'actual_upload_speed' || 'actual_down_speed'
   end
 
-  def self.median_speed_with_range(submissions, provider, range, test_type)
-    submissions = submissions.with_date_range(range[0], range[1]).with_provider(provider)
-    attribute_name = speed_attribute(test_type)
-    median(submissions.map(&:"#{attribute_name}")) if submissions.present?
-  end
-
-  def self.tests_count_with_range(submissions, provider, range, test_type)
-    submissions.with_date_range(range[0], range[1]).with_provider(provider).count if submissions.present?
-  end
-
   def self.category_name(date, period)
     if period == 'day'
       [date.day, date.strftime('%B')].join(' ')
@@ -499,8 +489,13 @@ class Submission < ActiveRecord::Base
       median_speed_values = []
       tests_count_values = []
       date_ranges.each do |date_range|
-        median_speed_values << median_speed_with_range(submissions, provider, date_range[:range], statistics[:test_type]).to_f
-        tests_count_values << tests_count_with_range(submissions, provider, date_range[:range], statistics[:test_type]).to_f
+        rangedSubmission = submissions.with_date_range(date_range[:range][0], date_range[:range][1]).with_provider(provider)
+        attribute_name = speed_attribute(statistics[:test_type])
+        rangedMedian = median(rangedSubmission.map(&:"#{attribute_name}")) if rangedSubmission.present?
+        rangedCount = rangedSubmission.size if rangedSubmission.present?
+
+        median_speed_values << rangedMedian.to_f
+        tests_count_values << rangedCount.to_f
       end
       median_speed_series << { name: provider, data: median_speed_values }
       tests_count_series << { name: provider, data: tests_count_values }
@@ -516,18 +511,18 @@ class Submission < ActiveRecord::Base
     date_range = statistics[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]), Time.parse(date_range[1]) if date_range.present?
     statistics[:provider] = ProviderStatistic.pluck(:id) if statistics[:provider] == ['all']
-    statistics[:zip_code] = ZIP_CODES if statistics[:zip_code] == ['all']
-    statistics[:census_code] = CENSUS_CODES if statistics[:census_code] == ['all']
+    statistics[:zip_code] = [] if statistics[:zip_code] == ['all']
+    statistics[:census_code] = [] if statistics[:census_code] == ['all']
     providers = ProviderStatistic.where(id: statistics[:provider]).pluck(:name)
     date_ranges = get_date_ranges(statistics, start_date, end_date)
     categories = date_ranges.collect { |range| range[:name] }
 
-    submissions = self.in_zip_code_list
-    total_tests = Submission.in_zip_code_list.count
+    submissions = self.valid_test
+    total_tests = submissions.count
     submissions = submissions.with_date_range(start_date, end_date)  if date_range.present?
     submissions = submissions.with_test_type(statistics[:test_type]) if statistics[:test_type].present?
-    submissions = submissions.with_zip_code(statistics[:zip_code])
-    submissions = submissions.with_census_code(statistics[:census_code])
+    submissions = submissions.with_zip_code(statistics[:zip_code])   if statistics[:zip_code].present? && statistics[:zip_code].any?
+    submissions = submissions.with_census_code(statistics[:census_code]) if statistics[:census_code].present? && statistics[:census_code].any?
     submissions = submissions.where(provider: providers)
 
     {
