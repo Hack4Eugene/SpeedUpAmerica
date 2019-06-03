@@ -1,7 +1,0 @@
-config:
-  project:                measurement-lab
-  dataset:                release
-  email:                  <%= ENV['MLAB_BIGQUERY_EMAIL'] %>                      
-  private_key_path:       <%= ENV['MLAB_BIGQUERY_PRIVATE_KEY'] %>   
-  private_key_passphrase: <%= ENV['MLAB_BIGQUERY_PRIVATE_KEY_PASSPHRASE'] %>   
-  auth_method:            private_key
