@@ -93,9 +93,6 @@ class SubmissionsImporter
     if Submission.from_mlab.last.nil? == false
       start_time = Submission.from_mlab.last.test_date.strftime("%Y-%m-%d")
     end
-
-    puts start_time
-    puts end_time
     
     "partition_date BETWEEN '#{start_time}' AND '#{end_time}' AND"
   end

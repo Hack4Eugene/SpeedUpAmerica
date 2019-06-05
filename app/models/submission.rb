@@ -45,7 +45,6 @@ class Submission < ActiveRecord::Base
   scope :mapbox_filter_by_zip_code, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code) }
   scope :with_date_range, -> (start_date, end_date) { where('test_date >= ? AND test_date <= ?', start_date, end_date.end_of_day) }
   scope :with_test_type, -> (test_type) { where(test_type: [test_type, 'both']) }
-  scope :completed, -> { where(completed: true) }
   scope :in_zip_code_list, -> { valid_test.where(zip_code: ZIP_CODES).where.not(zip_code: [nil, '']) }
   scope :valid_test, -> { where.not(test_type: 'duplicate') }
   scope :invalid_test, -> { where('testing_for = ? AND actual_down_speed > ?', 'Mobile Data', MOBILE_MAXIMUM_SPEED) }
@@ -72,20 +71,12 @@ class Submission < ActiveRecord::Base
 
     submission.test_date = Date.today
     submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
-    submission.completed = true if submission.valid_attributes?
+    submission.completed = true
     submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
     submission.provider = submission.get_provider
     submission.census_status = Submission::CENSUS_STATUS[:pending]
     submission.save
     submission
-  end
-
-  def valid_attributes?
-    has_required_fields?
-  end
-
-  def has_required_fields?
-    [provider, monthly_price, provider_down_speed, rating].all?(&:present?)
   end
 
   def self.get_all_results
