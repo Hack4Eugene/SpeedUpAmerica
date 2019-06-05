@@ -85,7 +85,7 @@ class Submission < ActiveRecord::Base
   end
 
   def has_required_fields?
-    [provider, monthly_price, provider_down_speed, rating].all?(&:present?)
+    [provider, provider_down_speed].all?(&:present?)
   end
 
   def self.get_all_results
