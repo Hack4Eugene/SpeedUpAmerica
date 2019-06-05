@@ -3,7 +3,7 @@ require 'rake'
 task update_providers_statistics: [:environment] do
   puts 'Updating provider statistics'
 
-  Submission.completed.in_zip_code_list.group_by(&:provider).each do |provider, submissions|
+  Submission.unscoped.with_test_type("download").in_zip_code_list.group_by(&:provider).each do |provider, submissions|
     provider_statistic = ProviderStatistic.get_by_name(provider).first
     
     if provider_statistic.blank? 
@@ -25,14 +25,14 @@ task update_providers_statistics: [:environment] do
     provider_statistic.save
   end
 
-  Submission.completed.valid_rating.in_zip_code_list.group_by(&:provider).each do |provider, submissions|
+  Submission.valid_rating.in_zip_code_list.group_by(&:provider).each do |provider, submissions|
     provider_statistic = ProviderStatistic.get_by_name(provider).first
     next if provider_statistic.blank?
     provider_statistic.rating = submissions.collect(&:rating).sum.to_f / submissions.count
     provider_statistic.save
   end
 
-  ProviderStatistic.where("updated_at < ?", 16.hours.ago).destroy
+  ProviderStatistic.where("updated_at < ?", 16.hours.ago).destroy_all
 
   puts 'Updated providers statistics successfully!'
   puts '*' * 50
