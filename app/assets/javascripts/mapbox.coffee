@@ -63,9 +63,9 @@ set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type
           bounds = polygon.getBounds()
           center = bounds.getCenter()
           content = '<h2>Test Results for ' + feature.properties.title + ':</h2>' +
-                    '<p>Tests in this zip code: <strong>(' + feature.properties.count + ')</strong></p><br />' +
-                    '<p>Median Speed: <strong>' + feature.properties.median_speed + ' Mbps</strong></p>' +
-                    '<p>Fastest Speed: <strong>' + feature.properties.fast_speed + ' Mbps</strong></p>'
+                    '<p>Tests in this zip code: <strong>' + feature.properties.count + '</strong></p><br />' +
+                    "<p>Median #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" + feature.properties.median_speed + ' Mbps</strong></p>' +
+                    "<p>Fastest #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" + feature.properties.fast_speed + ' Mbps</strong></p>'
           layer.bindPopup content, closeButton: false
       ).addTo map
 
@@ -99,9 +99,9 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
           polygon = new (L.Polygon)(feature.geometry.coordinates[0]).addTo(map)
           bounds = polygon.getBounds()
           center = bounds.getCenter()
-          content = "<p>Tests in census block #{feature.properties.title}: <strong>(#{feature.properties.count})</strong></p>" +
-                    '<p>Median Speed: <strong>' + feature.properties.median_speed + ' Mbps</strong></p>' +
-                    '<p>Fastest Speed: <strong>' + feature.properties.fast_speed + ' Mbps</strong></p>'
+          content = "<p>Tests in census tract #{feature.properties.title}: <strong>#{feature.properties.count}</strong></p>" +
+                    "<p>Median #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" + feature.properties.median_speed + ' Mbps</strong></p>' +
+                    "<p>Fastest #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" + feature.properties.fast_speed + ' Mbps</strong></p>'
           layer.bindPopup content, closeButton: false
       ).addTo map
 
