@@ -72,4 +72,4 @@ version 1.4, available at https://www.contributor-covenant.org/version/1/4/
 
 > Copied with from [Node.js' Code of Conduct](https://github.com/nodejs/admin/blob/a7c7d0a8b51109d8f6416a1572e649cc90cba20d/CODE_OF_CONDUCT.md)
 
-[homepage]: http://contributor-covenant.org
+[homepage]: https://www.contributor-covenant.org
