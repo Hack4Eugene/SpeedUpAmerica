@@ -38,8 +38,19 @@ initialize_mapbox = (map) ->
 
   map
 
+get_map_loader = (map) ->
+  map_id = map.getContainer().id
+
+  if map_id == 'all_results_map'
+    loader_id = '#loader'
+  else if map_id == 'zip_code_map'
+    loader_id = '#stats_loader'
+
+  $(loader_id)
+
 set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
-  $('#loader').removeClass('hide')
+  loader = get_map_loader(map)
+  loader.removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -69,11 +80,12 @@ set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type
           layer.bindPopup content, closeButton: false
       ).addTo map
 
-      $('#loader').addClass('hide')
+      loader.addClass('hide')
       disable_filters('map-filters', false)
 
 set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
-  $('#loader').removeClass('hide')
+  loader = get_map_loader(map)
+  loader.removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -105,7 +117,7 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
           layer.bindPopup content, closeButton: false
       ).addTo map
 
-      $('#loader').addClass('hide')
+      loader.addClass('hide')
       disable_filters('map-filters', false)
 
 speed_breakdown_by_isp_chart = (data) ->
