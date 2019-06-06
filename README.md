@@ -27,10 +27,10 @@ The application, SpeedUpYourCity.com, the local deployment of "SpeedUp", collec
 
 - [Harvard Ash Center](https://datasmart.ash.harvard.edu/news/article/louisville-leverages-crowdsourcing-for-civic-good-919)
 - [San Jose Blog](https://medium.com/@SJ_DigitalDolan/broadband-and-digital-inclusion-in-san-jose-c225d54b2ed1)
-- [San Jose Page](http://www.sanjoseca.gov/index.aspx?NID=5346)
-- [NPR Affiliate](http://wfpl.org/louisville-city-internet-speed-map/)
-- [PowerUp Labs](http://poweruplabs.co/introducing-speed-up-louisville/) - How it Works
-- [Sales Site](http://www.speedupyourcity.com/) - not being sold any more, now open source
+- [San Jose Page](https://www.sanjoseca.gov/index.aspx?NID=5346)
+- [NPR Affiliate](https://wfpl.org/louisville-city-internet-speed-map/)
+- [PowerUp Labs](https://poweruplabs.co/introducing-speed-up-louisville/) - How it Works
+- [Sales Site](https://www.speedupyourcity.com/) - not being sold any more, now open source
 
 ## About the Speed Test and the Data
 
@@ -55,9 +55,9 @@ The SpeedUpAmerica project utilizes the following technologies for operation:
 
 # Setup
 
-These instructions work on Linux, Windows and MacOS and only need to be performed once, unless you reset your database or config files. 
+These instructions work on Linux, Windows and MacOS and only need to be performed once, unless you reset your database or config files.
 
-Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/). 
+Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/).
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
@@ -70,7 +70,7 @@ $ docker-compose up -d mysql
 $ docker-compose up --build migrator
 $ docker-compose run migrator rake db:seed
 $ docker-compose run frontend rake secret
-```    
+```
 
 Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
 
@@ -82,7 +82,7 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
 $ docker-compose run frontend rake update_providers_statistics
 ```
-    
+
 > These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
 
 ## Updating boundaries
@@ -101,7 +101,7 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 
 The site can be accessed at `http://localhost:3000/`. The Ruby app is configured to not cache and it doesn't require restarting the Docker container to load changes, unless it's a config change. Just make your changes and reload the page. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
 
-## Stopping 
+## Stopping
 
     $ docker-compose stop
 
@@ -152,7 +152,7 @@ After loading boundaries and submissions you can distribute the submissions acro
 
 # Governance and contribution
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). 
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Committers:
 
