@@ -38,8 +38,19 @@ initialize_mapbox = (map) ->
 
   map
 
+get_map_loader = (map) ->
+  map_id = map.getContainer().id
+
+  if map_id == 'all_results_map'
+    loader_id = '#loader'
+  else if map_id == 'zip_code_map'
+    loader_id = '#stats_loader'
+
+  $(loader_id)
+
 set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
-  $('#loader').removeClass('hide')
+  loader = get_map_loader(map)
+  loader.removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -69,11 +80,12 @@ set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type
           layer.bindPopup content, closeButton: false
       ).addTo map
 
-      $('#loader').addClass('hide')
+      loader.addClass('hide')
       disable_filters('map-filters', false)
 
 set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
-  $('#loader').removeClass('hide')
+  loader = get_map_loader(map)
+  loader.removeClass('hide')
   $.ajax
     url: '/mapbox_data'
     type: 'POST'
@@ -105,7 +117,7 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
           layer.bindPopup content, closeButton: false
       ).addTo map
 
-      $('#loader').addClass('hide')
+      loader.addClass('hide')
       disable_filters('map-filters', false)
 
 speed_breakdown_by_isp_chart = (data) ->
@@ -160,7 +172,7 @@ tests_per_isp_chart = (data) ->
   $('#tests_per_isp_chart').highcharts
     chart: events: load: ->
       $('.stats-section').removeClass('blurred')
-      $('#stats_loader').addClass('hidden')
+      $('#stats_loader').addClass('hide')
     type: 'column'
     credits: enabled: false
     title: text: ''
@@ -200,8 +212,8 @@ draw_stats_charts = (statistics, filter) ->
         disable_filters('stats_filters', false)
       else
         $('.stats-section').removeClass('blurred')
-        $('#stats_loader').addClass('hidden')
-        disable_filters('stats_filters', true) 
+        $('#stats_loader').addClass('hide')
+        disable_filters('stats_filters', true)
 
 average = (data) ->
   data.reduce(((p, c, i, a) ->
@@ -227,7 +239,7 @@ disable_filters = (container, disabled) ->
 set_date_filters_value = (elem) ->
   date = new Date()
   month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-  
+
   formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear()}"
   elem.val(formatted_date) if elem.prop('id') == 'end_date' || elem.prop('id') == 'stats_end_date'
 
@@ -244,7 +256,7 @@ update_all_option = (elem) ->
 
   new_selected = elem.val()
 
-  if new_selected != null && 
+  if new_selected != null &&
     ($.inArray('all', selected_elem_value) != -1 ||
      $.inArray('all', new_selected) != -1)
     new_selected = elem.val().filter (v) -> v != 'all'
@@ -297,7 +309,7 @@ apply_stats_filters = (map) ->
     update_all_option($(this))
     set_date_filters_value($(this)) if $(this).val() == ''
     $('.stats-section').addClass('blurred')
-    $('#stats_loader').removeClass('hidden')
+    $('#stats_loader').removeClass('hide')
     filter = $(this).attr('id')
     statistics = get_stats_filters()
     disable_filters('stats_filters', true)
