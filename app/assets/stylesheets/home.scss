@@ -409,7 +409,8 @@ body.in-stats .background-container,
 
     img {
       display: inline-block;
-      width: 100%;
+      max-width: 100%;
+      max-height: 70px;
     }
   }
   p {
