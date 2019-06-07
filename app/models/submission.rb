@@ -37,7 +37,8 @@ class Submission < ActiveRecord::Base
   CENSUS_CODES = CensusBoundary.pluck(:geo_id)
 
   validates :testing_for, length: { maximum: 20 }
-  validates :provider, :connected_with, length: { maximum: 50 }
+  validates :connected_with, length: { maximum: 50 }
+  validates :provider, length: { maximum: 255 }
 
   default_scope { where('from_mlab = 0 OR (from_mlab = 1 AND provider IS NOT NULL)') }
 
