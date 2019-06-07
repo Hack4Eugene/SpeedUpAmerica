@@ -291,7 +291,7 @@ class Submission < ActiveRecord::Base
     geocoder = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
     data =  {
       'address' => geocoder.city,
-      'zip_code' => geocoder.postal_code,
+      'zip_code' => geocoder.postal_code[0...5]
     }
   end
 
