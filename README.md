@@ -61,7 +61,7 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
-```
+```bash
 $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
 $ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
 $ cd SpeedUpAmerica
@@ -76,7 +76,7 @@ Use the output from `rake secret` as the value for `SECRET_KEY_BASE` in your `lo
 
 If you want a basic dataset to work with run:
 
-```
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
@@ -88,7 +88,7 @@ $ docker-compose run frontend rake update_providers_statistics
 ## Updating boundaries
 
 When boundaries are updated each developer must reload their boundary tables:
-```
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
@@ -97,13 +97,17 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 
 ## Running
 
-    $ docker-compose up -d
+```bash
+$ docker-compose up -d
+```
 
 The site can be accessed at `http://localhost:3000/`. The Ruby app is configured to not cache and it doesn't require restarting the Docker container to load changes, unless it's a config change. Just make your changes and reload the page. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
 
 ## Stopping
 
-    $ docker-compose stop
+```bash
+$ docker-compose stop
+```
 
 # Data tasks
 
@@ -111,15 +115,21 @@ There are just the tasks that have been run to populate and prepare the data for
 
 ### Importing M-Lab submissions:
 
-    $ docker-compose run frontend rake import_mlab_submissions
+```bash
+$ docker-compose run frontend rake import_mlab_submissions
+```
 
 ### Populating submissions with Census Tract
 
-    $ docker-compose run frontend rake update_pending_census_codes
+```bash
+$ docker-compose run frontend rake update_pending_census_codes
+```
 
 ### Updating provider statistics
 
-    $ docker-compose run frontend rake update_providers_statistics
+```bash
+$ docker-compose run frontend rake update_providers_statistics
+```
 
 ### Importing Census and Zip Code boundaries
 
@@ -127,7 +137,7 @@ Assumes you have these files in `data/`:
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
 
-```
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
 $ docker-compose run frontend rake populate_census_tracts
@@ -135,20 +145,24 @@ $ docker-compose run frontend rake populate_zip_boundaries
 ```
 
 Once imported you can update the SQL files by:
-```
+```bash
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc census_boundaries > data/census_tracts.sql
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
 ```
 
 ### Creating new submissions.sql
 
-    $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+```bash
+$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+```
 
 ### Creating test data
 
 After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
 
-    $ docker-compose run frontend rake create_test_data
+```bash
+$ docker-compose run frontend rake create_test_data
+```
 
 # Governance and contribution
 
