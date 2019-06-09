@@ -2,7 +2,7 @@
 
 The project vision is an open source nation-wide map that pulls individual internet speed test data from [M-Lab](https://viz.measurementlab.net/location/nauskylouisville?isps=AS10796x_AS10774x_AS11486x) and breaking down the results on maps and charts by points, census blocks, ISP, date range, and speed.  Census block data and [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data will used to supplement both the analysis and maps.
 
-The current implentation of SpeedUp has been deployed to these cities.
+The current implementation of SpeedUp has been deployed to these cities.
 
 - [Lane County](https://speedupamerica.com/)
 - [Louisville, KY](https://www.speeduplouisville.com/)
@@ -15,7 +15,7 @@ The project can be used as part of a digital inclusion strategy to learn where i
 
 ### Replace FCC 477 Data
 
-All current digital inclusion maps rely on [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data which is ISP self-reported, notriously incomplete, misleading, gameable by ISPs, and not detailed enough.  Let's get better, more accurate, crowd-source speed data directly from citizens to make better decisions and drive policy.
+All current digital inclusion maps rely on [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data which is ISP self-reported, notoriously incomplete, misleading, gameable by ISPs, and not detailed enough.  Let's get better, more accurate, crowd-source speed data directly from citizens to make better decisions and drive policy.
 
 ## Project History
 
@@ -61,7 +61,7 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
-```
+```bash
 $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
 $ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
 $ cd SpeedUpAmerica
@@ -72,11 +72,11 @@ $ docker-compose run migrator rake db:seed
 $ docker-compose run frontend rake secret
 ```
 
-Use the ouput from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
+Use the output from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
 
 If you want a basic dataset to work with run:
 
-```
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
@@ -88,7 +88,7 @@ $ docker-compose run frontend rake update_providers_statistics
 ## Updating boundaries
 
 When boundaries are updated each developer must reload their boundary tables:
-```
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
@@ -97,29 +97,62 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 
 ## Running
 
-    $ docker-compose up -d
+```bash
+$ docker-compose up -d
+```
 
 The site can be accessed at `http://localhost:3000/`. The Ruby app is configured to not cache and it doesn't require restarting the Docker container to load changes, unless it's a config change. Just make your changes and reload the page. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
 
 ## Stopping
 
-    $ docker-compose stop
+```bash
+$ docker-compose stop
+```
+
+# Troubleshooting
+
+If the site doesn't load correctly on localhost after pulling in new changes from git and restarting Docker, try the following:
+
+```bash
+# Show the docker tasks and their exit statuses
+$ docker-compose ps
+
+# You might also be interested in seeing the logs for a failing process
+# Choose the option below for the process you're interested in:
+$ docker-compose logs frontend
+$ docker-compose logs migrator
+$ docker-compose logs mysql
+```
+
+If `docker-compose ps` shows "Exit 1" for any process, one likely cause is that the process's Docker image needs to be rebuilt. This is generally due to dependencies having changed since the last time you built the image. An additional hint that this is the cause is if the logs show errors indicating that a dependency could not be found.
+
+To resolve this, rebuild the Docker image for that specific process. For example, if the `frontend` process exited with an error status:
+
+```bash
+$ docker-compose up --build frontend
+```
 
 # Data tasks
 
-There are just the tasks that have been run to populate and prepate the data for operation. The other tasks need investigated and documented.
+There are just the tasks that have been run to populate and prepare the data for operation. The other tasks need investigated and documented.
 
 ### Importing M-Lab submissions:
 
-    $ docker-compose run frontend rake import_mlab_submissions
+```bash
+$ docker-compose run frontend rake import_mlab_submissions
+```
 
 ### Populating submissions with Census Tract
 
-    $ docker-compose run frontend rake update_pending_census_codes
+```bash
+$ docker-compose run frontend rake update_pending_census_codes
+```
 
 ### Updating provider statistics
 
-    $ docker-compose run frontend rake update_providers_statistics
+```bash
+$ docker-compose run frontend rake update_providers_statistics
+```
 
 ### Importing Census and Zip Code boundaries
 
@@ -127,7 +160,7 @@ Assumes you have these files in `data/`:
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
 
-```
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
 $ docker-compose run frontend rake populate_census_tracts
@@ -135,20 +168,24 @@ $ docker-compose run frontend rake populate_zip_boundaries
 ```
 
 Once imported you can update the SQL files by:
-```
+```bash
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc census_boundaries > data/census_tracts.sql
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
 ```
 
 ### Creating new submissions.sql
 
-    $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+```bash
+$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
+```
 
 ### Creating test data
 
 After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
 
-    $ docker-compose run frontend rake create_test_data
+```bash
+$ docker-compose run frontend rake create_test_data
+```
 
 # Governance and contribution
 
