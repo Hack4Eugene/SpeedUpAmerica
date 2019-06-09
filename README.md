@@ -109,6 +109,29 @@ The site can be accessed at `http://localhost:3000/`. The Ruby app is configured
 $ docker-compose stop
 ```
 
+# Troubleshooting
+
+If the site doesn't load correctly on localhost after pulling in new changes from git and restarting Docker, try the following:
+
+```bash
+# Show the docker tasks and their exit statuses
+$ docker-compose ps
+
+# You might also be interested in seeing the logs for a failing process
+# Choose the option below for the process you're interested in:
+$ docker-compose logs frontend
+$ docker-compose logs migrator
+$ docker-compose logs mysql
+```
+
+If `docker-compose ps` shows "Exit 1" for any process, one likely cause is that the process's Docker image needs to be rebuilt. This is generally due to dependencies having changed since the last time you built the image. An additional hint that this is the cause is if the logs show errors indicating that a dependency could not be found.
+
+To resolve this, rebuild the Docker image for that specific process. For example, if the `frontend` process exited with an error status:
+
+```bash
+$ docker-compose up --build frontend
+```
+
 # Data tasks
 
 There are just the tasks that have been run to populate and prepare the data for operation. The other tasks need investigated and documented.
