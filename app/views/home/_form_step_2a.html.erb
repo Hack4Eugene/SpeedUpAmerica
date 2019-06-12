@@ -53,8 +53,8 @@
         <% end %>
 
         <div class='col-md-4 restricted-field text-left'>
-          <%= f.number_field :provider_down_speed, within: 0..310, class: 'form-control pull-right numeric', disabled: true %>
-          <span id='speed_error_span' class='hide'>Error: This should not be greater than 310</span>
+          <%= f.number_field :provider_down_speed, within: 0..10000, class: 'form-control pull-right numeric', disabled: true %>
+          <span id='speed_error_span' class='hide'>Error: This should not be greater than 10000</span>
         </div>
 
         <div id='mbps-container' class='col-md-1'>
