@@ -1,3 +1,6 @@
+require 'lograge'
+require 'logglier' 
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -16,14 +19,28 @@ Rails.application.configure do
   # when problems arise.
   config.log_level = :info
 
+  # Prepend all log lines with the following tags.
+  #config.log_tags = [ :subdomain, :uuid ]
+
+  # Use a different logger for distributed setups.
+  config.lograge.enabled = true
+  config.lograge.keep_original_rails_log = false
+  config.lograge.formatter = Lograge::Formatters::Raw.new
+  config.lograge.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+  loggly = Logglier.new("https://logs-01.loggly.com/inputs/"+ENV["LOGGLY_TOKEN"]+"/tag/speedupamerica-v1", :format => :json, threaded: true)
+  config.lograge.logger.extend(ActiveSupport::Logger.broadcast(loggly))
+
+  # add time to lograge
+  config.lograge.custom_options = lambda do |event|
+    { env: Rails.env }
+  end
+
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = true
 
   # Asset digests allow you to set far-future HTTP expiration dates on all assets,
   # yet still be able to expire them through the digest params.
   config.assets.digest = true
-
-  config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
 
   # Configure static file server for tests with Cache-Control for performance.
   config.serve_static_files   = true
