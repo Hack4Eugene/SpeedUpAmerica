@@ -132,6 +132,13 @@ To resolve this, rebuild the Docker image for that specific process. For example
 $ docker-compose up --build frontend
 ```
 
+### Running Docker on Ubuntu
+Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
+
+Running the environment locally on a Linux-based OS could require running `docker-compose` commands as super user, `sudo docker-compose [commands]`.
+
+[Here is a guide for managing Docker as a non-root user](https://docs.docker.com/install/linux/linux-postinstall/).
+
 # Data tasks
 
 There are just the tasks that have been run to populate and prepare the data for operation. The other tasks need investigated and documented.
