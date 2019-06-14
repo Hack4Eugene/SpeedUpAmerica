@@ -137,7 +137,7 @@ Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
 Running the environment locally on a Linux-based OS could require running `docker-compose` commands as super user, `sudo docker-compose [commands]`.
 
-[Here is a guide for managing Docker as a non-root, user](https://docs.docker.com/install/linux/linux-postinstall/).
+[Here is a guide for managing Docker as a non-root user](https://docs.docker.com/install/linux/linux-postinstall/).
 
 # Data tasks
 
