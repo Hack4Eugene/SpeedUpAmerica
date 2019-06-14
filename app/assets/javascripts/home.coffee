@@ -31,7 +31,14 @@ set_coords = (position) ->
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
         $.getJSON 'https://jsonip.com/?callback=?', (result_data) ->
-          $('#submission_ip_address').val result_data.ip.split(',')[0]
+          if (result_data)
+            $('test-speed-btn').prop('disabled', false)
+            $('ip-address-warning').addClass('hide')
+            console.log 'IP Address received'
+            $('#submission_ip_address').val result_data.ip.split(',')[0]
+          else
+            $('test-speed-btn').prop('disabled', true)
+            $('ip-address-warning').removeClass('hide')
 
 block_callback = (error) ->
   $('#error-geolocation').modal('show');
