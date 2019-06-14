@@ -118,7 +118,7 @@ $ ->
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
-  $('.test-speed-btn').prop('disabled', true)
+  $('.test-speed-btn').attr('disabled', true)
   $(".checkboxes-container input[name='submission[testing_for]']").prop('checked', false)
 
   $('#take_test').on 'click', ->
