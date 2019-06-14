@@ -59,9 +59,7 @@ These instructions work on Linux, Windows and MacOS and only need to be performe
 
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/).
 
-Install on [Linux](https://askubuntu.com/questions/938700/how-do-i-install-docker-on-ubuntu-16-04-lts).
-
-> Depending on your OS, you may have to make sure to use `copy` instead of `cp`. Linux users must prepend Docker commands with super user privileges (`sudo docker-compose [commands]`).
+> Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
 ```bash
 $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
@@ -133,6 +131,15 @@ To resolve this, rebuild the Docker image for that specific process. For example
 ```bash
 $ docker-compose up --build frontend
 ```
+
+### Running Docker on Linux
+Installation on [Linux](https://askubuntu.com/questions/938700/how-do-i-install-docker-on-ubuntu-16-04-lts).
+
+Running the environment locally on a Linux-based OS could require running `docker-compose` commands as super user, `sudo docker-compose [commands]`.
+
+[Here is a guide for managing Docker as a non-root, user](https://docs.docker.com/install/linux/linux-postinstall/).
+
+
 
 # Data tasks
 
