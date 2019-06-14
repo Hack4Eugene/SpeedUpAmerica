@@ -132,14 +132,12 @@ To resolve this, rebuild the Docker image for that specific process. For example
 $ docker-compose up --build frontend
 ```
 
-### Running Docker on Linux
-Installation on [Linux](https://askubuntu.com/questions/938700/how-do-i-install-docker-on-ubuntu-16-04-lts).
+### Running Docker on Ubuntu
+Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
 
 Running the environment locally on a Linux-based OS could require running `docker-compose` commands as super user, `sudo docker-compose [commands]`.
 
 [Here is a guide for managing Docker as a non-root, user](https://docs.docker.com/install/linux/linux-postinstall/).
-
-
 
 # Data tasks
 
