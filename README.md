@@ -59,7 +59,9 @@ These instructions work on Linux, Windows and MacOS and only need to be performe
 
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/).
 
-> Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
+Install on [Linux](https://askubuntu.com/questions/938700/how-do-i-install-docker-on-ubuntu-16-04-lts).
+
+> Depending on your OS, you may have to make sure to use `copy` instead of `cp`. Linux users must prepend Docker commands with super user privileges (`sudo docker-compose [commands]`).
 
 ```bash
 $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
