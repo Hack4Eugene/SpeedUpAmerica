@@ -30,7 +30,7 @@ set_coords = (position) ->
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
-        $.getJSON 'https://jsonip.com/?callback=?', (result_data) ->
+        $.getJSON 'https://jsonip.com/', (result_data) ->
             $('#submission_ip_address').val result_data.ip
 
 block_callback = (error) ->
