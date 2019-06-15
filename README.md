@@ -57,6 +57,13 @@ The SpeedUpAmerica project utilizes the following technologies for operation:
 
 These instructions work on Linux, Windows and MacOS and only need to be performed once, unless you reset your database or config files.
 
+Install [Git](https://git-scm.com/downloads) Windows/Mac/Linux
+> If you already have Git installed on your machine, you can update to the lastest version via your CMD:
+
+```bash
+$ git clone https://github.com/git/git
+```
+
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/).
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
@@ -93,6 +100,14 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_bo
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
+```
+
+>For Windows OS please use the following:
+```bash
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc "TRUNCATE census_boundaries;"
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc "TRUNCATE zip_boundaries;"
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc data/zip_codes.sql
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc data/census_tracts.sql
 ```
 
 ## Running
@@ -132,6 +147,8 @@ To resolve this, rebuild the Docker image for that specific process. For example
 $ docker-compose up --build frontend
 ```
 
+If `docker-compose ps` continues to throw an "Exit 1" error for any process after rebuilding the frontend, please ensure that your machines firewall permissions allow the applications. After you set your firewall permissions, you will need to close your workflow, restart docker, and restart the app.
+
 # Data tasks
 
 There are just the tasks that have been run to populate and prepare the data for operation. The other tasks need investigated and documented.
@@ -160,7 +177,7 @@ Assumes you have these files in `data/`:
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
 
-```bash
+```bash 
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
 $ docker-compose run frontend rake populate_census_tracts
