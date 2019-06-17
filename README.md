@@ -212,5 +212,4 @@ Technical Committee:
 * Chris Ritzo
 * Chris Sjoblom
 * Antonio Ortega
-* Mark Davis
 * Ryan Olds
