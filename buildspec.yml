@@ -13,7 +13,13 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image... 
-      - chmod +x ./update_data.sh  
+      - chmod +x ./update_data.sh
+      - echo Getting latest GeoLite2 ASN DB
+      - wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz 
+      - tar -xf GeoLite2-ASN.tar.gz
+      - cp GeoLite2-ASN_*/GeoLite2-ASN.mmdb .
+      - rm -r GeoLite2-ASN_*
+      - rm GeoLite2-ASN.tar.gz
       - mkdir keys
       - aws s3 cp s3://sua-private/$S3_BIGQUERY_KEY_FILENAME $MLAB_BIGQUERY_PRIVATE_KEY
       - docker build -t $REPOSITORY_URI:latest .
