@@ -24,15 +24,16 @@ isIE = ->
   false
 
 initialize_mapbox = (map) ->
-  L.mapbox.accessToken = MAPBOX_API_KEY;
+  mapboxgl.accessToken = MAPBOX_API_KEY;
   maxZoom = isIE() && 12 || 14
 
-  map = L.mapbox.map(map, 'mapbox.light', { maxZoom: maxZoom }).setView([44.0639066, -120.67382], 7)
-
-  map.scrollWheelZoom.disable();
-
-  map.on 'click', (e) ->
-    map.scrollWheelZoom.enable();
+  map = mapbox.Map({
+      container: map,
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-120.67382, 44.0639066],
+      zoom: 7,
+      maxZoom: maxZoom
+  });
 
   $('.leaflet-bottom').addClass('hide')
 
