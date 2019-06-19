@@ -7,7 +7,7 @@ window.initialize_mapboxgl = (elmID) ->
     container: elmID,
     style: 'mapbox://styles/mapbox/streets-v9'
     center: [-120.67382, 44.0639066],
-    zoom: 7,
+    zoom: 6,
     maxZoom: maxZoom
   })
 
@@ -15,7 +15,7 @@ window.initialize_mapboxgl = (elmID) ->
 
   map
 
-get_map_loader_gl = (map) ->
+get_map_loader = (map) ->
   map_id = map.getContainer().id
 
   if map_id == 'all_results_map'
@@ -25,8 +25,8 @@ get_map_loader_gl = (map) ->
 
   $(loader_id)
 
-window.set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
-  loader = get_map_loader_gl(map)
+window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+  loader = get_map_loader(map)
   loader.removeClass('hide')
 
   $.ajax
@@ -39,29 +39,30 @@ window.set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', te
       group_by: group_by
       test_type: test_type
     success: (data) ->
-
-      ###
-      map.addSource(map, {
-          'type': "geojson",
-          'data': {
-              'type': 'FeatureCollection',
-              'features': data.features
-          }
-      });
-
+      map.removeLayer('zip-codes')
+      map.removeLayer('census-tracts')
       map.addLayer({
-          'id': 'zip-codes',
-          'type': 'fill',
-          source: map,
-          filter: ['==', '$type', 'Polygon']
-      });
-      ###
+        'id': 'zip-codes',
+        'type': 'fill',
+        'source': {
+          'type': 'geojson',
+          'data':  {
+              'type': 'FeatureCollection',
+              'features': data
+          },
+        },
+        'paint': {
+          'fill-antialias': true,
+          'fill-outline-color': '#000000',
+          'fill-color':['get', 'color'],
+          'fill-opacity': ['get', 'fillOpacity']
+        }    
+      });      
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
-      
 
-set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
+window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_code, census_code, type) ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
   $.ajax
@@ -77,23 +78,25 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
       census_code: census_code
       type: type
     success: (data) ->
-
-      ###
-      map.addSource(map, {
-          'type': "geojson",
-          'data': {
-              'type': 'FeatureCollection',
-              'features': data.features
-          }
-      });
-
+      map.removeLayer('zip-codes')
+      map.removeLayer('census-tracts')
       map.addLayer({
-          'id': 'census-codes',
-          'type': 'fill',
-          source: map,
-          filter: ['==', '$type', 'Polygon']
-      });
-      ###
+        'id': 'census-tracts',
+        'type': 'fill',
+        'source': {
+          'type': 'geojson',
+          'data':  {
+              'type': 'FeatureCollection',
+              'features': data
+          },
+        },
+        'paint': {
+          'fill-antialias': true,
+          'fill-outline-color': '#000000',
+          'fill-color':['get', 'color'],
+          'fill-opacity': ['get', 'fillOpacity']
+        }    
+      });  
 
       loader.addClass('hide')
       disable_filters('map-filters', false)

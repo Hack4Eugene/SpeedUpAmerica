@@ -6,8 +6,9 @@ $ ->
     bind_datetimepicker()
 
     # Create results
-    all_results_map = initialize_mapbox('all_results_map')
-    #all_results_map = initialize_mapboxgl('all_results_map')
+    # @MAP_SWITCH
+    #all_results_map = initialize_mapbox('all_results_map')
+    all_results_map = initialize_mapboxgl('all_results_map')
 
     # Draw polygons on the map
     apply_filters(all_results_map)
@@ -17,8 +18,9 @@ $ ->
     
     # Create stats map
     if document.getElementById('zip_code_map') != null
-      zip_code_map = initialize_mapbox('zip_code_map')
-      #zip_code_map = initialize_mapboxgl('zip_code_map')
+      # @MAP_SWITCH
+      #zip_code_map = initialize_mapbox('zip_code_map')
+      zip_code_map = initialize_mapboxgl('zip_code_map')
 
       apply_stats_filters(zip_code_map)
       $('#stats_filters #stats_start_date').change()
@@ -26,6 +28,12 @@ $ ->
 bind_chosen_select = ->
   $('.chosen-select').chosen
     no_results_text: 'No results matched'
+
+  selected_ids = $('#stats_provider').data('selected-ids')
+  $('#provider').val('all').trigger('chosen:updated')
+  $('#stats_provider').val(selected_ids).trigger('chosen:updated')
+  $('#period').val('Month').trigger('chosen:updated')
+  $('#zip_code, #census_code').val('all').trigger('chosen:updated')
 
 set_multiple_selected_values = ->
   $.each ['provider', 'stats_provider', 'zip_code', 'census_code'], (index, id) ->
@@ -63,15 +71,19 @@ apply_filters = (map) ->
     $('#all_results_map').removeClass('hide')
 
     if group_by == 'zip_code'
-      set_mapbox_zip_data(map, provider, date_range, group_by, test_type)
+      # @MAP_SWITCH
+      #set_mapbox_zip_data(map, provider, date_range, group_by, test_type)
+      set_mapbox_zip_data_gl(map, provider, date_range, group_by, test_type)
     else if group_by == 'census_code'
-      set_mapbox_census_data(map, provider, date_range, test_type, '', '', '')
-
+      # @MAP_SWITCH
+      #set_mapbox_census_data_(map, provider, date_range, test_type, '', '', '')
+      set_mapbox_census_data_gl(map, provider, date_range, test_type, '', '', '')
+  
   $('#map-filters .filter').on 'change', ->
     set_date_filters_value($(this)) if $(this).val() == ''
     update_all_option($(this))
     update_map()
-
+  
   update_map()
 
 apply_submission_filters = ->
@@ -107,7 +119,9 @@ get_stats_filters = ->
   }
 
 update_statistics = (map, statistics, filter) ->
-  set_mapbox_census_data(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
+  # @MAP_SWITCH
+  #set_mapbox_census_data(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
+  set_mapbox_census_data_gl(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
   draw_stats_charts(statistics, filter)
 
 window.disable_filters = (container, disabled) ->
@@ -144,12 +158,3 @@ update_all_option = (elem) ->
 
   elem.val(new_selected)
   $("#selected_#{elem.prop('id')}").val("#{[new_selected]}")
-
-is_internet_stats_page = ->
-  window.location.pathname.indexOf('internet-stats') >= 0
-
-  selected_ids = $('#stats_provider').data('selected-ids')
-  $('#provider').val('all').trigger('chosen:updated')
-  $('#stats_provider').val(selected_ids).trigger('chosen:updated')
-  $('#period').val('Month').trigger('chosen:updated')
-  $('#zip_code, #census_code').val('all').trigger('chosen:updated')

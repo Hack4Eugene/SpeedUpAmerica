@@ -1,10 +1,3 @@
-jQuery.loadScript = (url, callback) ->
-  jQuery.ajax
-    url: url
-    dataType: 'script'
-    success: callback
-    async: true
-
 isIE = ->
   ua = window.navigator.userAgent
   msie = ua.indexOf('MSIE ')
@@ -48,7 +41,7 @@ get_map_loader = (map) ->
 
   $(loader_id)
 
-set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+window.set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type='download') ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
   $.ajax
