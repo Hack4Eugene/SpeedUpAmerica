@@ -30,9 +30,13 @@ Rails.application.configure do
   loggly = Logglier.new("https://logs-01.loggly.com/inputs/"+ENV["LOGGLY_TOKEN"]+"/tag/speedupamerica-v1", :format => :json, threaded: true)
   config.lograge.logger.extend(ActiveSupport::Logger.broadcast(loggly))
 
-  # add time to lograge
+  # add time and IP to lograge
   config.lograge.custom_options = lambda do |event|
-    { env: Rails.env }
+    {
+      env: Rails.env,
+      remote_ip: event.payload[:remote_ip],
+      user_agent: event.payload[:user_agent],
+    }
   end
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
