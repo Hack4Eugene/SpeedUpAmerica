@@ -296,7 +296,7 @@ class Submission < ActiveRecord::Base
     postal_code = nil
 
     if  geocoder.country == "USA"
-      if geocoder.city.present? &&
+      if geocoder.city.present?
         city = geocoder.city
       end
 
