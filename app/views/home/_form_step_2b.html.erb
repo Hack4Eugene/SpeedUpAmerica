@@ -26,6 +26,7 @@
       <div class='col-md-12 text-center'>
         <%= button_tag 'Test My Speed!!', type: 'button', class: 'test-speed-btn col-md-12' %>
         <p class='location-warning'>(Note: Please, allow to share your location to take a test.)</p>
+        <p class='ip-address-warning'>(Note: Please disable uBlock Origin or other script blockers.)</p>
       </div>
     </div>
   </div>
@@ -34,6 +35,6 @@
 
   <div class='text-center find-more-div'>
     Questions about speedupamerica.com? Find more information
-    <%= link_to 'here.', 'https://github.com/Hack4Eugene/SpeedUpAmerica', target: '_blank' %>
+    <%= link_to 'here.', 'https://github.com/Hack4Eugene/SpeedUpAmerica', target: '_blank', rel: 'noopener' %>
   </div>
 </div>

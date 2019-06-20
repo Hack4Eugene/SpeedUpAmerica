@@ -268,12 +268,19 @@ body.in-stats .background-container,
   border-radius: 5px;
   transition: all 0.5s ease;
 
-  &:hover {
-    background: #d2d2d2;
-    background: -moz-linear-gradient(top, #d2d2d2 0%, #efefef 100%);
-    background: -webkit-linear-gradient(top, #d2d2d2 0%, #efefef 100%);
-    background: linear-gradient(to bottom, #d2d2d2 0%, #efefef 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d2d2d2', endColorstr='#efefef', GradientType=0);
+  &[disabled="disabled"] {
+    color: #999;
+    opacity: 0.9;
+  }
+
+  &:not([disabled="disabled"]) {
+    &:hover {
+      background: #d2d2d2;
+      background: -moz-linear-gradient(top, #d2d2d2 0%, #efefef 100%);
+      background: -webkit-linear-gradient(top, #d2d2d2 0%, #efefef 100%);
+      background: linear-gradient(to bottom, #d2d2d2 0%, #efefef 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d2d2d2', endColorstr='#efefef', GradientType=0);
+    }
   }
 }
 
@@ -457,7 +464,7 @@ body.in-stats .background-container,
   margin-top: 20px;
 }
 
-.speeduplou {
+.speedup-hashtag {
   font-size: 18px;
 }
 

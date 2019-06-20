@@ -363,6 +363,9 @@ class Submission < ActiveRecord::Base
       'Level 3 Communications, Inc.' => 'Level 3',
       'Time Warner Cable Internet LLC' => 'Time Warner',
       'Windstream Communications Inc' => 'Windstream',
+      'Cellco Partnership DBA Verizon Wireless' => 'Verizon Wireless',
+      'MCI Communications Services, Inc. d/b/a Verizon Business' => 'Verizon Business',
+      'Online Northwest' => 'XS Media',
     }[provider]
 
     original_provider.present? && original_provider || provider

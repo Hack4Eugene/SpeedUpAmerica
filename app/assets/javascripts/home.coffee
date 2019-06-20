@@ -30,8 +30,8 @@ set_coords = (position) ->
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
-        $.getJSON 'https://jsonip.com/?callback=?', (result_data) ->
-          $('#submission_ip_address').val result_data.ip.split(',')[0]
+        $.getJSON 'https://jsonip.com/', (result_data) ->
+            $('#submission_ip_address').val result_data.ip
 
 block_callback = (error) ->
   $('#error-geolocation').modal('show');
@@ -118,7 +118,8 @@ $ ->
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
-  $('.test-speed-btn').prop('disabled', true)
+  $('.test-speed-btn').attr('disabled', true)
+  $(".checkboxes-container input[name='submission[testing_for]']").prop('checked', false)
 
   $('#take_test').on 'click', ->
     $('.title-container').addClass('hidden');

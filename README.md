@@ -148,6 +148,12 @@ $ docker-compose up --build frontend
 ```
 
 If `docker-compose ps` continues to throw an "Exit 1" error for any process after rebuilding the frontend, please ensure that your machines firewall permissions allow the applications. After you set your firewall permissions, you will need to close your workflow, restart docker, and restart the app.
+### Running Docker on Ubuntu
+Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
+
+Running the environment locally on a Linux-based OS could require running `docker-compose` commands as super user, `sudo docker-compose [commands]`.
+
+[Here is a guide for managing Docker as a non-root user](https://docs.docker.com/install/linux/linux-postinstall/).
 
 # Data tasks
 
@@ -222,5 +228,4 @@ Technical Committee:
 * Chris Ritzo
 * Chris Sjoblom
 * Antonio Ortega
-* Mark Davis
 * Ryan Olds
