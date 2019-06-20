@@ -290,18 +290,19 @@ class Submission < ActiveRecord::Base
   end
 
   def self.get_location_data(params)
-    geocoder = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
+    Geocoder.configure(timeout: 15)
+    result = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
 
     city = 'unknown'
     postal_code = nil
 
-    if  geocoder.country == "USA"
-      if geocoder.city.present?
-        city = geocoder.city
+    if result.present? && result.country == "USA"
+      if result.city.present?
+        city = result.city
       end
 
-      if geocoder.postal_code.present?
-        postal_code = geocoder.postal_code[0...5]
+      if result.postal_code.present?
+        postal_code = result.postal_code[0...5]
       end
     end
 
