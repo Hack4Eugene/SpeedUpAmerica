@@ -58,11 +58,6 @@ The SpeedUpAmerica project utilizes the following technologies for operation:
 These instructions work on Linux, Windows and MacOS and only need to be performed once, unless you reset your database or config files.
 
 Install [Git](https://git-scm.com/downloads) Windows/Mac/Linux
-> If you already have Git installed on your machine, you can update to the lastest version via your CMD:
-
-```bash
-$ git clone https://github.com/git/git
-```
 
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/).
 
