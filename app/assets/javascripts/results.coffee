@@ -6,8 +6,6 @@ $ ->
     bind_datetimepicker()
 
     # Create results
-    # @MAP_SWITCH
-    #all_results_map = initialize_mapbox('all_results_map')
     all_results_map = initialize_mapboxgl('all_results_map')
 
     # Draw polygons on the map
@@ -18,8 +16,6 @@ $ ->
     
     # Create stats map
     if document.getElementById('zip_code_map') != null
-      # @MAP_SWITCH
-      #zip_code_map = initialize_mapbox('zip_code_map')
       zip_code_map = initialize_mapboxgl('zip_code_map')
 
       apply_stats_filters(zip_code_map)
@@ -71,12 +67,8 @@ apply_filters = (map) ->
     $('#all_results_map').removeClass('hide')
 
     if group_by == 'zip_code'
-      # @MAP_SWITCH
-      #set_mapbox_zip_data(map, provider, date_range, group_by, test_type)
       set_mapbox_zip_data_gl(map, provider, date_range, group_by, test_type)
     else if group_by == 'census_code'
-      # @MAP_SWITCH
-      #set_mapbox_census_data_(map, provider, date_range, test_type, '', '', '')
       set_mapbox_census_data_gl(map, provider, date_range, test_type, '', '', '')
   
   $('#map-filters .filter').on 'change', ->
@@ -119,8 +111,6 @@ get_stats_filters = ->
   }
 
 update_statistics = (map, statistics, filter) ->
-  # @MAP_SWITCH
-  #set_mapbox_census_data(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
   set_mapbox_census_data_gl(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
   draw_stats_charts(statistics, filter)
 
