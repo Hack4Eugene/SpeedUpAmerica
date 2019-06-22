@@ -65,7 +65,8 @@ class Submission < ActiveRecord::Base
 
     submission = Submission.new(params)
 
-    if submission.monthly_price.present? && submission.provider_down_speed.present? && submission.actual_down_speed.present?
+    if submission.monthly_price.present? && submission.provider_down_speed.present? && submission.actual_down_speed.present? &&
+       submission.provider_down_speed > 0 && submission.monthly_price > 0 && submission.actual_down_speed > 0
       submission.provider_price = submission.monthly_price / submission.provider_down_speed
       submission.actual_price = submission.monthly_price / submission.actual_down_speed
     end
@@ -289,10 +290,25 @@ class Submission < ActiveRecord::Base
   end
 
   def self.get_location_data(params)
-    geocoder = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
-    data =  {
-      'address' => geocoder.city,
-      'zip_code' => geocoder.postal_code[0...5]
+    Geocoder.configure(timeout: 15)
+    result = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
+
+    city = 'unknown'
+    postal_code = nil
+
+    if result.present? && result.country == "USA"
+      if result.city.present?
+        city = result.city
+      end
+
+      if result.postal_code.present?
+        postal_code = result.postal_code[0...5]
+      end
+    end
+
+    data = {
+      'address' => city,
+      'zip_code' => postal_code
     }
   end
 
