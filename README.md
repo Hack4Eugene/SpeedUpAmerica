@@ -167,9 +167,9 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 
 >For Windows OS please use the following:
 ```bash
-$ mysql mysql -u suyc -psuyc suyc
+$ docker-compose exec -T mysql> -u suyc -psuyc suyc
 $ docker-compose exec -T mysql> TRUNCATE census_boundaries;
-$ docker-compose exec -T mysql>TRUNCATE zip_boundaries;
+$ docker-compose exec -T mysql> TRUNCATE zip_boundaries;
 $ docker-compose exec -T mysql> exit
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
