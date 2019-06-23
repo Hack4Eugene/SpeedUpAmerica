@@ -26,6 +26,8 @@ class SubmissionsController < ApplicationController
   def tileset_groupby
     data = Submission.fetch_tileset_groupby(params)
     render json: data
+  rescue StandardError => e
+    render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
   end
 
   def result_page
