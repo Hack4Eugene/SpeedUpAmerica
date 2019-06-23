@@ -118,6 +118,9 @@ window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code',
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
+    error: (request, status, error) ->
+      throw new Error("get zip data failed: " + request.status  + " " +
+        request.responseText + " " + error)
 
 window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_code, census_code, type) ->
   loader = get_map_loader(map)
@@ -142,4 +145,7 @@ window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_co
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
+    error: (request, status, error) ->
+      throw new Error("get census data failed: " + request.status  + " " +
+        request.responseText + " " + error)
 
