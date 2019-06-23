@@ -30,9 +30,14 @@ set_coords = (position) ->
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
+      error: (request, status, error) ->
+        throw new Error("submit extra data failed: " + request.status  + " " +
+          request.responseText + " " + error);
+      
 
 block_callback = (error) ->
   $('#error-geolocation').modal('show');
+  throw error
 
 get_location = ->
   if navigator.geolocation
