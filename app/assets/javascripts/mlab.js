@@ -479,8 +479,9 @@ function submitExtraData() {
         console.log('Data submitted successfully.');
       }
     },
-    error: function(jqXHR, status, msg) {
-      console.log('Something went wrong: ' + status + ' ' + msg);
+    error: function(request, status, error) {
+      throw new Error("submit extra data failed: " + request.status  + " " +
+        request.responseText + " " + error);
     }
   });
 }

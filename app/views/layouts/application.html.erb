@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
   <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
   <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to America!'}",
     description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test brought to you by SpeedUpAmerica and M-Lab open source projects'}",
@@ -28,6 +29,15 @@
   <% if Rails.env.production? == false %>
     <meta name="robots" content="noindex,nofollow">
   <% end %>
+
+  <!-- sentry.io -->
+  <script src="https://browser.sentry-cdn.com/5.4.3/bundle.min.js" crossorigin="anonymous"></script>
+  <script>
+  Sentry.init({
+    dsn: 'https://34760911653f40a18ba07c39a6a37002@sentry.io/1488146',
+    environment: '<%= Rails.env %>'
+  });
+  </script>
 
   <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
   <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
