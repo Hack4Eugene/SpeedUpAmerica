@@ -82,6 +82,9 @@ set_mapbox_zip_data = (map, provider, date_range, group_by='zip_code', test_type
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
+    error: (request, status, error) ->
+      throw new Error("submit extra data failed: " + request.status  + " " +
+        request.responseText + " " + error);
 
 set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census_code, type) ->
   loader = get_map_loader(map)
@@ -119,6 +122,9 @@ set_mapbox_census_data = (map, provider, date_range, test_type, zip_code, census
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
+    error: (request, status, error) ->
+      throw new Error("submit extra data failed: " + request.status  + " " +
+        request.responseText + " " + error);
 
 speed_breakdown_by_isp_chart = (data) ->
   $('#speed_breakdown_by_isp').highcharts
@@ -214,6 +220,9 @@ draw_stats_charts = (statistics, filter) ->
         $('.stats-section').removeClass('blurred')
         $('#stats_loader').addClass('hide')
         disable_filters('stats_filters', true)
+    error: (request, status, error) ->
+      throw new Error("submit extra data failed: " + request.status  + " " +
+        request.responseText + " " + error);
 
 average = (data) ->
   data.reduce(((p, c, i, a) ->
