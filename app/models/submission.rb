@@ -104,6 +104,12 @@ class Submission < ActiveRecord::Base
     end
   end
 
+  def self.fetch_tileset_groupby(params)
+    data = []
+
+    data
+  end
+
   def self.provider_names(provider_ids)
     return [] if provider_ids == ['all']
     ProviderStatistic.where(id: provider_ids).pluck(:name)

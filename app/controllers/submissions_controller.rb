@@ -23,6 +23,11 @@ class SubmissionsController < ApplicationController
     render json: data
   end
 
+  def tileset_groupby
+    data = Submission.fetch_tileset_groupby(params)
+    render json: data
+  end
+
   def result_page
   end
 
