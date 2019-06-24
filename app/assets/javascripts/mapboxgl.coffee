@@ -1,6 +1,6 @@
 popup = null
 census_layer = {
-  url: 'mapbox://mattsayre.21sq6qze',
+  url: 'mapbox://mattsayre.29aqw5xm',
   source: 'census-tracts',
   name: 'tracts',
   data_id: 'GEOID'
