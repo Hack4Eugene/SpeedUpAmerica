@@ -16,7 +16,7 @@ task :populate_census_tracts => [:environment] do
     data = JSON.parse(line)
 
     # if the zip code isn't in Oregon, ignore it
-    next if data["STATEFP"] != "41"
+    next if data["STATEFP"] != "41" && data["STATEFP"] != "53" && data["STATEFP"] != "16"
 
     # if the zip code doesn't include parts of Lane county, ignore it
     #next if !(data["COUNTYFP"].include? "39")
