@@ -117,11 +117,11 @@ class SubmissionsImporter
     FROM `measurement-lab.ndt.uploads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -125.3976 AND
-      connection_spec.client_geolocation.longitude < -116.0812 AND
-      connection_spec.client_geolocation.latitude > 41.7650 AND
-      connection_spec.client_geolocation.latitude < 46.3916 AND
       connection_spec.client_geolocation.postal_code IN (#{zip_codes})
+      connection_spec.client_geolocation.longitude > -179.5838 AND
+      connection_spec.client_geolocation.longitude < -58.6461 AND
+      connection_spec.client_geolocation.latitude > 14.2649 AND
+      connection_spec.client_geolocation.latitude < 72.5019 AND
     ORDER BY partition_date ASC, log_time ASC"
   end
 
@@ -145,11 +145,11 @@ class SubmissionsImporter
     FROM `measurement-lab.ndt.downloads`
     WHERE
       #{time_constraints.to_s}
-      connection_spec.client_geolocation.longitude > -125.3976 AND
-      connection_spec.client_geolocation.longitude < -116.0812 AND
-      connection_spec.client_geolocation.latitude > 41.7650 AND
-      connection_spec.client_geolocation.latitude < 46.3916 AND
       connection_spec.client_geolocation.postal_code IN (#{zip_codes})
+      connection_spec.client_geolocation.longitude > -179.5838 AND
+      connection_spec.client_geolocation.longitude < -58.6461 AND
+      connection_spec.client_geolocation.latitude > 14.2649 AND
+      connection_spec.client_geolocation.latitude < 72.5019 AND
     ORDER BY partition_date ASC, log_time ASC"
   end
 

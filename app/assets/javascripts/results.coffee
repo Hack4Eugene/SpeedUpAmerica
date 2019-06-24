@@ -7,19 +7,21 @@ $ ->
 
     # Create results
     all_results_map = initialize_mapboxgl('all_results_map')
-
-    # Draw polygons on the map
-    apply_filters(all_results_map)
-
-    # Add functionality to UI
-    apply_submission_filters()
+    all_results_map.on('load', () ->
+      # Draw polygons on the map
+      apply_filters(all_results_map)
+      # Add functionality to UI
+      apply_submission_filters()
+    )
     
     # Create stats map
     if document.getElementById('zip_code_map') != null
       zip_code_map = initialize_mapboxgl('zip_code_map')
-
-      apply_stats_filters(zip_code_map)
-      $('#stats_filters #stats_start_date').change()
+      all_results_map.on('load', () ->
+        apply_stats_filters(zip_code_map)
+        $('#stats_filters #stats_start_date').change()
+      )
+        
 
 bind_chosen_select = ->
   $('.chosen-select').chosen

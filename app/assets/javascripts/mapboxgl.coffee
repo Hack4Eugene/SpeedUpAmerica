@@ -19,8 +19,8 @@ window.initialize_mapboxgl = (elmID) ->
   map = new mapboxgl.Map({
     container: elmID,
     style: 'mapbox://styles/mapbox/streets-v9',
-    center: [-120.67382, 44.0639066],
-    zoom: 6,
+    center: [-117.879376, 45.392022],
+    zoom: 5,
     maxZoom: maxZoom
   })
 
