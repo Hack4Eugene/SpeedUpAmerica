@@ -138,6 +138,7 @@ class Submission < ActiveRecord::Base
         'all_count': number_with_delimiter(submissions.length, delimiter: ','),
         'all_fast': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
         'color': set_color(median_speed),
+        'fillOpacity': 0.7,
       }
     end
 
