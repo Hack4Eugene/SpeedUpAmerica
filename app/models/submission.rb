@@ -104,6 +104,51 @@ class Submission < ActiveRecord::Base
     end
   end
 
+  def self.fetch_tileset_groupby(params)
+    date_range = params[:date_range].to_s.split(' - ')
+    start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
+    providers = provider_names(params[:provider])
+    params[:zip_code] = [] if params[:zip_code] == ['all']
+    params[:census_code] = [] if params[:census_code] == ['all']
+
+    polygon_data = valid_test
+    polygon_data = polygon_data.where(provider: providers)              if providers.present? && providers.any?
+    polygon_data = polygon_data.with_zip_code(params[:zip_code])        if params[:zip_code].present? && params[:zip_code].any?
+    polygon_data = polygon_data.with_census_code(params[:census_code])  if params[:census_code].present? && params[:census_code].any?    
+    polygon_data = polygon_data.with_date_range(start_date, end_date)   if date_range.present?
+    if params[:group_by] == 'zip_code'
+      polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
+    else 
+      polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
+    end
+
+    stats = polygon_data.map do |id, submissions|
+      if params[:group_by] == 'zip_code'
+        next if  ZIP_CODES.include? id == false
+      else
+        next if  CENSUS_CODES.include? id == false
+      end
+
+      attribute_name = speed_attribute(params[:test_type])
+      median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
+
+      {
+        'id': id,
+        'all_median': median_speed,
+        'all_count': number_with_delimiter(submissions.length, delimiter: ','),
+        'all_fast': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
+        'color': set_color(median_speed),
+        'fillOpacity': 0.7,
+      }
+    end
+
+    {
+      'status': 'ok',
+      'params': params,
+      'result': stats
+    }
+  end
+
   def self.provider_names(provider_ids)
     return [] if provider_ids == ['all']
     ProviderStatistic.where(id: provider_ids).pluck(:name)
@@ -152,7 +197,7 @@ class Submission < ActiveRecord::Base
           'median_speed': median_speed,
           'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
           'fillColor': set_color(median_speed),
-          'fillOpacity': 0.5,
+          'fillOpacity': 0.7,
           'weight': 2,
           'opacity': 1,
           'color': set_color(median_speed),
@@ -213,7 +258,7 @@ class Submission < ActiveRecord::Base
           'median_speed': median_speed,
           'fast_speed': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
           'fillColor': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),
-          'fillOpacity': 0.5,
+          'fillOpacity': 0.7,
           'weight': 2,
           'opacity': 1,
           'color': params['type'] == 'stats' && set_stats_color(submissions.count) || set_color(median_speed),

@@ -31,7 +31,7 @@ set_coords = (position) ->
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
       error: (request, status, error) ->
-        throw new Error("submit extra data failed: " + request.status  + " " +
+        throw new Error("get location data failed: " + request.status  + " " +
           request.responseText + " " + error);
       
 
