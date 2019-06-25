@@ -414,6 +414,11 @@ body.in-stats .background-container,
     width: 20%;
     margin: 0 2%;
 
+    &.narrow-logo {
+      width: 12%;
+      margin: 0 5%;
+    }
+
     img {
       display: inline-block;
       width: 100%;
