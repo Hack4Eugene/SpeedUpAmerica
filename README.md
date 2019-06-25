@@ -130,7 +130,6 @@ To resolve this, rebuild the Docker image for that specific process. For example
 
 ```bash
 $ docker-compose up --build frontend
-```
 
 ### Running Docker on Ubuntu
 Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
