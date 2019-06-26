@@ -104,6 +104,17 @@ class Submission < ActiveRecord::Base
     end
   end
 
+  scope :groupby_zip_code, -> (test_type, column) {
+    in_zip_code_list.with_test_type(test_type)
+      .select("zip_code AS geo_id, COUNT(id) as all_count, AVG(#{column}) AS all_avg, MAX(#{column}) AS all_fast")
+      .group(:zip_code)
+  }
+  scope :groupby_census_tract, -> (test_type, column) {
+    in_census_code_list.with_test_type(test_type)
+      .select("census_code AS geo_id, COUNT(id) as all_count, AVG(#{column}) AS all_avg, MAX(#{column}) AS all_fast")
+      .group(:census_code)
+  }
+
   def self.fetch_tileset_groupby(params)
     date_range = params[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
@@ -116,28 +127,22 @@ class Submission < ActiveRecord::Base
     polygon_data = polygon_data.with_zip_code(params[:zip_code])        if params[:zip_code].present? && params[:zip_code].any?
     polygon_data = polygon_data.with_census_code(params[:census_code])  if params[:census_code].present? && params[:census_code].any?    
     polygon_data = polygon_data.with_date_range(start_date, end_date)   if date_range.present?
+    
+    attribute_name = speed_attribute(params[:test_type])
+
     if params[:group_by] == 'zip_code'
-      polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
+      polygon_data = polygon_data.groupby_zip_code(params[:test_type], attribute_name)
     else 
-      polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
+      polygon_data = polygon_data.groupby_census_tract(params[:test_type], attribute_name)
     end
 
-    stats = polygon_data.map do |id, submissions|
-      if params[:group_by] == 'zip_code'
-        next if  ZIP_CODES.include? id == false
-      else
-        next if  CENSUS_CODES.include? id == false
-      end
-
-      attribute_name = speed_attribute(params[:test_type])
-      median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
-
+    stats = polygon_data.map do |submission|
       {
-        'id': id,
-        'all_median': median_speed,
-        'all_count': number_with_delimiter(submissions.length, delimiter: ','),
-        'all_fast': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
-        'color': set_color(median_speed),
+        'id': submission[:geo_id],
+        'all_avg': '%.2f' % submission[:all_avg],
+        'all_count': number_with_delimiter(submission[:all_count], deimiter: ','),
+        'all_fast': '%.2f' % submission[:all_fast],
+        'color': set_color(submission[:all_avg]),
         'fillOpacity': 0.7,
       }
     end

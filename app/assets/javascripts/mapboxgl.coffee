@@ -105,7 +105,7 @@ addLayer = (map, layer, data, test_type, layer_type) ->
     id = feature.properties[layer.data_id]
     stats = {
         id: "Unknown"
-        all_median: 0,
+        all_avg: 0,
         all_count: 0,
         all_fast: 0
     }
@@ -117,8 +117,8 @@ addLayer = (map, layer, data, test_type, layer_type) ->
 
     content = "<h4>#{layer_type}: " + stats.id + "</h4>" +
       "<p>Tests in this #{layer_type}: <strong>" + stats.all_count + '</strong></p>' +
-      "<p>Median #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" +
-        stats.all_median + " Mbps</strong></p>" +
+      "<p>Average #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" +
+        stats.all_avg + " Mbps</strong></p>" +
       "<p>Fastest #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" +
         stats.all_fast + " Mbps</strong></p>"
     
