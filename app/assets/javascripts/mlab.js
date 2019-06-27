@@ -480,8 +480,13 @@ function submitExtraData() {
       }
     },
     error: function(request, status, error) {
-      throw new Error("submit extra data failed: " + request.status  + " " +
-        request.responseText + " " + error);
+      err = new Error("submit extra data failed");
+
+      Sentry.setExtra("status_code", request.status);
+      Sentry.setExtra("body",  request.responseText);
+      Sentry.setExtra("response_status",  statusText);
+      Sentry.setExtra("response_error",  errorText);
+      Sentry.captureException(err);
     }
   });
 }

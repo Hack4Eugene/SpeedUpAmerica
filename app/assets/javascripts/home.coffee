@@ -31,13 +31,21 @@ set_coords = (position) ->
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
       error: (request, status, error) ->
-        throw new Error("get location data failed: " + request.status  + " " +
-          request.responseText + " " + error);
+        err = new Error("get location data failed")
+
+        Sentry.setExtra("status_code", request.status)
+        Sentry.setExtra("body",  request.responseText)
+        Sentry.setExtra("response_status",  statusText)
+        Sentry.setExtra("response_error",  errorText)
+        Sentry.captureException(err)
       
 
-block_callback = (error) ->
-  $('#error-geolocation').modal('show');
-  throw error
+block_callback = (err) ->
+  $('#error-geolocation').modal('show')
+
+  Sentry.setExtra("error_code", err.code)
+  Sentry.setExtra("error_message", err.message)
+  Sentry.captureException(err)
 
 get_location = ->
   if navigator.geolocation
