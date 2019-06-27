@@ -92,7 +92,7 @@ window.draw_stats_charts = (statistics, filter) ->
         $('.stats-section').removeClass('blurred')
         $('#stats_loader').addClass('hide')
         disable_filters('stats_filters', true)
-    error: (request, status, error) ->
+    error: (request, statusText, errorText) ->
       err = new Error("get speed data failed")
 
       Sentry.setExtra("status_code", request.status)

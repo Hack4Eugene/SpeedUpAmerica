@@ -183,7 +183,7 @@ window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_co
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
-    error: (request, status, error) ->
+    error: (request, statusText, errorText) ->
       err = new Error("get census data failed")
 
       Sentry.setExtra("status_code", request.status)

@@ -479,7 +479,7 @@ function submitExtraData() {
         console.log('Data submitted successfully.');
       }
     },
-    error: function(request, status, error) {
+    error: function(request, statusText, errorText) {
       err = new Error("submit extra data failed");
 
       Sentry.setExtra("status_code", request.status);

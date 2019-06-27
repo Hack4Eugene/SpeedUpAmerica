@@ -30,7 +30,7 @@ set_coords = (position) ->
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
-      error: (request, status, error) ->
+      error: (request, statusText, errorText) ->
         err = new Error("get location data failed")
 
         Sentry.setExtra("status_code", request.status)
