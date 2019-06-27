@@ -92,6 +92,14 @@ window.draw_stats_charts = (statistics, filter) ->
         $('.stats-section').removeClass('blurred')
         $('#stats_loader').addClass('hide')
         disable_filters('stats_filters', true)
+    error: (request, statusText, errorText) ->
+      err = new Error("get speed data failed")
+
+      Sentry.setExtra("status_code", request.status)
+      Sentry.setExtra("body",  request.responseText)
+      Sentry.setExtra("response_status",  statusText)
+      Sentry.setExtra("response_error",  errorText)
+      Sentry.captureException(err)
 
 average = (data) ->
   data.reduce(((p, c, i, a) ->
