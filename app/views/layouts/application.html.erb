@@ -4,15 +4,15 @@
 
   <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
   <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to America!'}",
-    description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test brought to you by SpeedUpAmerica and M-Lab open source projects'}",
+    description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test and broadband map brought to you by SpeedUpAmerica'}",
     twitter: {
       site: "#{request.original_url}",
       title: "#{yield(:title).present? ? yield(:title) : 'Speed Up America - Internet Speed Test'}",
-      description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test brought to you by SpeedUpAmerica and M-Lab open source projects'}",
+      description: "#{yield(:description).present? ? yield(:description) : 'SpeedUpAmerica aims to provide on the ground truth about the Internet in America. Our national broadband map provides transparency: real Internet speeds received, actual prices paid, and level of service experienced.'}",
       image: image_url('logo.png'),
     },
     og: {
-      title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to Americans!'}",
+      title: "#{yield(:title).present? ? yield(:title) : 'SpeedUpAmerica.com - Bring better internet service to America!'}",
       type: 'website',
       url: "#{request.original_url}",
       description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with SpeedUpAmerica! Find out if you\'re getting the internet speed you are paying for.'}",
