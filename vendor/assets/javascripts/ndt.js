@@ -555,7 +555,8 @@ NDTjs.prototype.startTest = function () {
   };
 
   ndtSocket.onerror = function (response) {
-    $('#msg').text('Sorry, there is a socket connection error!');
+    $('#msg').html('<h4 style="text-align: centered">Problem communicating with M-Lab NDT server. ' + 
+      'Please reload the page and try the test again. If the error persists, please contact support.</h4>');
     errorMessage = that.parseNdtMessage(response.data)[3].msg;
     throw that.TestFailureException(errorMessage);
   };

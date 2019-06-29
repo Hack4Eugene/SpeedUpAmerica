@@ -18,7 +18,7 @@ window.initialize_mapboxgl = (elmID) ->
 
   map = new mapboxgl.Map({
     container: elmID,
-    style: 'mapbox://styles/mapbox/streets-v9',
+    style: 'mapbox://styles/mapbox/light-v9',
     center: [-117.879376, 45.392022],
     zoom: 5,
     maxZoom: maxZoom
@@ -151,9 +151,14 @@ window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code',
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
-    error: (request, status, error) ->
-      throw new Error("get zip data failed: " + request.status  + " " +
-        request.responseText + " " + error)
+    error: (request, statusText, errorText) ->
+      err = new Error("get zip data failed")
+
+      Sentry.setExtra("status_code", request.status)
+      Sentry.setExtra("body",  request.responseText)
+      Sentry.setExtra("response_status",  statusText)
+      Sentry.setExtra("response_error",  errorText)
+      Sentry.captureException(err)
 
 window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_code, census_code, type) ->
   loader = get_map_loader(map)
@@ -178,7 +183,12 @@ window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_co
 
       loader.addClass('hide')
       disable_filters('map-filters', false)
-    error: (request, status, error) ->
-      throw new Error("get census data failed: " + request.status  + " " +
-        request.responseText + " " + error)
+    error: (request, statusText, errorText) ->
+      err = new Error("get census data failed")
+
+      Sentry.setExtra("status_code", request.status)
+      Sentry.setExtra("body",  request.responseText)
+      Sentry.setExtra("response_status",  statusText)
+      Sentry.setExtra("response_error",  errorText)
+      Sentry.captureException(err)
 

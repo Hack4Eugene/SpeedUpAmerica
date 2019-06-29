@@ -155,7 +155,6 @@ class Submission < ActiveRecord::Base
   end
 
   def self.set_mapbox_zip_data(params, data=[])
-    agent = Mechanize.new
     date_range = params[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
     providers = provider_names(params[:provider])
@@ -169,15 +168,13 @@ class Submission < ActiveRecord::Base
     polygon_data = polygon_data.with_date_range(start_date, end_date)         if date_range.present?
     polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
 
-    #boundaries = Rails.cache.fetch('zip_boundaries', expires_in: 2.hours) do
+    boundaries = Rails.cache.fetch('zip_boundaries', expires_in: 2.hours) do
       zip_boundaries = {}
       ZipBoundary.where(name: ZIP_CODES).each do |zip|
         zip_boundaries[zip.name] = { zip_type: zip.zip_type, bounds: zip.bounds }
       end
-      #zip_boundaries
-    #end
-
-    boundaries = zip_boundaries
+      zip_boundaries
+    end
 
     polygon_data.each do |zip_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
@@ -215,7 +212,6 @@ class Submission < ActiveRecord::Base
   end
 
   def self.set_mapbox_census_data(params, data=[])
-    agent = Mechanize.new
     date_range = params[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
     providers = provider_names(params[:provider])
@@ -227,7 +223,7 @@ class Submission < ActiveRecord::Base
     polygon_data = polygon_data.with_date_range(start_date, end_date) if date_range.present?
     polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
     
-    #boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
+    boundaries = Rails.cache.fetch('census_boundaries', expires_in: 2.hours) do
       census_boundaries = {}
       CensusBoundary.where(geo_id: CENSUS_CODES).each do |boundary|
         census_boundaries[boundary.geo_id] = {
@@ -235,10 +231,8 @@ class Submission < ActiveRecord::Base
            bounds: boundary.bounds
         }
       end
-      #census_boundaries
-    #end
-
-    boundaries = census_boundaries
+      census_boundaries
+    end
 
     polygon_data.each do |census_code, submissions|
       attribute_name = speed_attribute(params[:test_type])
