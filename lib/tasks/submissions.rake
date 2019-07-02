@@ -88,7 +88,6 @@ def area_identifier_json_url(area_identifier)
   "http://www.usboundary.com/api/areadata/geom/?id=#{area_identifier}"
 end
 
-
 def get_census_code(latitude, longitude)
   agent = Mechanize.new
   return nil if latitude.blank? || longitude.blank?

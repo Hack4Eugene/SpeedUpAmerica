@@ -1,6 +1,6 @@
 popup = null
 census_layer = {
-  url: 'mapbox://mattsayre.29aqw5xm',
+  url: 'mapbox://mattsayre.1pdu0bcw',
   source: 'census-tracts',
   name: 'tracts',
   data_id: 'GEOID'
@@ -39,12 +39,7 @@ window.initialize_mapboxgl = (elmID) ->
 
 get_map_loader = (map) ->
   map_id = map.getContainer().id
-
-  if map_id == 'all_results_map'
-    loader_id = '#loader'
-  else if map_id == 'zip_code_map'
-    loader_id = '#stats_loader'
-
+  loader_id = '#loader'
   $(loader_id)
   
 clearMap = (map) ->

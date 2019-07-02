@@ -36,6 +36,11 @@ class Submission < ActiveRecord::Base
   ZIP_CODES = ZipBoundary.pluck(:name)
   CENSUS_CODES = CensusBoundary.pluck(:geo_id)
 
+  SPEED_BREAKDOWN_RANGES = [
+    '0..5.99', '6..10.99', '11..20.99', '21..40.99', '40..60.99', '61..80.99', '81..100.99',
+    '101..250.99', '251..500.99', '500..1000.99', '1001+'
+  ]
+
   validates :testing_for, length: { maximum: 20 }
   validates :connected_with, length: { maximum: 50 }
   validates :provider, length: { maximum: 255 }
@@ -43,7 +48,6 @@ class Submission < ActiveRecord::Base
   default_scope { where('from_mlab = 0 OR (from_mlab = 1 AND provider IS NOT NULL)') }
 
   scope :mapbox_filter, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('latitude, longitude, zip_code, actual_down_speed, actual_upload_speed, upload_median, download_median') }
-  scope :mapbox_filter_by_zip_code, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code) }
   scope :with_date_range, -> (start_date, end_date) { where('test_date >= ? AND test_date <= ?', start_date, end_date.end_of_day) }
   scope :with_test_type, -> (test_type) { where(test_type: [test_type, 'both']) }
   scope :in_zip_code_list, -> { valid_test.where(zip_code: ZIP_CODES).where.not(zip_code: [nil, '']) }
@@ -56,9 +60,16 @@ class Submission < ActiveRecord::Base
   scope :with_rating, -> (rating) { where(rating: rating) }
   scope :valid_rating, -> { where('rating > 0') }
   scope :from_mlab, -> { where(from_mlab: true) }
-  scope :mapbox_filter_by_census_code, -> (test_type) { in_census_code_list.with_test_type(test_type).select('census_code, actual_down_speed, actual_upload_speed').group_by(&:census_code) }
+  scope :not_from_mlab, -> { where(from_mlab: false) }
   scope :in_census_code_list, -> { valid_test.where(census_code: CENSUS_CODES) }
   scope :with_census_code, -> (census_code) { where(census_code: census_code) }
+
+  scope :mapbox_filter_by_zip_code, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code) }
+  scope :mapbox_filter_by_census_code, -> (test_type) { in_census_code_list.with_test_type(test_type).select('census_code, actual_down_speed, actual_upload_speed').group_by(&:census_code) }
+
+  scope :get_zip_code_for_stats_cache, -> (zip_code, test_type) { where(zip_code: zip_code).with_test_type(test_type) }
+  scope :get_census_tract_for_stats_cache, -> (census_tract, test_type) { where(census_code: census_tract).with_test_type(test_type) }
+  scope :get_provider_for_stats_cache, -> (provider, test_type) { where(provider: provider).with_test_type(test_type) }
 
   def self.create_submission(params)
     duplicate_ipa_tests = Submission.where('test_date = ? AND ip_address = ?', Date.today, params[:ip_address])
@@ -111,11 +122,66 @@ class Submission < ActiveRecord::Base
     params[:zip_code] = [] if params[:zip_code] == ['all']
     params[:census_code] = [] if params[:census_code] == ['all']
 
+    if params[:zip_code].present? || params[:census_code].present? || providers.present?
+      from_cache = false
+      stats = calculate_tileset_groupby(params, providers, start_date, end_date)
+    else
+      from_cache = true
+      stats = cached_tileset_groupby(params[:group_by], params[:test_type], start_date, end_date)      
+    end
+
+    {
+      'status': 'ok',
+      'params': params,
+      'result': stats,
+      'from_cache': from_cache
+    }
+  end
+
+  def self.cached_tileset_groupby(group_by, test_type, start_date, end_date)
+    # Deal with census tract being poorly named in the rest of the code base
+    if group_by == 'census_code'
+      group_by = 'census_tract'
+    end
+
+    results = []
+    StatsCache.where(:stat_type => group_by, :date_type => 'all').each do |stats|
+      result = {
+        'id': stats.stat_id,
+        'fillOpacity': 0.7,
+      }
+
+      if test_type == 'download'
+        next if stats.download_count == 0
+
+        result[:all_avg] = stats.download_avg
+        result[:all_median] = stats.download_median
+        result[:all_fast] = stats.download_max
+        result[:all_count] = stats.download_count
+      else 
+        next if stats.upload_count == 0
+
+        result[:all_avg] = stats.upload_avg
+        result[:all_median] = stats.upload_median
+        result[:all_fast] = stats.upload_max
+        result[:all_count] = stats.upload_count
+      end
+
+      result[:color] = set_color(result[:all_median])
+
+      results << result
+    end
+
+    results
+  end
+
+  def self.calculate_tileset_groupby(params, providers, start_date, end_date)
     polygon_data = valid_test
     polygon_data = polygon_data.where(provider: providers)              if providers.present? && providers.any?
     polygon_data = polygon_data.with_zip_code(params[:zip_code])        if params[:zip_code].present? && params[:zip_code].any?
     polygon_data = polygon_data.with_census_code(params[:census_code])  if params[:census_code].present? && params[:census_code].any?    
-    polygon_data = polygon_data.with_date_range(start_date, end_date)   if date_range.present?
+    polygon_data = polygon_data.with_date_range(start_date, end_date)   if start_date.present? && end_date.present?
+
     if params[:group_by] == 'zip_code'
       polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
     else 
@@ -142,11 +208,7 @@ class Submission < ActiveRecord::Base
       }
     end
 
-    {
-      'status': 'ok',
-      'params': params,
-      'result': stats
-    }
+    stats
   end
 
   def self.provider_names(provider_ids)
@@ -476,43 +538,68 @@ class Submission < ActiveRecord::Base
   end
 
   def self.percentage(count, total_count)
-    total_count > 0 && (count/total_count.to_f*100).round(2) || 0
+    total_count > 0 && (count/total_count.to_f*100).round(2) || 0.00
   end
 
   def self.speed_comparison_data(submissions, test_type)
     attribute_name = speed_attribute(test_type)
     total_count = submissions.count
     mlab_tests_count = submissions.from_mlab.count
+
     less_than_5 = percentage(submissions.where("#{attribute_name}": [0..5]).count, total_count)
     less_than_25 = percentage(submissions.where("#{attribute_name}": [0..25]).count, total_count)
     faster_than_100 = percentage(submissions.where("#{attribute_name} >?", 100).count, total_count)
     faster_than_250 = percentage(submissions.where("#{attribute_name} >?", 250).count, total_count)
 
-    { less_than_5: less_than_5, less_than_25: less_than_25, faster_than_100: faster_than_100, faster_than_250: faster_than_250, mlab_tests_count: mlab_tests_count, speedup_tests_count: total_count - mlab_tests_count }
+    {
+      speedup_tests_count: total_count - mlab_tests_count,
+      mlab_tests_count: mlab_tests_count,
+
+      less_than_5: less_than_5, 
+      less_than_25: less_than_25, 
+      faster_than_100: faster_than_100, 
+      faster_than_250: faster_than_250,      
+    }
   end
 
-  def self.speed_breakdown_data(submissions, statistics, providers)
-    speed_breakdown_ranges = ['0..5.99', '6..10.99', '11..20.99', '21..40.99', '40..60.99', '61..80.99', '81..100.99', '101..250.99', '251..500.99', '500..1000.99', '1001+']
-    categories = []
+  def self.cached_speed_comparison_data(stats, test_type, providers, start_date, end_date, date_range)
+    total_count = stats.map(&:"#{test_type}_count").inject(0){|sum, x| sum + x }
+    sua_count = stats.map(&:"#{test_type}_sua_count").inject(0){|sum, x| sum + x }
+    less_than_5 = Submission.percentage(stats.map(&:"#{test_type}_less_than_5").inject(0){|sum, x| sum + x }, total_count)
+    less_than_25 = Submission.percentage(stats.map(&:"#{test_type}_less_than_25").inject(0){|sum, x| sum + x }, total_count)
+    faster_than_100 = Submission.percentage(stats.map(&:"#{test_type}_faster_than_100").inject(0){|sum, x| sum + x }, total_count)
+    faster_than_250 = Submission.percentage(stats.map(&:"#{test_type}_faster_than_250").inject(0){|sum, x| sum + x }, total_count)
+
+    {
+      speedup_tests_count: sua_count,
+      mlab_tests_count: total_count - sua_count,
+      
+      less_than_5: less_than_5, 
+      less_than_25: less_than_25, 
+      faster_than_100: faster_than_100, 
+      faster_than_250: faster_than_250,      
+    }
+  end
+
+  def self.calculate_speed_breakdown(test_type, provider_submissions)
+    SPEED_BREAKDOWN_RANGES.map do |range|
+      count = count_between(provider_submissions, range, test_type)
+      percentage(count, provider_submissions.count)
+    end
+  end
+
+  def self.speed_breakdown_data(submissions, statistics, providers, categories)
     series = []
-
     providers.each do |provider|
-      values = []
       provider_submissions = submissions.with_provider(provider)
-      speed_breakdown_ranges.each do |range|
-        count = count_between(provider_submissions, range, statistics[:test_type])
-        categories << map_range_values(range)
-        values << percentage(count, provider_submissions.count).round(2)
-      end
-
+      values = calculate_speed_breakdown(statistics[:test_type], provider_submissions)
       series << { name: provider, data: values }
     end
 
     { categories: categories, series: series }
   end
 
-  def self.get_date_ranges(statistics, start_date, end_date)
-    period = statistics[:period].downcase
+  def self.get_date_ranges(period, start_date, end_date)
     time_intervals = [{ name: category_name(start_date, period), range: [start_date, start_date.send("end_of_#{period}")] }]
 
     loop do
@@ -572,28 +659,73 @@ class Submission < ActiveRecord::Base
   def self.internet_stats_data(statistics)
     date_range = statistics[:date_range].to_s.split(' - ')
     start_date, end_date = Time.parse(date_range[0]), Time.parse(date_range[1]) if date_range.present?
-    statistics[:provider] = ProviderStatistic.pluck(:id) if statistics[:provider] == ['all']
-    statistics[:zip_code] = [] if statistics[:zip_code] == ['all']
-    statistics[:census_code] = [] if statistics[:census_code] == ['all']
-    providers = ProviderStatistic.where(id: statistics[:provider]).pluck(:name)
-    date_ranges = get_date_ranges(statistics, start_date, end_date)
+    date_ranges = get_date_ranges(statistics[:period].downcase, start_date, end_date)
     categories = date_ranges.collect { |range| range[:name] }
 
+    providers = ProviderStatistic.where(id: statistics[:provider]).pluck(:name)
+
+    statistics[:provider] = ProviderStatistic.pluck(:id) if statistics[:provider] != ['all']
+    statistics[:zip_code] = [] if statistics[:zip_code] == ['all']
+    statistics[:census_code] = [] if statistics[:census_code] == ['all']
+
+    puts statistics
+
+    if statistics[:zip_code].present? || statistics[:census_code].present?
+      results = calculate_speed_data(statistics, providers, start_date, end_date, date_ranges)
+    else
+      results = lookup_speed_data(statistics, providers, start_date, end_date, date_ranges)      
+    end
+
+    results
+  end
+
+  def self.lookup_speed_data(params, providers, start_date, end_date, date_ranges)
+    stats = StatsCache.where(:stat_type => 'provider', :stat_id => providers, :date_type => 'all').to_a
+
+    speed_comparison_data = cached_speed_comparison_data(stats, params[:test_type], providers, start_date, end_date, date_ranges)
+
+    #{
+    #  speed_comparison_data: speed_comparison_data(submissions, statistics[:test_type]),
+    #  speed_breakdown_chart_data: speed_breakdown_data(submissions, statistics, providers, categories),
+    #  median_speed_chart_data: isps_tests_data(submissions, statistics, providers, date_ranges, categories)[:median_data],
+    #  tests_count_data: isps_tests_data(submissions, statistics, providers, date_ranges, categories)[:tests_count_data],
+    #  total_tests: total_tests,
+    #}
+
+    {
+      speed_comparison_data: speed_comparison_data,
+      from_cache: true,
+    }
+  end
+
+  def self.calculate_speed_data(statistics, providers, start_date, end_date, date_ranges)
     submissions = self.valid_test
     total_tests = submissions.count
-    submissions = submissions.with_date_range(start_date, end_date)  if date_range.present?
+    submissions = submissions.with_date_range(start_date, end_date)  if date_ranges.present?
     submissions = submissions.with_test_type(statistics[:test_type]) if statistics[:test_type].present?
     submissions = submissions.with_zip_code(statistics[:zip_code])   if statistics[:zip_code].present? && statistics[:zip_code].any?
     submissions = submissions.with_census_code(statistics[:census_code]) if statistics[:census_code].present? && statistics[:census_code].any?
     submissions = submissions.where(provider: providers)
 
+    categories = get_categories()
+
     {
       speed_comparison_data: speed_comparison_data(submissions, statistics[:test_type]),
-      speed_breakdown_chart_data: speed_breakdown_data(submissions, statistics, providers),
+      speed_breakdown_chart_data: speed_breakdown_data(submissions, statistics, providers, categories),
       median_speed_chart_data: isps_tests_data(submissions, statistics, providers, date_ranges, categories)[:median_data],
       tests_count_data: isps_tests_data(submissions, statistics, providers, date_ranges, categories)[:tests_count_data],
       total_tests: total_tests,
+      from_cache: false,
     }
+  end
+
+  def self.get_categories()
+    categories = []
+    SPEED_BREAKDOWN_RANGES.each do |range|
+      categories << map_range_values(range)
+    end
+
+    categories
   end
 
   def self.average_speed_by_zipcode(submissions)

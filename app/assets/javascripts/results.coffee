@@ -15,12 +15,8 @@ $ ->
     )
     
     # Create stats map
-    if document.getElementById('zip_code_map') != null
-      zip_code_map = initialize_mapboxgl('zip_code_map')
-      all_results_map.on('load', () ->
-        apply_stats_filters(zip_code_map)
-        $('#stats_filters #stats_start_date').change()
-      )
+    apply_stats_filters()
+    $('#stats_filters #stats_start_date').change()
         
 
 bind_chosen_select = ->
@@ -89,7 +85,7 @@ apply_submission_filters = ->
     active_button.removeClass().addClass('btn btn-primary')
 
 
-apply_stats_filters = (map) ->
+apply_stats_filters = ->
   $('#stats_filters .filter').on 'change', ->
     update_all_option($(this))
     set_date_filters_value($(this)) if $(this).val() == ''
@@ -99,7 +95,7 @@ apply_stats_filters = (map) ->
     statistics = get_stats_filters()
     disable_filters('stats_filters', true)
 
-    update_statistics(map, statistics, filter)
+    update_statistics(statistics, filter)
 
 
 get_stats_filters = ->
@@ -112,8 +108,7 @@ get_stats_filters = ->
     'census_code': $('#census_code').val()
   }
 
-update_statistics = (map, statistics, filter) ->
-  set_mapbox_census_data_gl(map, statistics.provider, statistics.date_range, statistics.test_type, statistics.zip_code, statistics.census_code, 'stats')
+update_statistics = (statistics, filter) ->
   draw_stats_charts(statistics, filter)
 
 window.disable_filters = (container, disabled) ->
