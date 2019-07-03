@@ -6,7 +6,7 @@ require 'geo_ruby/ewk'
 
 
 task :populate_zip_boundaries => [:environment] do
-  puts "Right now we're only including OR."
+  puts "Right now we're only including OR, WA, and ID."
 
   # keep track of the number of zip codes added to ZipBoundary
   add_count = 0

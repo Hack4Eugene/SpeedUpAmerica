@@ -128,7 +128,7 @@ class SubmissionsImporter
   end
 
   def self.get_start_time(country_code, region, test_type)
-    start_time = "2019-04-01"
+    start_time = Date.today - 13.months
 
     if Submission.where(:country_code => country_code, :region => region,
         :test_type => test_type, :from_mlab => 1).order("test_date DESC").first.nil? == false

@@ -4,7 +4,7 @@ require 'rake'
 require 'georuby'
 
 task :populate_census_tracts => [:environment] do
-  puts "Right now we're only including OR."
+  puts "Right now we're only including OR, WA, and ID."
 
   # keep track of the number of Census Tracts added to CensusBoundary
   add_count = 0
