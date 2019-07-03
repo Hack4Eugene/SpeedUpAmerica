@@ -126,7 +126,7 @@ addLayer = (map, layer, data, test_type, layer_type) ->
       .addTo(map)
   )  
 
-window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+window.set_mapbox_zip_data_gl = (map, provider, group_by='zip_code', test_type='download') ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
 
@@ -138,7 +138,6 @@ window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code',
     dataType: 'json'
     data:
       provider: provider
-      date_range: date_range
       group_by: group_by
       test_type: test_type
     success: (data) ->
@@ -155,7 +154,7 @@ window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code',
       Sentry.setExtra("response_error",  errorText)
       Sentry.captureException(err)
 
-window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_code, census_code, type) ->
+window.set_mapbox_census_data_gl = (map, provider, test_type, zip_code, census_code, type) ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
 
@@ -167,7 +166,6 @@ window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_co
     dataType: 'json'
     data:
       provider: provider
-      date_range: date_range
       group_by: 'census_code'
       test_type: test_type
       zip_code: zip_code

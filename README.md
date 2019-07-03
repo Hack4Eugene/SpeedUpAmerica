@@ -65,7 +65,7 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
 ```bash
 $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
-$ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
+$ git clone https://github.com/Hack4Eugene/speedupamerica-migrator.git
 $ cd SpeedUpAmerica
 $ cp local.env.template local.env
 $ docker-compose up -d mysql
@@ -83,6 +83,7 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
 $ docker-compose run frontend rake update_providers_statistics
+$ docker-compose run frontend rake update_stats_cache
 ```
 
 > These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
@@ -155,6 +156,12 @@ $ docker-compose run frontend rake update_pending_census_codes
 $ docker-compose run frontend rake update_providers_statistics
 ```
 
+### Updating cached data 
+
+```
+$ docker-compose run frontend rake update_stats_cache
+```
+
 ## Updating boundaries
 
 When boundaries are updated each developer must reload their boundary tables:
@@ -201,6 +208,8 @@ $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submi
 ```
 
 ### Creating test data
+
+> This should only be used to test newly loaded boundaries.
 
 After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
 

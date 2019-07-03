@@ -18,11 +18,6 @@ class SubmissionsController < ApplicationController
     redirect_to submission_path(submission)
   end
 
-  def mapbox_data
-    data = Submission.fetch_mapbox_data(params)
-    render json: data
-  end
-
   def tileset_groupby
     data = Submission.fetch_tileset_groupby(params)
     render json: data

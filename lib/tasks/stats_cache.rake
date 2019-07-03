@@ -1,10 +1,5 @@
 require 'rake'
 
-speed_breakdown_columns = [
-  '0_5', '6_10', '11_20', '21_40', '40_60', '61_80', '81_100',
-  '101_250', '251_500', '500_1000', '1001'
-]
-
 task :update_stats_cache => [:environment] do
   puts 'Updating stats cache'
 

@@ -3,7 +3,6 @@ $ ->
     # Initialize filter values
     bind_chosen_select()
     set_multiple_selected_values()
-    bind_datetimepicker()
 
     # Create results
     all_results_map = initialize_mapboxgl('all_results_map')
@@ -16,7 +15,7 @@ $ ->
     
     # Create stats map
     apply_stats_filters()
-    $('#stats_filters #stats_start_date').change()
+    $('#stats_filters #stats_test_type').change()
         
 
 bind_chosen_select = ->
@@ -33,44 +32,27 @@ set_multiple_selected_values = ->
   $.each ['provider', 'stats_provider', 'zip_code', 'census_code'], (index, id) ->
     $("#selected_#{id}").val($("##{id}").val())
 
-bind_datetimepicker = ->
-  $.each ['start_date', 'end_date', 'stats_start_date', 'stats_end_date'], (index, elem) ->
-    set_date_filters_value($("##{elem}"))
-
-  current_date = new Date()
-  default_date = new Date()
-  default_date.setFullYear(default_date.getFullYear() - 1)
-
-  $('#start_date, #stats_start_date').datepicker
-    format: 'MM dd, yyyy'
-    endDate: current_date
-    setDate: default_date
-    autoclose: true
-
-  $('#end_date, #stats_end_date').datepicker
-    format: 'MM dd, yyyy'
-    endDate: current_date
-    setDate: default_date
-    autoclose: true
-
+monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
+  "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+ 
 apply_filters = (map) ->
   update_map = ->
     provider = $('#provider').val()
     group_by = $('#group_by').val()
     test_type = $('#test_type').val()
-    date_range = [$('#start_date').val(), $('#end_date').val()].join(' - ')
-    update_csv_link(date_range)
+    
+    update_csv_link()
     disable_filters('map-filters', true)
 
     $('#all_results_map').removeClass('hide')
 
     if group_by == 'zip_code'
-      set_mapbox_zip_data_gl(map, provider, date_range, group_by, test_type)
+      set_mapbox_zip_data_gl(map, provider, group_by, test_type)
     else if group_by == 'census_code'
-      set_mapbox_census_data_gl(map, provider, date_range, test_type, '', '', '')
+      set_mapbox_census_data_gl(map, provider, test_type, '', '', '')
   
   $('#map-filters .filter').on 'change', ->
-    set_date_filters_value($(this)) if $(this).val() == ''
     update_all_option($(this))
     update_map()
   
@@ -88,7 +70,6 @@ apply_submission_filters = ->
 apply_stats_filters = ->
   $('#stats_filters .filter').on 'change', ->
     update_all_option($(this))
-    set_date_filters_value($(this)) if $(this).val() == ''
     $('.stats-section').addClass('blurred')
     $('#stats_loader').removeClass('hide')
     filter = $(this).attr('id')
@@ -100,10 +81,8 @@ apply_stats_filters = ->
 
 get_stats_filters = ->
   {
-    'date_range': [$('#stats_start_date').val(), $('#stats_end_date').val()].join(' - ')
     'provider': $('#stats_provider').val()
     'test_type': $('#stats_test_type').val()
-    'period': $('#period').val()
     'zip_code': $('#zip_code').val()
     'census_code': $('#census_code').val()
   }
@@ -115,19 +94,9 @@ window.disable_filters = (container, disabled) ->
   filters = $("##{container} .filter")
   filters.attr('disabled', disabled).trigger('chosen:updated')
 
-set_date_filters_value = (elem) ->
-  date = new Date()
-  month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-  formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear()}"
-  elem.val(formatted_date) if elem.prop('id') == 'end_date' || elem.prop('id') == 'stats_end_date'
-
-  formatted_date = "#{month_names[date.getMonth()]} #{date.getDate()}, #{date.getFullYear() - 1}"
-  elem.val(formatted_date) if elem.prop('id') == 'start_date' || elem.prop('id') == 'stats_start_date'
-
 update_csv_link = (date_range) ->
   root_url = $('#root_url').val()
-  $('.export-btn').prop('href', "#{root_url}submissions/export_csv?date_range=#{date_range}")
+  $('.export-btn').prop('href', "#{root_url}submissions/export_csv")
 
 update_all_option = (elem) ->
   return if $.inArray(elem.prop('id'), ['provider', 'stats_provider', 'zip_code', 'census_code']) < 0
