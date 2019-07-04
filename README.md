@@ -74,7 +74,10 @@ $ docker-compose run migrator rake db:seed
 $ docker-compose run frontend rake secret
 ```
 
-Use the output from `rake secret` as the value for `SECRET_KEY_BASE` in your `local.env`. Go to [Mapbox](https://account.mapbox.com) and create an account. Set `MAPBOX_API_KEY` to the public token or a new token.
+Locate your `local.env` in the root of the SpeedUpAmerica directory which now resides on your local system.
+Use the long alphanermeric string output from `rake secret` as the value for `SECRET_KEY_BASE`.
+Go to [Mapbox](https://account.mapbox.com) and create a free account, to get a mapbox api access token. 
+Use and set the Default pulic token as your `MAPBOX_API_KEY` in the `local.env`file.
 
 If you want a basic dataset to work with run:
 
