@@ -129,6 +129,8 @@ $ docker-compose up --build frontend
 
 If `docker-compose ps` continues to throw an "Exit 1" error for any process after rebuilding the frontend, please ensure that your machines firewall permissions allow the applications. After you set your firewall permissions, you will need to close your workflow, restart docker, and restart the app.
 
+If after enabling your firewall persmissions you still have trouble with an "Exit 1", you may need to delete tmp/pids/server.pid and then `docker-compose up -d`
+
 ### Running Docker on Ubuntu
 Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
 
