@@ -33,11 +33,17 @@ class SubmissionsImporter
 
     regions.each do |region|     
       test_types.each do |test_type|
+        # Track start time of previous batch to abort if we repeat dates
+        previous_start = nil
+
         while true #we may need to get multiple batches
           start_time = get_start_time(country_code, region, test_type)
-          if start_time == end_time
+
+          # Abort if we repeat start date
+          if previous_start == start_time
             break
           end
+          previous_start = start_time
   
           puts "Starting batch #{Time.now}"
   
@@ -54,6 +60,11 @@ class SubmissionsImporter
         end
       end 
     end
+
+    # Delete any submissions older than 13 months ago
+    old = Date.today.at_beginning_of_month - 13.months
+    puts "Deleting records older than #{old}"
+    Submission.where('test_date < ?', old).delete_all
   end
 
   def self.upload_query(country_code, region, start_date, end_date)

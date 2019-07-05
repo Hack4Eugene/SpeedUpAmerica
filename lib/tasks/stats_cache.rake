@@ -11,6 +11,15 @@ task :update_stats_cache => [:environment] do
   ZipBoundary.all.select(:name).each do |zip|
     stats_id = zip.name
 
+    # Check if we have new records newer than the cache
+    newest = Submission.where(:zip_code => stats_id).order("updated_at DESC").take
+    cached = StatsCache.where(:stat_type => 'zip_code', :stat_id => stats_id,
+      :date_type => 'all', :date_value => '1970-01-01').take
+
+    if cached.nil? || newest.nil? || newest[:updated_at] <= cached[:updated_at]
+      next
+    end
+
     all_uploads = Submission.get_zip_code_for_stats_cache(stats_id, "upload")
     all_downloads = Submission.get_zip_code_for_stats_cache(stats_id, "download")
     sua_uploads = Submission.get_zip_code_for_stats_cache(stats_id, "upload").not_from_mlab
@@ -36,6 +45,15 @@ task :update_stats_cache => [:environment] do
   CensusBoundary.all.select(:geo_id).each do |tract|
     stats_id = tract.geo_id
 
+    # Check if we have new records newer than the cache
+    newest = Submission.where(:census_code => stats_id).order("updated_at DESC").take
+    cached = StatsCache.where(:stat_type => 'census_tract', :stat_id => stats_id,
+      :date_type => 'all', :date_value => '1970-01-01').take
+
+    if cached.nil? || newest.nil? || newest[:updated_at] <= cached[:updated_at]
+      next
+    end
+
     all_uploads = Submission.get_census_tract_for_stats_cache(stats_id, "upload")
     all_downloads = Submission.get_census_tract_for_stats_cache(stats_id, "download")
     sua_uploads = Submission.get_census_tract_for_stats_cache(stats_id, "upload").not_from_mlab
@@ -60,6 +78,15 @@ task :update_stats_cache => [:environment] do
   puts "Providers - #{Time.now}"
   ProviderStatistic.all.select(:name).each do |provider|
     stats_id = provider.name
+
+    # Check if we have new records newer than the cache
+    newest = Submission.where(:provider => stats_id).order("updated_at DESC").take
+    cached = StatsCache.where(:stat_type => 'provider', :stat_id => stats_id,
+      :date_type => 'all', :date_value => '1970-01-01').take
+
+    if cached.nil? || newest.nil? || newest[:updated_at] <= cached[:updated_at]
+      next
+    end
 
     all_uploads = Submission.get_provider_for_stats_cache(stats_id, "upload")
     all_downloads = Submission.get_provider_for_stats_cache(stats_id, "download")
