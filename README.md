@@ -59,7 +59,7 @@ These instructions work on Linux, Windows and MacOS and only need to be performe
 
 Install [Git](https://git-scm.com/downloads) Windows/Mac/Linux
 
-Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/) (Docker Compose is included with Docker for Windows).
+Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/) (Docker Compose is already included with Mac and Windows Docker installs, but not Linux. Please also note the Win Home install differs from Pro).
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
