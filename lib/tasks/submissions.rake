@@ -57,6 +57,7 @@ task :create_test_data => [:environment] do
   end
 
   puts "Done"
+  puts '*' * 50
 end
 
 task :populate_median_speeds => [:environment] do
@@ -82,10 +83,14 @@ task :populate_median_speeds => [:environment] do
   end
 
   puts 'Median speeds successfully populated'
+  puts '*' * 50
 end
 
-def area_identifier_json_url(area_identifier)
-  "http://www.usboundary.com/api/areadata/geom/?id=#{area_identifier}"
+task :populate_missing_isps => [:environment] do
+  Submission.where(:provider => nil).each do |s|
+    s.provider = s.get_provider
+    s.save
+  end
 end
 
 def get_census_code(latitude, longitude)

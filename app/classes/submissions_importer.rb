@@ -23,51 +23,36 @@ class SubmissionsImporter
     client
   end
 
-  def self.attributes_list(schema)
-    attribute_names = []
-
-    schema['fields'].each do |field|
-      attribute_names << field['name']
-    end
-
-    attribute_names
-  end
-
-  def self.attribute_val(row, attributes, name)
-    row['f'][attributes.index(name)]['v']
-  end
-
   def self.import
     client = bigquery_init
 
     country_code = 'US'
     regions = ['OR', 'WA', 'ID']
+    test_types = ['upload', 'download']
     end_time = Date.today.strftime("%Y-%m-%d")
 
     regions.each do |region|     
-
-      while true #we may need to get multiple batches
-        start_time = get_start_time(country_code, region, "upload")
-        if start_time == end_time
-          break
+      test_types.each do |test_type|
+        while true #we may need to get multiple batches
+          start_time = get_start_time(country_code, region, test_type)
+          if start_time == end_time
+            break
+          end
+  
+          puts "Starting batch #{Time.now}"
+  
+          if test_type == 'upload'
+            query = upload_query(country_code, region, start_time, end_time)
+          else 
+            query = download_query(country_code, region, start_time, end_time)
+          end
+          
+          data = client.query(query)
+          create_submissions(data, test_type)
+  
+          puts "Finishing batch #{Time.now}"
         end
-
-        upload_query = upload_query(country_code, region, start_time, end_time)
-        upload_test_data = client.query(upload_query)
-        create_submissions(upload_test_data, 'upload')
-      end
-
-      while true #we may need to get multiple batches
-        start_time = get_start_time(country_code, region, "download")
-        if start_time == end_time
-          break
-        end
-
-        download_query = download_query(country_code, region, start_time, end_time)
-        download_test_data = client.query(download_query)
-        create_submissions(download_test_data, 'download')
-      end
-
+      end 
     end
   end
 
@@ -130,9 +115,10 @@ class SubmissionsImporter
   def self.get_start_time(country_code, region, test_type)
     start_time = Date.today - 13.months
 
-    if Submission.where(:country_code => country_code, :region => region,
-        :test_type => test_type, :from_mlab => 1).order("test_date DESC").first.nil? == false
-      start_time = Submission.from_mlab.last.test_date.strftime("%Y-%m-%d")
+    latest_record = Submission.where(:country_code => country_code, :region => region,
+      :test_type => test_type, :from_mlab => 1).order("test_date DESC").first
+    if latest_record.nil? == false
+      start_time = latest_record.test_date.strftime("%Y-%m-%d")
     end
     
     return start_time

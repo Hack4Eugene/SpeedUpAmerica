@@ -1,15 +1,13 @@
 require 'rake'
 
 task :update_stats_cache => [:environment] do
-  puts 'Updating stats cache'
-
-  starting = Time.now
+  puts "Updating stats cache - #{Time.now}"
 
   start_date = Date.today.at_beginning_of_month - 1.year
   end_date = Date.today.end_of_month
   ranges = Submission.get_date_ranges("month", start_date, end_date)
 
-  puts 'Zip Codes'
+  puts "Zip Codes - #{Time.now}"
   ZipBoundary.all.select(:name).each do |zip|
     stats_id = zip.name
 
@@ -34,7 +32,7 @@ task :update_stats_cache => [:environment] do
     end      
   end
 
-  puts 'Census Tracts'
+  puts "Census Tracts - #{Time.now}"
   CensusBoundary.all.select(:geo_id).each do |tract|
     stats_id = tract.geo_id
 
@@ -59,7 +57,7 @@ task :update_stats_cache => [:environment] do
     end    
   end
 
-  puts 'Providers'
+  puts "Providers - #{Time.now}"
   ProviderStatistic.all.select(:name).each do |provider|
     stats_id = provider.name
 
@@ -84,8 +82,8 @@ task :update_stats_cache => [:environment] do
     end   
   end
 
-  ending = Time.now
-  puts "Finished update stats cache. #{ending - starting}"
+  puts "Finished update stats cache. #{Time.now}"
+  puts '*' * 50
 end
 
 def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_downloads, sua_uploads, sua_downloads)
