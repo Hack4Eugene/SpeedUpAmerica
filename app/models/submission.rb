@@ -564,9 +564,15 @@ class Submission < ActiveRecord::Base
 
       date_ranges.each do |date_range|
         monthly_stats = StatsCache.where(:stat_type => 'provider', :stat_id => provider, :date_type => 'month',
-          :date_value => date_range[:range][0].at_beginning_of_month)
-        median_speed_values << monthly_stats[0]["#{test_type}_median"]
-        tests_count_values << monthly_stats[0]["#{test_type}_count"]
+          :date_value => date_range[:range][0].at_beginning_of_month).take
+
+        if monthly_stats.nil?
+          median_speed_values = 0
+          tests_count_values = 0
+        else 
+          median_speed_values << monthly_stats["#{test_type}_median"]
+          tests_count_values << monthly_stats["#{test_type}_count"]
+        end  
       end
 
       median_speed_series << { name: provider, data: median_speed_values }

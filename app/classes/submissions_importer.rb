@@ -124,7 +124,7 @@ class SubmissionsImporter
   end
 
   def self.get_start_time(country_code, region, test_type)
-    start_time = Date.today - 13.months
+    start_time = Date.today.at_beginning_of_month - 13.months
 
     latest_record = Submission.where(:country_code => country_code, :region => region,
       :test_type => test_type, :from_mlab => 1).order("test_date DESC").first

@@ -3,7 +3,7 @@ require 'rake'
 task :update_stats_cache => [:environment] do
   puts "Updating stats cache - #{Time.now}"
 
-  start_date = Date.today.at_beginning_of_month - 1.year
+  start_date = Date.today.at_beginning_of_month - 13.months
   end_date = Date.today.end_of_month
   ranges = Submission.get_date_ranges("month", start_date, end_date)
 
@@ -15,8 +15,7 @@ task :update_stats_cache => [:environment] do
     newest = Submission.where(:zip_code => stats_id).order("updated_at DESC").take
     cached = StatsCache.where(:stat_type => 'zip_code', :stat_id => stats_id,
       :date_type => 'all', :date_value => '1970-01-01').take
-
-    if cached.nil? || newest.nil? || newest[:updated_at] <= cached[:updated_at]
+    if cached.present? && newest.present? && newest[:updated_at] <= cached[:updated_at]
       next
     end
 
@@ -49,8 +48,7 @@ task :update_stats_cache => [:environment] do
     newest = Submission.where(:census_code => stats_id).order("updated_at DESC").take
     cached = StatsCache.where(:stat_type => 'census_tract', :stat_id => stats_id,
       :date_type => 'all', :date_value => '1970-01-01').take
-
-    if cached.nil? || newest.nil? || newest[:updated_at] <= cached[:updated_at]
+    if cached.present? && newest.present? && newest[:updated_at] <= cached[:updated_at]
       next
     end
 
@@ -83,8 +81,7 @@ task :update_stats_cache => [:environment] do
     newest = Submission.where(:provider => stats_id).order("updated_at DESC").take
     cached = StatsCache.where(:stat_type => 'provider', :stat_id => stats_id,
       :date_type => 'all', :date_value => '1970-01-01').take
-
-    if cached.nil? || newest.nil? || newest[:updated_at] <= cached[:updated_at]
+    if cached.present? && newest.present? && newest[:updated_at] <= cached[:updated_at]
       next
     end
 
