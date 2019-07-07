@@ -20,9 +20,9 @@ phases:
       - cp GeoLite2-ASN_*/GeoLite2-ASN.mmdb .
       - rm -r GeoLite2-ASN_*
       - rm GeoLite2-ASN.tar.gz
-      - mkdir keys
+      - mkdir -p keys
       - aws s3 cp s3://sua-private/$S3_BIGQUERY_KEY_FILENAME $MLAB_BIGQUERY_PRIVATE_KEY
-      - mkdir data
+      - mkdir -p data
       - aws s3 cp s3://sua-datafiles/cb_2016_us_census_tracts.json data/cb_2016_us_census_tracts.json
       - aws s3 cp s3://sua-datafiles/us_zip_codes.json data/us_zip_codes.json
       - docker build -t $REPOSITORY_URI:latest .
