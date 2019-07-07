@@ -69,7 +69,7 @@ class SubmissionsController < ApplicationController
     end
 
     def set_file_headers
-      file_name = "submissions_#{Time.now}.csv"
+      file_name = "submissions_#{Time.now.to_i}.csv"
       headers["Content-Type"] = "text/csv"
       headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
     end

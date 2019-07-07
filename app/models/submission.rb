@@ -352,7 +352,7 @@ class Submission < ActiveRecord::Base
     start_date = Date.today.at_beginning_of_month - 13.months
     end_date = Date.today
  
-    data = in_zip_code_list.with_date_range(start_date, end_date)
+    data = in_zip_code_list.not_from_mlab.with_date_range(start_date, end_date)
     data.find_each(batch_size: 1000) do |transaction|
       yield transaction
     end
