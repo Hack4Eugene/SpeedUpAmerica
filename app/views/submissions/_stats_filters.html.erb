@@ -1,33 +1,11 @@
 <div id='stats_filters' class='stats-filters'>
   <div class='row'>
-    <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 filter-container'>
-      <p>Date Range:</p>
 
-      <div class='row'>
-        <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 date-icon'>
-          <%= text_field_tag :stats_start_date, '', id: 'stats_start_date', disabled: true, class: 'filter date-range', placeholder: 'Start Date', readonly: true %>
-          <span class="glyphicon glyphicon-calendar"></span>
-        </div>
-        <div class='col-xs-12 col-sm-12 col-md-6 col-lg-6 date-icon'>
-          <%= text_field_tag :stats_end_date, '', id: 'stats_end_date', disabled: true, class: 'filter date-range', placeholder: 'End Date', readonly: true %>
-          <span class="glyphicon glyphicon-calendar"></span>
-        </div>
-      </div>
-    </div>
-
-    <div class='col-xs-12 col-sm-12 col-md-3 col-lg-3 filter-container'>
+    <div class='col-xs-12 col-sm-12 col-md-3 col-lg-4 filter-container'>
       <p>Type:</p>
 
       <%= select_tag :test_type, options_for_select(Submission::MAP_FILTERS[:test_type].map { |k, v| ["#{k.to_s.titleize} Speed", v] }), { id: 'stats_test_type',disabled: true,  class: 'chosen-select filter' } %>
     </div>
-
-    <div class='col-xs-12 col-sm-12 col-md-3 col-lg-3 filter-container'>
-      <p>Period:</p>
-
-      <%= select_tag :period, options_for_select(Submission::MAP_FILTERS[:period].map { |k, v| [k.to_s.titleize, v] }), { disabled: true, class: 'chosen-select filter'} %>
-    </div>
-
-    <div class="clearfix"></div>
 
     <div class='col-xs-12 col-sm-12 col-md-4 col-lg-4 filter-container'>
       <p>Zip Codes:</p>
@@ -43,7 +21,9 @@
       <%= hidden_field_tag :selected_census_code %>
     </div>
 
-    <div class='col-xs-12 col-sm-12 col-md-4 col-lg-4 filter-container'>
+    <div class="clearfix"></div>
+
+    <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 filter-container'>
       <p>Internet Service Providers:</p>
 
       <%= select_tag :provider, options_for_select(get_stats_providers_list), { id: 'stats_provider', disabled: true, class: 'chosen-select filter', multiple: true, data: { placeholder: 'Select Client ISP to view', selected_ids: @selected_provider_ids } } %>

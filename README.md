@@ -65,7 +65,7 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
 ```bash
 $ git clone https://github.com/Hack4Eugene/SpeedUpAmerica.git
-$ git clone  https://github.com/Hack4Eugene/speedupamerica-migrator.git
+$ git clone https://github.com/Hack4Eugene/speedupamerica-migrator.git
 $ cd SpeedUpAmerica
 $ cp local.env.template local.env
 $ docker-compose up -d mysql
@@ -79,16 +79,27 @@ Use the long alphanermeric string output from `rake secret` as the value for `SE
 Go to [Mapbox](https://account.mapbox.com) and create a free account, to get a mapbox api access token. 
 Use and set the Default pulic token as your `MAPBOX_API_KEY` in the `local.env`file.
 
-If you want a basic dataset to work with run:
+> These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
+
+## Load an initial dataset
+
+Download these files and place them in the projects `data` directory:
+
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/zip_codes.sql
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/census_tracts.sql
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/submissions.sql
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/stats_caches.sql
+
+Run these lines:
 
 ```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/stats_caches.sql
 $ docker-compose run frontend rake update_providers_statistics
+$ docker-compose run frontend rake update_stats_cache
 ```
-
-> These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
 
 ## Running
 
@@ -142,13 +153,17 @@ Running the environment locally on a Linux-based OS could require running `docke
 
 There are just the tasks that have been run to populate and prepare the data for operation. The other tasks need investigated and documented.
 
+Most of theses tasks are run by `./update_data.sh` each night on Test and Production.
+
 ### Importing M-Lab submissions:
+
+Requires a BigQuery Service Key with access to the Measurement Lab data.
 
 ```bash
 $ docker-compose run frontend rake import_mlab_submissions
 ```
 
-### Populating submissions with Census Tract
+### Populating submissions with Census Tract IDs
 
 ```bash
 $ docker-compose run frontend rake update_pending_census_codes
@@ -160,7 +175,13 @@ $ docker-compose run frontend rake update_pending_census_codes
 $ docker-compose run frontend rake update_providers_statistics
 ```
 
-## Updating boundaries
+### Updating cached data 
+
+```
+$ docker-compose run frontend rake update_stats_cache
+```
+
+## Loading new boundaries
 
 When boundaries are updated each developer must reload their boundary tables:
 ```bash
@@ -180,7 +201,7 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 ```
 
-### Importing Census and Zip Code boundaries
+### Updating the Census and Zip Code boundaries SQL files
 
 Assumes you have these files in `data/`:
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
@@ -193,6 +214,8 @@ $ docker-compose run frontend rake populate_census_tracts
 $ docker-compose run frontend rake populate_zip_boundaries
 ```
 
+> When updating the SQL files make sure to remove the warning from the first line of the file.
+
 Once imported you can update the SQL files by:
 ```bash
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc census_boundaries > data/census_tracts.sql
@@ -201,16 +224,19 @@ $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_b
 
 ### Creating new submissions.sql
 
+> When updating the SQL files make sure to remove the warning from the first line of the file.
+
 ```bash
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
 ```
 
-### Creating test data
+### Creating new stats_caches.sql
 
-After loading boundaries and submissions you can distribute the submissions across all Zip Codes and Census Tracts by running:
+> When updating the SQL files make sure to remove the warning from the first line of the file.
 
 ```bash
-$ docker-compose run frontend rake create_test_data
+$ docker-compose run frontend rake update_stats_cache
+$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc stats_caches > data/stats_caches.sql
 ```
 
 # Governance and contribution

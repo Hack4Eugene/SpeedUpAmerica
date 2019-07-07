@@ -11,6 +11,7 @@ gem 'coffee-rails', '~> 4.1.0'
 gem "lograge"
 gem "logstash-event"
 gem 'logglier', '~> 0.5.0'
+gem 'composite_primary_keys', '~> 8.1'
 
 gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'

@@ -11,23 +11,18 @@ class SubmissionsController < ApplicationController
   def create
     data = submission_params
 
-     # Use remote IP from connection or headers
+    # Use remote IP from connection or headers
     data[:ip_address] = request.remote_ip
 
     submission = Submission.create_submission(data)
     redirect_to submission_path(submission)
   end
 
-  def mapbox_data
-    data = Submission.fetch_mapbox_data(params)
-    render json: data
-  end
-
   def tileset_groupby
     data = Submission.fetch_tileset_groupby(params)
     render json: data
-  rescue StandardError => e
-    render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
+  #rescue StandardError => e
+  #  render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
   end
 
   def result_page
@@ -37,7 +32,17 @@ class SubmissionsController < ApplicationController
   end
 
   def speed_data
-    data = params[:statistics].present? && Submission.internet_stats_data(params[:statistics]) || []
+    if params[:statistics].nil?
+      render status: 400, json: {'status': 'error', 'error': 'Bad request: missing statistics'}
+    end
+
+    statistics = params[:statistics]
+
+    if statistics[:provider].nil?
+      render status: 400, json: {'status': 'error', 'error': 'Bad request: missing provider'}
+    end
+    
+    data = Submission.internet_stats_data(statistics) || []
     render json: data
   end
 

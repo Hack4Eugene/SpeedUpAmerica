@@ -1,6 +1,6 @@
 popup = null
 census_layer = {
-  url: 'mapbox://mattsayre.29aqw5xm',
+  url: 'mapbox://mattsayre.1pdu0bcw',
   source: 'census-tracts',
   name: 'tracts',
   data_id: 'GEOID'
@@ -19,8 +19,8 @@ window.initialize_mapboxgl = (elmID) ->
   map = new mapboxgl.Map({
     container: elmID,
     style: 'mapbox://styles/mapbox/light-v9',
-    center: [-120.67382, 44.0639066],
-    zoom: 6,
+    center: [-117.879376, 45.392022],
+    zoom: 5,
     maxZoom: maxZoom
   })
 
@@ -39,12 +39,7 @@ window.initialize_mapboxgl = (elmID) ->
 
 get_map_loader = (map) ->
   map_id = map.getContainer().id
-
-  if map_id == 'all_results_map'
-    loader_id = '#loader'
-  else if map_id == 'zip_code_map'
-    loader_id = '#stats_loader'
-
+  loader_id = '#loader'
   $(loader_id)
   
 clearMap = (map) ->
@@ -131,7 +126,7 @@ addLayer = (map, layer, data, test_type, layer_type) ->
       .addTo(map)
   )  
 
-window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code', test_type='download') ->
+window.set_mapbox_zip_data_gl = (map, provider, group_by='zip_code', test_type='download') ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
 
@@ -143,7 +138,6 @@ window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code',
     dataType: 'json'
     data:
       provider: provider
-      date_range: date_range
       group_by: group_by
       test_type: test_type
     success: (data) ->
@@ -160,7 +154,7 @@ window.set_mapbox_zip_data_gl = (map, provider, date_range, group_by='zip_code',
       Sentry.setExtra("response_error",  errorText)
       Sentry.captureException(err)
 
-window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_code, census_code, type) ->
+window.set_mapbox_census_data_gl = (map, provider, test_type, zip_code, census_code, type) ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
 
@@ -172,7 +166,6 @@ window.set_mapbox_census_data_gl = (map, provider, date_range, test_type, zip_co
     dataType: 'json'
     data:
       provider: provider
-      date_range: date_range
       group_by: 'census_code'
       test_type: test_type
       zip_code: zip_code

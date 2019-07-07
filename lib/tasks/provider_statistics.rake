@@ -3,32 +3,76 @@ require 'rake'
 task update_providers_statistics: [:environment] do
   puts 'Updating provider statistics'
 
-  Submission.unscoped.with_test_type("download").in_zip_code_list.group_by(&:provider).each do |provider, submissions|
-    provider_statistic = ProviderStatistic.get_by_name(provider).first
-    
+  Submission.unscoped.select(:provider).where('provider IS NOT NULL').group(:provider).each do |provider|
+    provider = provider[:provider]
+
+    provider_statistic = ProviderStatistic.get_by_name(provider).take
     if provider_statistic.blank? 
       provider_statistic = ProviderStatistic.new()
       provider_statistic.name = provider
       provider_statistic.provider_type = 'unknown'
     end
 
-    provider_statistic.actual_speed_sum = submissions.collect(&:actual_down_speed).compact.sum
-    provider_statistic.provider_speed_sum = submissions.collect(&:provider_down_speed).compact.sum
+    actual_download_sum = 0
+    actual_download_count = 0
 
-    actual_prices = submissions.collect(&:actual_price).compact
-    if actual_prices.count > 0
-      provider_statistic.average_price = actual_prices.sum / actual_prices.count
+    actual_download = Submission.with_test_type("download")
+      .select("SUM(actual_down_speed) AS speed_sum, COUNT(id) AS speed_count")
+      .where('provider = ? AND actual_down_speed > 0', provider).group(:provider).take
+    if actual_download.present?
+      actual_download_sum = actual_download[:speed_sum]
+      actual_download_count = actual_download[:speed_count]
+    end
+
+    provider_statistic.actual_speed_sum = actual_download_sum
+
+    provider_download_sum = 0
+    provider_download_count = 0
+
+    provider_download = Submission.with_test_type("download")
+      .select("SUM(provider_down_speed) AS speed_sum, COUNT(id) AS speed_count")
+      .where('provider = ? AND provider_down_speed > 0', provider).group(:provider).take
+    if provider_download.present?
+      provider_download_sum = provider_download[:speed_sum]
+      provider_download_count = provider_download[:speed_count]
     end
     
-    provider_statistic.applications = submissions.count
+    provider_statistic.provider_speed_sum = provider_download_sum
+
+    price_sum = 0
+    price_count = 0
+
+    actual_prices = Submission.with_test_type("download")
+      .select("SUM(actual_price) AS price_sum, COUNT(id) AS price_count")
+      .where('provider = ? AND actual_price > 0', provider).group(:provider).take
+    if actual_prices.present?
+      price_sum = actual_prices[:price_sum]
+      price_count = actual_prices[:price_count]
+    end
+
+    if price_count > 0
+      provider_statistic.average_price = price_sum / price_count
+    end
+    
+    provider_statistic.applications = actual_download_count
 
     provider_statistic.save
   end
 
-  Submission.valid_rating.in_zip_code_list.group_by(&:provider).each do |provider, submissions|
-    provider_statistic = ProviderStatistic.get_by_name(provider).first
+  Submission.valid_rating.select(:provider).group(:provider).each do |provider|
+    provider = provider[:provider]
+
+    ratings = Submission.select("SUM(rating) AS rating_sum, COUNT(id) AS rating_count")
+      .where('provider = ? AND rating IS NOT NULL', provider).group(:provider).take
+    if ratings.present?
+      rating_sum = ratings[:rating_sum]
+      rating_count = ratings[:rating_count]
+    end
+
+    provider_statistic = ProviderStatistic.get_by_name(provider).take
     next if provider_statistic.blank?
-    provider_statistic.rating = submissions.collect(&:rating).sum.to_f / submissions.count
+
+    provider_statistic.rating = rating_sum / rating_count
     provider_statistic.save
   end
 
@@ -36,8 +80,4 @@ task update_providers_statistics: [:environment] do
 
   puts 'Updated providers statistics successfully!'
   puts '*' * 50
-end
-
-def get_actual_to_provider_difference(actual_speed_sum, provider_speed_sum)
-  (actual_speed_sum - provider_speed_sum).to_f / provider_speed_sum
 end
