@@ -139,6 +139,9 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
       all_download_faster_than_250 = get_speed_comparison_data(all_downloads_array)
   end
 
+  all_downloads = nil
+  all_downloads_array = nil
+
   # sua downloads
   sua_downloads = sua_downloads.select("actual_down_speed")
   sua_downloads_array = sua_downloads.map(&:"actual_down_speed").compact
@@ -147,6 +150,9 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
     # calculate basic stats
     sua_avg_download, sua_median_download, sua_fast_download = calculate_basic_stats(sua_downloads_array)
   end
+
+  sua_downloads = nil
+  sua_downloads_array = nil
 
   # all uploads
   all_uploads = all_uploads.select("actual_upload_speed")
@@ -164,6 +170,9 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
       all_upload_faster_than_250 = get_speed_comparison_data(all_uploads_array)
   end
 
+  all_uploads = nil
+  all_uploads_array = nil
+
   # sua uploads
   sua_uploads = sua_uploads.select("actual_upload_speed")
   sua_uploads_array = sua_uploads.map(&:"actual_upload_speed").compact
@@ -172,6 +181,9 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
      # calculate basic stats
      sua_avg_upload, sua_median_upload, sua_fast_upload = calculate_basic_stats(sua_uploads_array)
   end
+
+  sua_uploads = nil
+  sua_uploads_array = nil
 
   stats = {
     download_avg: all_avg_download.nil? ? 0 : all_avg_download,

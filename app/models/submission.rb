@@ -349,9 +349,10 @@ class Submission < ActiveRecord::Base
   end
 
   def self.find_in_batches(date_range)
-    range = date_range.split(' - ')
-
-    data = in_zip_code_list.with_date_range(Time.parse(range[0]), Time.parse(range[1]))
+    start_date = Date.today.at_beginning_of_month - 13.months
+    end_date = Date.today
+ 
+    data = in_zip_code_list.with_date_range(start_date, end_date)
     data.find_each(batch_size: 1000) do |transaction|
       yield transaction
     end
