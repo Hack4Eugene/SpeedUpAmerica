@@ -221,7 +221,7 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
     upload_sua_avg: sua_avg_upload.nil? ? 0 : sua_avg_upload,
     upload_sua_median: sua_median_upload.nil? ? 0 : sua_median_upload,
     upload_sua_max: sua_fast_upload.nil? ? 0 : sua_fast_upload,
-    upload_sua_count: sua_count_downloads,
+    upload_sua_count: sua_count_uploads,
 
     upload_0_5: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[0],
     upload_6_10: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[1],
