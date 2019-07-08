@@ -59,7 +59,7 @@ These instructions work on Linux, Windows and MacOS and only need to be performe
 
 Install [Git](https://git-scm.com/downloads) Windows/Mac/Linux
 
-Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/).
+Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/). A minimum of 4GB of local memory allocation is needed for some tasks to run.
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
