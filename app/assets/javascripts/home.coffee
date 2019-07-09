@@ -145,14 +145,7 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
-$ ->
-  bind_rating_stars()
-  disable_form_inputs()
-  numeric_field_constraint()
-  
-  if window.location.pathname == '/'
-    enable_speed_test()
-    set_error_for_invalid_fields()
+places_autocomplete = ->
 
   placesAutocomplete = places({
     application_id: 'pl1SUFESCKRV',
@@ -165,6 +158,17 @@ $ ->
       latlng = eventResult.suggestion.latlng
       set_coords_by_latlng latlng
       $('#location_next_button').attr('disabled', false)
+  placesAutocomplete
+
+$ ->
+  bind_rating_stars()
+  disable_form_inputs()
+  numeric_field_constraint()
+  
+  if window.location.pathname == '/'
+    enable_speed_test()
+    set_error_for_invalid_fields()
+    places_autocomplete()
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
