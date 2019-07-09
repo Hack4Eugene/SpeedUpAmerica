@@ -145,21 +145,6 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
-places_autocomplete = ->
-  placesAutocomplete = places({
-    application_id: 'pl1SUFESCKRV',
-    api_key: '6039fe8e924c5e9f9a2edd9cecba075c',
-    container: window.document.querySelector('#address-input')
-  });
-
-  placesAutocomplete.on 'change', (eventResult) -> 
-    if eventResult
-      latlng = eventResult.suggestion.latlng
-      set_coords_by_latlng latlng
-      $('#location_next_button').attr('disabled', false)
-
-  placesAutocomplete
-
 $ ->
   bind_rating_stars()
   disable_form_inputs()
@@ -202,7 +187,6 @@ $ ->
       if $('#location_geolocation').prop('checked')
         $('#location_button').removeClass('hide')
         $('#location-address-input').addClass('hide')
-        get_location()
 
       if $('#location_address').prop('checked')
         $('#location_button').addClass('hide')
@@ -217,21 +201,38 @@ $ ->
     get_location()
 
   $('#location_next_button').on 'click', ->
-    if $('#location_disable').prop('checked')
-      $('#form-step-0').addClass('hide')
 
-      $('#testing_speed').modal('show');
-
-      setTimeout (->
-        $('#start_ndt_test').click()
-      ), 200
-    else
+    if $('#location_geolocation').prop('checked')
+      navigator.geolocation.getCurrentPosition set_coords, block_callback
       $('#form-step-0').addClass('hide')
       $('#form-step-1').removeClass('hide')
       $('#form-step-1 input').prop('disabled', false)
       $('.test-speed-btn').prop('disabled', false)
       $('.location-warning').addClass('hide')
+    
+    if $('#location_address').prop('checked')
+      if has_successful_location
+        $('#form-step-0').addClass('hide')
+        $('#form-step-1').removeClass('hide')
+        $('#form-step-1 input').prop('disabled', false)
+        $('.test-speed-btn').prop('disabled', false)
+        $('.location-warning').addClass('hide')
+      else
+        $('#address-input').addClass('error-input');
 
+        setTimeout (->
+          $('#address-input').removeClass('error-input');
+        ), 2500
+
+        $('#location_next_button').attr('disabled', true)
+
+    if $('#location_disable').prop('checked')
+      $('#testing_speed').modal('show');
+      $('#form-step-0').addClass('hide')
+
+      setTimeout (->
+        $('#start_ndt_test').click()
+      ), 200
 
 
   $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
