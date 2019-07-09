@@ -46,6 +46,7 @@ class Submission < ActiveRecord::Base
     '101_250', '251_500', '500_1000', '1001'
   ]
 
+  validates :location, length: { maximum: 20 }
   validates :testing_for, length: { maximum: 20 }
   validates :connected_with, length: { maximum: 50 }
   validates :provider, length: { maximum: 255 }
@@ -112,6 +113,9 @@ class Submission < ActiveRecord::Base
     all_results
   end
 
+  def location
+  end
+  
   def self.fetch_tileset_groupby(params)
     providers = provider_names(params[:provider])
     params[:zip_code] = [] if params[:zip_code] == ['all']

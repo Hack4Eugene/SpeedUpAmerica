@@ -104,6 +104,19 @@ body.result-page {
   line-height: 28px
 }
 
+#location-address-input {
+  text-align: left !important;
+}
+
+.block-element {
+  padding: 4px;
+  display: block;
+}
+
+.algolia-places {
+  width: 75%;
+}
+
 #form-container p {
   font-size: 16px;
   color: #1d283e;

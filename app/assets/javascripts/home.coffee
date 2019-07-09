@@ -1,3 +1,5 @@
+has_successful_location = false
+
 bind_rating_stars = ->
   star_options =
     stars: 7
@@ -26,10 +28,13 @@ set_coords = (position) ->
         latitude: position.coords.latitude
         longitude: position.coords.longitude
       success: (data) ->
+        has_successful_location = true
         $("input[name='submission[address]']").attr 'value', data['address']
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
+        $('#location_next_button').attr('disabled', false)
+
       error: (request, statusText, errorText) ->
         err = new Error("get location data failed")
 
@@ -38,7 +43,30 @@ set_coords = (position) ->
         Sentry.setExtra("response_status",  statusText)
         Sentry.setExtra("response_error",  errorText)
         Sentry.captureException(err)
-      
+
+set_coords_by_latlng = (latlng) ->
+  $('submission_latitude').attr 'value', latlng.lat
+  $('submission_latitude').attr 'value', latlng.lng
+  $.ajax
+    url: 'home/get_location_data'
+    type: 'POST'
+    dataType: 'json'
+    data:
+      latitude: latlng.lat
+      longitude: latlng.lng
+    success: (data) ->
+        has_successful_location = true
+        $("input[name='submission[address]']").attr 'value', data['address']
+        $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
+        $('#location_next_button').attr('disabled', false)
+
+      error: (request, statusText, errorText) ->
+        err = new Error("get location data failed")
+        Sentry.setExtra("status_code", request.status)
+        Sentry.setExtra("body",  request.responseText)
+        Sentry.setExtra("response_status",  statusText)
+        Sentry.setExtra("response_error",  errorText)
+        Sentry.captureException(err)
 
 block_callback = (err) ->
   $('#error-geolocation').modal('show')
@@ -117,15 +145,41 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
+places_autocomplete = ->
+  placesAutocomplete = places({
+    application_id: 'pl1SUFESCKRV',
+    api_key: '6039fe8e924c5e9f9a2edd9cecba075c',
+    container: window.document.querySelector('#address-input')
+  });
+
+  placesAutocomplete.on 'change', (eventResult) -> 
+    if eventResult
+      latlng = eventResult.suggestion.latlng
+      set_coords_by_latlng latlng
+      $('#location_next_button').attr('disabled', false)
+
+  placesAutocomplete
+
 $ ->
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
-
+  
   if window.location.pathname == '/'
-    get_location()
     enable_speed_test()
     set_error_for_invalid_fields()
+
+  placesAutocomplete = places({
+    application_id: 'pl1SUFESCKRV',
+    api_key: '6039fe8e924c5e9f9a2edd9cecba075c',
+    container: window.document.querySelector('#address-input')
+  });
+
+  placesAutocomplete.on 'change', (eventResult) -> 
+    if eventResult
+      latlng = eventResult.suggestion.latlng
+      set_coords_by_latlng latlng
+      $('#location_next_button').attr('disabled', false)
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
@@ -135,9 +189,50 @@ $ ->
   $('#take_test').on 'click', ->
     $('.title-container').addClass('hidden');
     $('#form-container').removeClass('hide')
-    $('#form-step-1 input').prop('disabled', false)
+    $('#form-step-0 input').prop('disabled', false)
     $('#introduction').addClass('hide')
     $('.home-wrapper').addClass('mobile-wrapper-margin')
+
+    $(".checkboxes-container input[name='submission[location]']").on 'change', ->
+      $('#location_button').prop('disabled', false)
+      $(".checkboxes-container input[name='submission[location]']").each ->
+        $(this).prop('checked', false)
+      $(this).prop('checked', true)
+
+      if $('#location_geolocation').prop('checked')
+        $('#location_button').removeClass('hide')
+        $('#location-address-input').addClass('hide')
+        get_location()
+
+      if $('#location_address').prop('checked')
+        $('#location_button').addClass('hide')
+        $('#location-address-input').removeClass('hide')
+
+      if $('#location_disable').prop('checked')
+        $('#location_button').addClass('hide')
+        $('#location-address-input').addClass('hide')
+        $('#location_next_button').attr('disabled', false)
+
+  $('#location_button').on 'click', ->
+    get_location()
+
+  $('#location_next_button').on 'click', ->
+    if $('#location_disable').prop('checked')
+      $('#form-step-0').addClass('hide')
+
+      $('#testing_speed').modal('show');
+
+      setTimeout (->
+        $('#start_ndt_test').click()
+      ), 200
+    else
+      $('#form-step-0').addClass('hide')
+      $('#form-step-1').removeClass('hide')
+      $('#form-step-1 input').prop('disabled', false)
+      $('.test-speed-btn').prop('disabled', false)
+      $('.location-warning').addClass('hide')
+
+
 
   $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
     $(".checkboxes-container input[name='submission[testing_for]']").each ->
