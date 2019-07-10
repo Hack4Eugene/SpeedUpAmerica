@@ -17,16 +17,16 @@ bind_rating_stars = ->
 disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
 
-set_coords = (position) ->
-  $('#submission_latitude').attr 'value', position.coords.latitude
-  $('#submission_longitude').attr 'value', position.coords.longitude
+set_coords = (latitude, longitude) ->
+  $('#submission_latitude').attr 'value', latitude
+  $('#submission_longitude').attr 'value', longitude
   $.ajax
       url: 'home/get_location_data'
       type: 'POST'
       dataType: 'json'
       data:
-        latitude: position.coords.latitude
-        longitude: position.coords.longitude
+        latitude: latitude
+        longitude: longitude
       success: (data) ->
         has_successful_location = true
         $("input[name='submission[address]']").attr 'value', data['address']
@@ -34,6 +34,7 @@ set_coords = (position) ->
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
         $('#location_next_button').attr('disabled', false)
+        $('#location_next_button').removeClass('button-disabled')
 
       error: (request, statusText, errorText) ->
         err = new Error("get location data failed")
@@ -43,30 +44,12 @@ set_coords = (position) ->
         Sentry.setExtra("response_status",  statusText)
         Sentry.setExtra("response_error",  errorText)
         Sentry.captureException(err)
+
+set_coords_by_geolocation = (position) ->
+  set_coords(position.coords.latitude, position.coords.longitude)
 
 set_coords_by_latlng = (latlng) ->
-  $('submission_latitude').attr 'value', latlng.lat
-  $('submission_latitude').attr 'value', latlng.lng
-  $.ajax
-    url: 'home/get_location_data'
-    type: 'POST'
-    dataType: 'json'
-    data:
-      latitude: latlng.lat
-      longitude: latlng.lng
-    success: (data) ->
-        has_successful_location = true
-        $("input[name='submission[address]']").attr 'value', data['address']
-        $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
-        $('#location_next_button').attr('disabled', false)
-
-      error: (request, statusText, errorText) ->
-        err = new Error("get location data failed")
-        Sentry.setExtra("status_code", request.status)
-        Sentry.setExtra("body",  request.responseText)
-        Sentry.setExtra("response_status",  statusText)
-        Sentry.setExtra("response_error",  errorText)
-        Sentry.captureException(err)
+  set_coords(latlng.latitude, latlng.longitude)
 
 block_callback = (err) ->
   $('#error-geolocation').modal('show')
@@ -77,7 +60,7 @@ block_callback = (err) ->
 
 get_location = ->
   if navigator.geolocation
-    navigator.geolocation.getCurrentPosition set_coords, block_callback
+    navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
 
 check_fields_validity = ->
   is_valid = true
@@ -146,7 +129,6 @@ set_error_for_invalid_fields = ->
       $('#speed_error_span').addClass('hide')
 
 places_autocomplete = ->
-
   placesAutocomplete = places({
     application_id: 'pl1SUFESCKRV',
     api_key: '6039fe8e924c5e9f9a2edd9cecba075c',
@@ -158,17 +140,21 @@ places_autocomplete = ->
       latlng = eventResult.suggestion.latlng
       set_coords_by_latlng latlng
       $('#location_next_button').attr('disabled', false)
+      $('#location_next_button').removeClass('button-disabled')
   placesAutocomplete
 
 $ ->
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
-  
+
   if window.location.pathname == '/'
     enable_speed_test()
     set_error_for_invalid_fields()
     places_autocomplete()
+
+    $(".checkboxes-container input[name='submission[location]']").each ->
+      $(this).prop('checked', false)
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
@@ -200,14 +186,15 @@ $ ->
         $('#location_button').addClass('hide')
         $('#location-address-input').addClass('hide')
         $('#location_next_button').attr('disabled', false)
+        $('#location_next_button').removeClass('button-disabled')
 
   $('#location_button').on 'click', ->
     get_location()
 
   $('#location_next_button').on 'click', ->
-
     if $('#location_geolocation').prop('checked')
-      navigator.geolocation.getCurrentPosition set_coords, block_callback
+      if !has_successful_location
+        navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
       $('#form-step-0').addClass('hide')
       $('#form-step-1').removeClass('hide')
       $('#form-step-1 input').prop('disabled', false)
@@ -221,14 +208,15 @@ $ ->
         $('#form-step-1 input').prop('disabled', false)
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
+
       else
         $('#address-input').addClass('error-input');
+        $('#location_next_button').attr('disabled', true)
+        $('#location_next_button').removeClass('button-disabled')
 
         setTimeout (->
           $('#address-input').removeClass('error-input');
         ), 2500
-
-        $('#location_next_button').attr('disabled', true)
 
     if $('#location_disable').prop('checked')
       $('#testing_speed').modal('show');
