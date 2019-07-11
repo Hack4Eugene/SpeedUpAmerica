@@ -7,6 +7,7 @@
     <%= form_for @submission, url: submissions_path, class: 'form-horizontal' do |f| %>
       <%= f.hidden_field :latitude %>
       <%= f.hidden_field :longitude %>
+      <%= f.hidden_field :accuracy %>
       <%= f.hidden_field :actual_down_speed %>
       <%= f.hidden_field :actual_upload_speed %>
       <%= f.hidden_field :hostname %>

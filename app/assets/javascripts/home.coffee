@@ -28,6 +28,7 @@ set_coords = (position) ->
       success: (data) ->
         $("input[name='submission[address]']").attr 'value', data['address']
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
+        $("input[name='submission[accuracy]']").attr 'value', position.coords.accuracy
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
       error: (request, statusText, errorText) ->
