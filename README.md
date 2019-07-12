@@ -1,6 +1,6 @@
 # Speed Up America
 
-SpeedUpAmerica provides on the ground truth about the Internet in America. Our national and localized broadband maps provide transparency: real Internet speeds received, actual prices paid, and level of service experienced. This information helps guide public and private investments in Internet infrastructure to the places that need it the most. We also see this approach as a better solution to national broadband mapping than that currently used by the FCC.
+SpeedUpAmerica provides on-the-ground truth about the Internet in America. Our national and localized broadband maps provide transparency: real Internet speeds received, actual prices paid, and level of service experienced. This information helps guide public and private investments in Internet infrastructure to the places that need it the most. We also see this approach as a better solution to national broadband mapping than that currently used by the FCC.
 
 If you are a software developer, [we would love your help and we can pay you for your time](https://github.com/Hack4Eugene/SpeedUpAmerica/wiki)!
 
@@ -10,7 +10,7 @@ In partnership with US Ignite, this effort works to advance the technology that 
 
 The envisioned solution combines crowdsourced internet speed test results with a map of the entire United States that is filterable by state, zip code, census tract, cencus block and other statistical boundaries.
 
-In the end, we believe this tool will give us the most accurate on the ground data about what is actually happening in terms of Internet connectivity across America. And, it can serve as a starting point for conversations between neighbors, elected officials, and Internet service providers.
+In the end, we believe this tool will give us the most accurate on-the-ground data about what is actually happening in terms of Internet connectivity across America. And, it can serve as a starting point for conversations between neighbors, elected officials, and Internet service providers.
 
 The goal of this project is to increase awareness of inequities in speed and quality of internet provided to everyone in the US. If you have questions about anything, please join the conversation.
 
