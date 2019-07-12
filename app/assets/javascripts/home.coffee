@@ -18,6 +18,7 @@ disable_form_inputs = ->
 set_coords = (position) ->
   $('#submission_latitude').attr 'value', position.coords.latitude
   $('#submission_longitude').attr 'value', position.coords.longitude
+  $("input[name='submission[accuracy]']").attr 'value', position.coords.accuracy
   $.ajax
       url: 'home/get_location_data'
       type: 'POST'
@@ -28,7 +29,6 @@ set_coords = (position) ->
       success: (data) ->
         $("input[name='submission[address]']").attr 'value', data['address']
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
-        $("input[name='submission[accuracy]']").attr 'value', position.coords.accuracy
         $('.test-speed-btn').prop('disabled', false)
         $('.location-warning').addClass('hide')
       error: (request, statusText, errorText) ->
