@@ -1,6 +1,6 @@
 # Speed Up America
 
-SpeedUpAmerica vision is to provide on the ground truth about the Internet in America. This emerging national broadband map aims to provides transparency: real Internet speeds received, actual prices paid, and level of service experienced. We see this approach as a better solution to national broadband mapping than that currently used by the FCC.
+SpeedUpAmerica provides on the ground truth about the Internet in America. Our national and localized broadband maps provide transparency: real Internet speeds received, actual prices paid, and level of service experienced. This information helps guide public and private investments in Internet infrastructure to the places that need it the most. We also see this approach as a better solution to national broadband mapping than that currently used by the FCC.
 
 If you are a software developer, [we would love your help and we can pay you for your time](https://github.com/Hack4Eugene/SpeedUpAmerica/wiki)!
 
