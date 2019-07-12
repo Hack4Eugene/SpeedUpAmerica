@@ -13,6 +13,7 @@ class SubmissionsController < ApplicationController
 
     # Use remote IP from connection or headers
     data[:ip_address] = request.remote_ip
+    
     submission = Submission.create_submission(data)
     redirect_to submission_path(submission)
   end
@@ -91,7 +92,7 @@ class SubmissionsController < ApplicationController
 
     def submission_params
       params.require(:submission).permit(
-        :latitude, :longitude, :address, :actual_down_speed, :actual_upload_speed,
+        :latitude, :longitude, :accuracy, :actual_down_speed, :actual_upload_speed,
         :testing_for, :address, :zip_code, :provider, :connected_with, :monthly_price,
         :provider_down_speed, :rating, :ping, :hostname
       )
