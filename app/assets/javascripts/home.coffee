@@ -18,6 +18,7 @@ disable_form_inputs = ->
 set_coords = (position) ->
   $('#submission_latitude').attr 'value', position.coords.latitude
   $('#submission_longitude').attr 'value', position.coords.longitude
+  $("input[name='submission[accuracy]']").attr 'value', position.coords.accuracy
   $.ajax
       url: 'home/get_location_data'
       type: 'POST'
