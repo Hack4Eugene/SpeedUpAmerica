@@ -142,6 +142,7 @@ places_autocomplete = ->
   placesAutocomplete
 
 $ ->
+  console.log $("input[name='submission[accuracy]']").value
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
@@ -217,6 +218,7 @@ $ ->
         ), 2500
 
     if $('#location_disable').prop('checked')
+      $("input[name='submission[accuracy]']").attr 'value', undefined
       $('#testing_speed').modal('show');
       $('#form-step-0').addClass('hide')
 
