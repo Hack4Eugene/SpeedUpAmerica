@@ -1,17 +1,26 @@
 # Speed Up America
 
-The project vision is an open source nation-wide map that pulls individual internet speed test data from [M-Lab](https://viz.measurementlab.net/location/nauskylouisville?isps=AS10796x_AS10774x_AS11486x) and breaking down the results on maps and charts by points, census blocks, ISP, date range, and speed.  Census block data and [FCC 477](https://www.fcc.gov/general/broadband-deployment-data-fcc-form-477) data will used to supplement both the analysis and maps.
+SpeedUpAmerica provides on-the-ground truth about the Internet in America. Our national and localized broadband maps provide transparency: real Internet speeds received, actual prices paid, and level of service experienced. This information helps guide public and private investments in Internet infrastructure to the places that need it the most. We also see this approach as a better solution to national broadband mapping than that currently used by the FCC.
 
-The current implementation of SpeedUp has been deployed to these cities.
+If you are a software developer, [we would love your help and we can pay you for your time](https://github.com/Hack4Eugene/SpeedUpAmerica/wiki)!
 
-- [Lane County](https://speedupamerica.com/)
-- [Louisville, KY](https://www.speeduplouisville.com/)
-- [San Jose, CA](https://www.speedupsanjose.com/all-results)
-- Montgomery County, MD
+It is easy to speculate about what areas of a community have slow internet access, but without the data, it’s nearly impossible to know who is getting good, reliable service and where opportunities exist for improvement. Accurate information on the availability of Internet Service Providers, actual prices paid, and real speeds received is very hard to come by. There is a lack of real data and information about underserved areas. This is where communities in Oregon and throughout the nation need help.
+
+In partnership with US Ignite, this effort works to advance the technology that was originally built in Louisville Kentucky that helped that city’s digital inclusion efforts, and make it available to all cities and rural communities across America.
+
+The envisioned solution combines crowdsourced internet speed test results with a map of the entire United States that is filterable by state, zip code, census tract, cencus block and other statistical boundaries.
+
+In the end, we believe this tool will give us the most accurate on-the-ground data about what is actually happening in terms of Internet connectivity across America. And, it can serve as a starting point for conversations between neighbors, elected officials, and Internet service providers.
+
+The goal of this project is to increase awareness of inequities in speed and quality of internet provided to everyone in the US. If you have questions about anything, please join the conversation.
+
+Welcome!
+
+_The current implementation of SpeedUpAmerica has scaled to cover the state of Oregon (June 2019), with Washington and Idaho to come online next (July 2019)._
 
 ## Digital Inclusion
 
-The project can be used as part of a digital inclusion strategy to learn where inequities are in your community.  SpeedUp can help citizens, businesses, policymakers and others better understand where Americans can access high-quality Internet service, and where there are needs, allowing cities to track and improve performance through key policies, ISP agreements, and partnerships.
+The project can be used as part of a digital inclusion strategy to learn where inequities are in your community.  SpeedUpAmerica can help citizens, businesses, policymakers and others better understand where Americans can access high-quality Internet service, and where there are needs, allowing cities to track and improve performance through key policies, ISP agreements, and partnerships.
 
 ### Replace FCC 477 Data
 
@@ -19,29 +28,27 @@ All current digital inclusion maps rely on [FCC 477](https://www.fcc.gov/general
 
 ## Project History
 
+In March 2019, [Louisville worked with the tech community in Eugene, Oregon and Hack for a Cause](https://medium.com/louisville-metro-opi2/the-pathway-forward-for-mapping-broadband-speeds-in-america-da7df35320c2) to develop a codebase that could scale to be a single unified national map.
+
+This new application, SpeedUpAmerica.com, collects and publicly shares crowd sourced information about local broadband service speeds, prices paid, and quality of service all across america. It also incorporates the TestIT tests and Measurement Lab tests (which is integrated with Google.com) and greatly increases the number of tests that the application collects.
+
 In April 2016, Louisville Metro Government’s OPI2 Innovation Team,  PowerUp Labs and other partners launched a web-based application aimed to increase transparency about Internet service quality in Louisville at a hackathon. Louisville worked partners to open source "SpeedUp" so that any local government or organization can launch this application for their community.
 
-The application, SpeedUpYourCity.com, the local deployment of "SpeedUp", collects and publicly shares user-generated information about local broadband service speeds, rates and service quality in Louisville. It also incorporates the Measurement Lab Test, which is integrated with Google.com, and greatly increases the number of tests that the application collects.
+The SpeedUpLouisville.com project oreginally started at a local civic hackathon led by the Civic Data Alliance and hosted by Code Louisville and Code for America. Eric Littleton, Jon Matar and the PowerUp Labs software development team later volunteered to continue the work started during the hackathon. LVL1, a local makerspace, also provided funding for the paid web tools required to complete the project.
 
 ## Articles and Write-Ups
 
-- [Harvard Ash Center](https://datasmart.ash.harvard.edu/news/article/louisville-leverages-crowdsourcing-for-civic-good-919)
-- [San Jose Blog](https://medium.com/@SJ_DigitalDolan/broadband-and-digital-inclusion-in-san-jose-c225d54b2ed1)
-- [San Jose Page](https://www.sanjoseca.gov/index.aspx?NID=5346)
-- [NPR Affiliate](https://wfpl.org/louisville-city-internet-speed-map/)
-- [PowerUp Labs](https://poweruplabs.co/introducing-speed-up-louisville/) - How it Works
-- [Sales Site](https://www.speedupyourcity.com/) - not being sold any more, now open source
+- [US Ignite](https://www.us-ignite.org/speed-up-america-building-a-better-broadband-map/)
+- [CBS News](https://kval.com/news/local/how-fast-is-internet-service-in-rural-oregon-speed-up-america-aims-to-find-out)
+- [Converge Network Digest](https://www.convergedigest.com/2019/06/speed-up-america-seeks-better-data-on.html)
+- [The Register-Guard](https://www.registerguard.com/news/20190616/lane-county-asking-broadband-users-to-help-speed-up-america)
 
 ## About the Speed Test and the Data
 
-The data is displayed on an interactive map and available for free download, with the goal of increasing transparency about Internet service quality in America and to continue the conversation around fiber in your community.
+The data is displayed on an interactive map and available for free download, with the goal of increasing transparency about Internet service quality in America and to continue the conversation around internet access in your community.
 Citizens can visit the site from any device to take the free Internet service test, and is supplemented by Google's M-Lab tests. The data provided by the test and short survey is stored in a publicly available database, combined with other results, and published to the online map in a form that does not identify contributors, and allows direct raw data download.
 
 This test does not collect information about personal Internet traffic such as emails, web searches, or other personally identifiable information. 
-
-## About the Original Developers
-
-The SpeedUpLouisville.com project started at a local civic hackathon led by the Civic Data Alliance and hosted by Code Louisville and Code for America. Eric Littleton, Jon Matar and the PowerUp Labs software development team later volunteered to continue the work started during the hackathon. LVL1, a local makerspace, also provided funding for the paid web tools required to complete the project.
 
 # Deployment & Operation
 
@@ -50,7 +57,6 @@ The SpeedUpAmerica project utilizes the following technologies for operation:
 - Ruby on Rails
 - MySQL
 - MapBox (API Key Required)
-- Map Technica (API Key Required)
 - MLab (Special configuration instructions)
 
 # Setup
