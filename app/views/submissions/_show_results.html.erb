@@ -1,7 +1,7 @@
 <div class='container'>
   <div class='row'>
     <div class='col-md-12 col-centered table-responsive bdrNone resultTableForDesktop'>
-    <% if submission.provider_down_speed %>
+    <% if !submission.connected_with.blank? %>
       <div class='col-md-5 col-xs-12'>
         <h3>Your Results</h3>
         <table class='col-md-12 text-left'>
@@ -22,12 +22,12 @@
         </table>
       </div>
 
-      <div class='col-md-5 col-xs-12'>
+      <div class='col-md-5 col-xs-12 text-left'>
         <h3>Comparison</h3>
         <%= render partial: 'result_comparison_table', locals: {submission: submission} %>
       </div>
 
-    <% elsif submission.provider_down_speed.blank? %>
+    <% elsif submission.connected_with.blank? %>
       <div class='col-md-5 col-xs-12 width-100'>
       <h3>Your Results</h3>
         <table class='col-md-12 text-left'>
@@ -47,7 +47,6 @@
           </tr>
         </table>
       </div>
-
     <% end %>
     </div>
   </div>

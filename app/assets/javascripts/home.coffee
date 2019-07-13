@@ -17,10 +17,10 @@ bind_rating_stars = ->
 disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
 
-set_coords = (position) ->
-  $('#submission_latitude').attr 'value', position.coords.latitude
-  $('#submission_longitude').attr 'value', position.coords.longitude
-  $("input[name='submission[accuracy]']").attr 'value', position.coords.accuracy
+set_coords = (accuracy, latitude, longitude) ->
+  $('#submission_latitude').attr 'value', latitude
+  $('#submission_longitude').attr 'value', longitude
+  $("input[name='submission[accuracy]']").attr 'value', accuracy
   $.ajax
       url: 'home/get_location_data'
       type: 'POST'
@@ -47,10 +47,7 @@ set_coords = (position) ->
         Sentry.captureException(err)
 
 set_coords_by_geolocation = (position) ->
-  set_coords(position.coords.latitude, position.coords.longitude)
-
-set_coords_by_latlng = (latlng) ->
-  set_coords(latlng.latitude, latlng.longitude)
+  set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
   $('#error-geolocation').modal('show')
@@ -139,7 +136,7 @@ places_autocomplete = ->
   placesAutocomplete.on 'change', (eventResult) -> 
     if eventResult
       latlng = eventResult.suggestion.latlng
-      set_coords_by_latlng latlng
+      set_coords 50, latlng.latitude, latlng.longitude
       $('#location_next_button').attr('disabled', false)
       $('#location_next_button').removeClass('button-disabled')
   placesAutocomplete
