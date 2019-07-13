@@ -17,16 +17,10 @@ bind_rating_stars = ->
 disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
 
-<<<<<<< HEAD
-set_coords = (latitude, longitude) ->
-  $('#submission_latitude').attr 'value', latitude
-  $('#submission_longitude').attr 'value', longitude
-=======
 set_coords = (position) ->
   $('#submission_latitude').attr 'value', position.coords.latitude
   $('#submission_longitude').attr 'value', position.coords.longitude
   $("input[name='submission[accuracy]']").attr 'value', position.coords.accuracy
->>>>>>> f2a618338862539359ce78432ecd05344f0d2127
   $.ajax
       url: 'home/get_location_data'
       type: 'POST'
