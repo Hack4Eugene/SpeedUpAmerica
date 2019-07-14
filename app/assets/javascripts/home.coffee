@@ -142,7 +142,6 @@ places_autocomplete = ->
   placesAutocomplete
 
 $ ->
-  console.log $("input[name='submission[accuracy]']").value
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
