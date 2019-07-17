@@ -10,7 +10,7 @@ bind_rating_stars = ->
     showClear: false
     showCaption: false
     size:'sm'
-
+  
   $('.rating-container input').each ->
     $(this).rating star_options
 
@@ -50,6 +50,9 @@ set_coords_by_geolocation = (position) ->
   set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
+  if $('#location_geolocation').prop('checked')
+    $('#location_button').prop('innerHTML', 'Get My Location')
+
   $('#error-geolocation').modal('show')
 
   Sentry.setExtra("error_code", err.code)
@@ -156,7 +159,6 @@ $ ->
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
-  $('.test-speed-btn').attr('disabled', true)
   $(".checkboxes-container input[name='submission[testing_for]']").prop('checked', false)
 
   $('#take_test').on 'click', ->
@@ -187,6 +189,7 @@ $ ->
         $('#location_next_button').removeClass('button-disabled')
 
   $('#location_button').on 'click', ->
+    $('#location_button').prop('innerHTML', 'Loading...')
     get_location()
 
   $('#location_next_button').on 'click', ->
