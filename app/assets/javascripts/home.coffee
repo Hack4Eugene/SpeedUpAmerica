@@ -1,5 +1,3 @@
-has_successful_location = false
-
 bind_rating_stars = ->
   star_options =
     stars: 7
