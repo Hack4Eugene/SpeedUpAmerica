@@ -28,26 +28,27 @@ body.result-page {
   margin: 5px;
   width: 175px;
   font-weight: bolder;
+  transition: all 0.3s ease;
 }
 
 .button-primary {
   background: #00c09c;
   color: #fff;
   border: 1px solid #00c09c;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .button-secondary {
   background: #fff;
   color: #00c09c;
   border: 1px solid #00c09c;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .button-disabled {
   background: #fff !important;
   color: #999 !important;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .width-100 {

@@ -5,7 +5,7 @@
   <div class='checkboxes-container'>
     <p class='bold'>To put your speed test results on the map, we'd like to use your location.</p>
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'location_geolocation', data: { target: '#form-step-1' } }, 'Location Geolocation', 'true' %>
+      <%= f.check_box :location, { id: 'location_geolocation', data: { target: '#form-step-1' } }, 'Location Geolocation', false %>
       <%= label_tag :location_geolocation, "Use my browser's location".html_safe %>
     </div>
 
@@ -28,8 +28,10 @@
 
   <span class='block-element'>
     <%= button_tag 'Let\'s begin', type: 'button', id: 'location_next_button', class: 'button button-primary button-disabled', disabled: true %>
-  </span>
+    </span>
 
-  <p>We DO NOT store your personal data. We DO ask for your location to map internet speeds across America.</p>
+  <span class='block-element'>
+    <p>We DO NOT store your personal data. We DO ask for your location to map internet speeds across America.</p>
+  </span>
 
 </div>
