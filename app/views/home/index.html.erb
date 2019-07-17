@@ -2,6 +2,7 @@
 
 <div class='col-md-6 home-wrapper text-center col-sm-9'>
   <%= render 'introduction' %>
+  <%= hidden_field_tag 'location_success', 'false' %>
 
   <div id='form-container' class='hide'>
     <%= form_for @submission, url: submissions_path, class: 'form-horizontal' do |f| %>
