@@ -132,10 +132,12 @@ ajax_interactions = ->
     .ajaxStop ->
       if $('#location_geolocation').prop('checked') &&
           $('#location_success').prop('value', 'true')
-        $('#location_button').prop('innerHTML', 'Success!')
-        setTimeout (->
-          $('#location_button').prop('innerHTML', 'Get My Location')
-        ), 2500
+        $('#location_button').prop('innerHTML', 'Location Success!')
+        $('#location_button').addClass('button-disabled')
+        $('#location_button').prop('disabled', true)
+
+
+        
       if $('#location_address').prop('checked')
         $('#location_next_button').prop('innerHTML', "Let's begin");
       $("#location_success").attr 'value', true
