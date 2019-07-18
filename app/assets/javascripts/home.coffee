@@ -8,7 +8,7 @@ bind_rating_stars = ->
     showClear: false
     showCaption: false
     size:'sm'
-
+  
   $('.rating-container input').each ->
     $(this).rating star_options
 
@@ -43,6 +43,9 @@ set_coords_by_geolocation = (position) ->
   set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
+  if $('#location_geolocation').prop('checked')
+    $('#location_button').prop('innerHTML', 'Get My Location')
+
   $('#error-geolocation').modal('show')
 
   Sentry.setExtra("error_code", err.code)
@@ -129,10 +132,12 @@ ajax_interactions = ->
     .ajaxStop ->
       if $('#location_geolocation').prop('checked') &&
           $('#location_success').prop('value', 'true')
-        $('#location_button').prop('innerHTML', 'Success!')
-        setTimeout (->
-          $('#location_button').prop('innerHTML', 'Get My Location')
-        ), 2500
+        $('#location_button').prop('innerHTML', 'Location Success!')
+        $('#location_button').addClass('button-disabled')
+        $('#location_button').prop('disabled', true)
+
+
+        
       if $('#location_address').prop('checked')
         $('#location_next_button').prop('innerHTML', "Let's begin");
       $("#location_success").attr 'value', true
@@ -169,7 +174,6 @@ $ ->
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
-  $('.test-speed-btn').attr('disabled', true)
   $(".checkboxes-container input[name='submission[testing_for]']").prop('checked', false)
 
   $('#take_test').on 'click', ->
@@ -203,6 +207,7 @@ $ ->
         $('#location_next_button').removeClass('button-disabled')
 
   $('#location_button').on 'click', ->
+    $('#location_button').prop('innerHTML', 'Loading...')
     get_location()
 
   $('#location_next_button').on 'click', ->
