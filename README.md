@@ -69,6 +69,11 @@ Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Dock
 
 > A minimum of 4GB of local memory allocation is needed for some tasks to run. After starting Docker, go into it's settings and adjust the amount of memory it's allowed to use.
 
+[Memory - Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/#memory)
+
+[Memory - Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/)
+
+
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
 ```bash
