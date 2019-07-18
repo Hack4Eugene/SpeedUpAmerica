@@ -15,21 +15,21 @@ bind_rating_stars = ->
 disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
 
-set_coords = (position) ->
-  $('#submission_latitude').attr 'value', position.coords.latitude
-  $('#submission_longitude').attr 'value', position.coords.longitude
+set_coords = (accuracy, latitude, longitude) ->
+  $('#submission_latitude').attr 'value', latitude
+  $('#submission_longitude').attr 'value', longitude
+  $("input[name='submission[accuracy]']").attr 'value', accuracy
   $.ajax
       url: 'home/get_location_data'
       type: 'POST'
       dataType: 'json'
       data:
-        latitude: position.coords.latitude
-        longitude: position.coords.longitude
+        latitude: latitude
+        longitude: longitude
       success: (data) ->
         $("input[name='submission[address]']").attr 'value', data['address']
         $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
-        $('.test-speed-btn').prop('disabled', false)
-        $('.location-warning').addClass('hide')
+
       error: (request, statusText, errorText) ->
         err = new Error("get location data failed")
 
@@ -38,7 +38,9 @@ set_coords = (position) ->
         Sentry.setExtra("response_status",  statusText)
         Sentry.setExtra("response_error",  errorText)
         Sentry.captureException(err)
-      
+
+set_coords_by_geolocation = (position) ->
+  set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
   $('#error-geolocation').modal('show')
@@ -49,7 +51,7 @@ block_callback = (err) ->
 
 get_location = ->
   if navigator.geolocation
-    navigator.geolocation.getCurrentPosition set_coords, block_callback
+    navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
 
 check_fields_validity = ->
   is_valid = true
@@ -117,15 +119,53 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
+ajax_interactions = ->
+  $(document)
+    .ajaxStart ->
+      if $('#location_geolocation').prop('checked')
+        $('#location_button').prop('innerHTML', 'Loading...')
+      if $('#location_address').prop('checked')
+        $('#location_next_button').prop('innerHTML', 'Loading...');
+    .ajaxStop ->
+      if $('#location_geolocation').prop('checked') &&
+          $('#location_success').prop('value', 'true')
+        $('#location_button').prop('innerHTML', 'Success!')
+        setTimeout (->
+          $('#location_button').prop('innerHTML', 'Get My Location')
+        ), 2500
+      if $('#location_address').prop('checked')
+        $('#location_next_button').prop('innerHTML', "Let's begin");
+      $("#location_success").attr 'value', true
+      $('.test-speed-btn').prop('disabled', false)
+      $('.location-warning').addClass('hide')
+      $('#location_next_button').attr('disabled', false)
+      $('#location_next_button').removeClass('button-disabled')
+
+places_autocomplete = ->
+  placesAutocomplete = places({
+    application_id: 'pl1SUFESCKRV',
+    api_key: '6039fe8e924c5e9f9a2edd9cecba075c',
+    container: window.document.querySelector('#address-input')
+  });
+
+  placesAutocomplete.on 'change', (eventResult) -> 
+    if eventResult
+      latlng = eventResult.suggestion.latlng
+      set_coords(50, latlng.lat, latlng.lng)
+  placesAutocomplete
+
 $ ->
   bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
 
   if window.location.pathname == '/'
-    get_location()
     enable_speed_test()
     set_error_for_invalid_fields()
+    places_autocomplete()
+    ajax_interactions()
+    $(".checkboxes-container input[name='submission[location]']").each ->
+      $(this).prop('checked', false)
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
@@ -135,9 +175,72 @@ $ ->
   $('#take_test').on 'click', ->
     $('.title-container').addClass('hidden');
     $('#form-container').removeClass('hide')
-    $('#form-step-1 input').prop('disabled', false)
+    $('#form-step-0 input').prop('disabled', false)
     $('#introduction').addClass('hide')
     $('.home-wrapper').addClass('mobile-wrapper-margin')
+
+    $(".checkboxes-container input[name='submission[location]']").on 'change', ->
+      $('#location_button').prop('disabled', false)
+      if $("#location_success").prop('value') == 'false'
+        $('#location_next_button').prop('disabled', true)
+        $('#location_next_button').addClass('button-disabled')
+      $(".checkboxes-container input[name='submission[location]']").each ->
+        $(this).prop('checked', false)
+      $(this).prop('checked', true)
+
+      if $('#location_geolocation').prop('checked')
+        $('#location_button').removeClass('hide')
+        $('#location-address-input').addClass('hide')
+
+      if $('#location_address').prop('checked')
+        $('#location_button').addClass('hide')
+        $('#location-address-input').removeClass('hide')
+
+      if $('#location_disable').prop('checked')
+        $('#location_button').addClass('hide')
+        $('#location-address-input').addClass('hide')
+        $('#location_next_button').attr('disabled', false)
+        $('#location_next_button').removeClass('button-disabled')
+
+  $('#location_button').on 'click', ->
+    get_location()
+
+  $('#location_next_button').on 'click', ->
+    if $('#location_geolocation').prop('checked')
+      if $("#location_success").prop('value') == 'false'
+        navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
+      $('#form-step-0').addClass('hide')
+      $('#form-step-1').removeClass('hide')
+      $('#form-step-1 input').prop('disabled', false)
+      $('.test-speed-btn').prop('disabled', false)
+      $('.location-warning').addClass('hide')
+    
+    if $('#location_address').prop('checked')
+      if $("#location_success").prop('value') == 'true'
+        $('#form-step-0').addClass('hide')
+        $('#form-step-1').removeClass('hide')
+        $('#form-step-1 input').prop('disabled', false)
+        $('.test-speed-btn').prop('disabled', false)
+        $('.location-warning').addClass('hide')
+
+      else
+        $('#address-input').addClass('error-input')
+        $('#location_next_button').attr('disabled', true)
+        $('#location_next_button').removeClass('button-disabled')
+
+        setTimeout (->
+          $('#address-input').removeClass('error-input');
+        ), 2500
+
+    if $('#location_disable').prop('checked')
+      $("input[name='submission[accuracy]']").attr 'value', undefined
+      $('#testing_speed').modal('show');
+      $('#form-step-0').addClass('hide')
+
+      setTimeout (->
+        $('#start_ndt_test').click()
+      ), 200
+
 
   $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
     $(".checkboxes-container input[name='submission[testing_for]']").each ->
