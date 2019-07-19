@@ -31,7 +31,7 @@ class SubmissionsImporter
     test_types = ['upload', 'download']
     end_time = Date.today.strftime("%Y-%m-%d")
 
-    regions.each do |region|     
+    regions.each do |region|
       test_types.each do |test_type|
         # Track start time of previous batch to abort if we repeat dates
         previous_start = nil
@@ -44,21 +44,21 @@ class SubmissionsImporter
             break
           end
           previous_start = start_time
-  
+
           puts "Starting batch #{Time.now}"
-  
+
           if test_type == 'upload'
             query = upload_query(country_code, region, start_time, end_time)
-          else 
+          else
             query = download_query(country_code, region, start_time, end_time)
           end
-          
+
           data = client.query(query)
           create_submissions(data, test_type)
-  
+
           puts "Finishing batch #{Time.now}"
         end
-      end 
+      end
     end
 
     # Delete any submissions older than 13 months ago
@@ -131,7 +131,7 @@ class SubmissionsImporter
     if latest_record.nil? == false
       start_time = latest_record.test_date.strftime("%Y-%m-%d")
     end
-    
+
     return start_time
   end
 
@@ -156,7 +156,7 @@ class SubmissionsImporter
       submission.hostname            = row[:client_hostname]
       submission.latitude            = row[:client_latitude]
       submission.longitude           = row[:client_longitude]
-      submission.provider            = Submission.provider_mapping(submission.get_provider)
+      submission.provider            = submission.get_provider
       submission.actual_down_speed   = row[:downloadThroughput]
       submission.actual_upload_speed = row[:uploadThroughput]
       submission.census_status       = Submission::CENSUS_STATUS[:pending]

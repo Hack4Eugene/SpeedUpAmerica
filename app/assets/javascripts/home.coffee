@@ -8,7 +8,7 @@ bind_rating_stars = ->
     showClear: false
     showCaption: false
     size:'sm'
-  
+
   $('.rating-container input').each ->
     $(this).rating star_options
 
@@ -137,7 +137,7 @@ ajax_interactions = ->
         $('#location_button').prop('disabled', true)
 
 
-        
+
       if $('#location_address').prop('checked')
         $('#location_next_button').prop('innerHTML', "Let's begin");
       $("#location_success").attr 'value', true
@@ -153,7 +153,7 @@ places_autocomplete = ->
     container: window.document.querySelector('#address-input')
   });
 
-  placesAutocomplete.on 'change', (eventResult) -> 
+  placesAutocomplete.on 'change', (eventResult) ->
     if eventResult
       latlng = eventResult.suggestion.latlng
       set_coords(50, latlng.lat, latlng.lng)
@@ -219,7 +219,7 @@ $ ->
       $('#form-step-1 input').prop('disabled', false)
       $('.test-speed-btn').prop('disabled', false)
       $('.location-warning').addClass('hide')
-    
+
     if $('#location_address').prop('checked')
       if $("#location_success").prop('value') == 'true'
         $('#form-step-0').addClass('hide')
