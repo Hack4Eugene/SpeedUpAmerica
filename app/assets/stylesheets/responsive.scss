@@ -96,8 +96,8 @@
     font-size: 22px !important;
   }
 
-  .rating-sm {
-    font-size: 1.96em;
+  .rating {
+    font-size: 1.0em;
   }
 
   .navbar-brand {
@@ -233,8 +233,8 @@
 }
 
 @media only screen and (min-device-width: 992px) and (max-device-width: 1299px) {
-  .rating-sm {
-    font-size: 1.7em;
+  .rating {
+    font-size: 0.7em;
   }
 }
 
@@ -246,20 +246,6 @@
 .navbar-brand {
   padding-right: 5px !important;
   padding-top: 12px !important
-}
-
-@media only screen
-and (min-device-width: 768px)
-and (max-device-width: 1024px)
-and (orientation: landscape)
-and (-webkit-min-device-pixel-ratio: 1) {
-  .rating-sm {
-    font-size: inherit;
-  }
-
-  .rating .star {
-    font-size: 1.7em;
-  }
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 900px) {
