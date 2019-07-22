@@ -82,11 +82,11 @@ body.result-page {
 
 .home-wrapper {
   background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid #909eb5;
   display: table;
   margin: 0 auto;
   float: none !important;
   padding: 10px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .bold {
