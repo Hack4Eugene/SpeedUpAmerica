@@ -148,8 +148,8 @@ ajax_interactions = ->
 
 places_autocomplete = ->
   placesAutocomplete = places({
-    application_id: 'plTWRRQFRSN9',
-    api_key: '75eed990275fd5fa96cce919016cc775',
+    application_id: ALGOLIA_APP_ID,
+    api_key: ALGOLIA_API_KEY,
     container: window.document.querySelector('#address-input')
   });
 
