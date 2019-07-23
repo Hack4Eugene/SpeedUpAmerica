@@ -148,8 +148,8 @@ ajax_interactions = ->
 
 places_autocomplete = ->
   placesAutocomplete = places({
-    application_id: 'pl1SUFESCKRV',
-    api_key: '6039fe8e924c5e9f9a2edd9cecba075c',
+    application_id: 'plTWRRQFRSN9',
+    api_key: '75eed990275fd5fa96cce919016cc775',
     container: window.document.querySelector('#address-input')
   });
 
