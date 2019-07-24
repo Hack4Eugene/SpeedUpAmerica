@@ -89,7 +89,7 @@ $ docker-compose run frontend rake secret
 
 Locate your `local.env` in the root of the SpeedUpAmerica directory which now resides on your local system.
 Use the long alphanermeric string output from `rake secret` as the value for `SECRET_KEY_BASE`.
-Go to [Mapbox](https://account.mapbox.com) and create a free account, to get a mapbox api access token. 
+Go to [Mapbox](https://account.mapbox.com) and create a free account, to get a mapbox api access token.
 Use and set the Default pulic token as your `MAPBOX_API_KEY` in the `local.env`file.
 
 > These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
@@ -102,6 +102,7 @@ Download these files and place them in the projects `data` directory:
 * https://sua-datafiles.s3-us-west-2.amazonaws.com/census_tracts.sql
 * https://sua-datafiles.s3-us-west-2.amazonaws.com/submissions.sql
 * https://sua-datafiles.s3-us-west-2.amazonaws.com/stats_caches.sql
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/boundaries.sql
 
 Run these lines:
 
@@ -110,6 +111,7 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/stats_caches.sql
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/boundariess.sql
 $ docker-compose run frontend rake update_providers_statistics
 $ docker-compose run frontend rake update_stats_cache
 ```
@@ -188,7 +190,7 @@ $ docker-compose run frontend rake update_pending_census_codes
 $ docker-compose run frontend rake update_providers_statistics
 ```
 
-### Updating cached data 
+### Updating cached data
 
 ```
 $ docker-compose run frontend rake update_stats_cache
@@ -219,12 +221,17 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 Assumes you have these files in `data/`:
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_16_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_41_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_53_tabblock10.json
 
-```bash 
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
+```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
-$ docker-compose run frontend rake populate_census_tracts
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE boundaries;"
 $ docker-compose run frontend rake populate_zip_boundaries
+$ docker-compose run frontend rake populate_census_tracts
+$ docker-compose run frontend rake populate_census_blocks
 ```
 
 > When updating the SQL files make sure to remove the warning from the first line of the file.

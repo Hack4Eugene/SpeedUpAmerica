@@ -95,6 +95,10 @@ class Submission < ActiveRecord::Base
     submission.provider = submission.get_provider
     submission.census_status = Submission::CENSUS_STATUS[:pending]
     submission.save
+
+    submission.populate_location
+    submission.populate_boundaries
+
     submission
   end
 
@@ -115,7 +119,7 @@ class Submission < ActiveRecord::Base
 
   def location
   end
-  
+
   def self.fetch_tileset_groupby(params)
     providers = provider_names(params[:provider])
     params[:zip_code] = [] if params[:zip_code] == ['all']
@@ -126,7 +130,7 @@ class Submission < ActiveRecord::Base
       stats = calculate_tileset_groupby(params, providers)
     else
       from_cache = true
-      stats = cached_tileset_groupby(params[:group_by], params[:test_type])      
+      stats = cached_tileset_groupby(params[:group_by], params[:test_type])
     end
 
     {
@@ -141,11 +145,11 @@ class Submission < ActiveRecord::Base
     polygon_data = valid_test
     polygon_data = polygon_data.where(provider: providers)              if providers.present? && providers.any?
     polygon_data = polygon_data.with_zip_code(params[:zip_code])        if params[:zip_code].present? && params[:zip_code].any?
-    polygon_data = polygon_data.with_census_code(params[:census_code])  if params[:census_code].present? && params[:census_code].any?    
+    polygon_data = polygon_data.with_census_code(params[:census_code])  if params[:census_code].present? && params[:census_code].any?
 
     if params[:group_by] == 'zip_code'
       polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
-    else 
+    else
       polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
     end
 
@@ -194,7 +198,7 @@ class Submission < ActiveRecord::Base
         result[:all_median] = stats.download_median
         result[:all_fast] = stats.download_max
         result[:all_count] = stats.download_count
-      else 
+      else
         next if stats.upload_count == 0
 
         result[:all_avg] = stats.upload_avg
@@ -337,7 +341,7 @@ class Submission < ActiveRecord::Base
   CSV_KEYS = [
     :id, :source, :date, :testing_for, :zip_code, :census_code, :provider, :connected_with,
     :monthly_price, :provider_down_speed, :rating,:actual_down_speed, :actual_upload_speed,
-    :provider_price, :actual_price, :ping 
+    :provider_price, :actual_price, :ping
   ]
 
   def self.csv_header
@@ -355,7 +359,7 @@ class Submission < ActiveRecord::Base
   def self.find_in_batches(date_range)
     start_date = Date.today.at_beginning_of_month - 13.months
     end_date = Date.today
- 
+
     data = in_zip_code_list.not_from_mlab.with_date_range(start_date, end_date)
     data.find_each(batch_size: 1000) do |transaction|
       yield transaction
@@ -409,7 +413,7 @@ class Submission < ActiveRecord::Base
     if statistics[:zip_code].present? || statistics[:census_code].present?
       results = calculate_speed_data(statistics, providers, start_date, end_date, date_ranges)
     else
-      results = cached_speed_data(statistics, providers, start_date, end_date, date_ranges)      
+      results = cached_speed_data(statistics, providers, start_date, end_date, date_ranges)
     end
 
     results
@@ -445,7 +449,7 @@ class Submission < ActiveRecord::Base
     test_type = params[:test_type]
     categories = date_ranges.collect { |range| range[:name] }
 
-    total_tests = stats.map(&:"#{test_type}_count").inject(0){|sum, x| sum + x }   
+    total_tests = stats.map(&:"#{test_type}_count").inject(0){|sum, x| sum + x }
 
     speed_comparison_data = cached_speed_comparison_data(stats, test_type)
     speed_breakdown_chart_data = cached_speed_breakdown_data(stats, test_type, providers)
@@ -475,10 +479,10 @@ class Submission < ActiveRecord::Base
       speedup_tests_count: total_count - mlab_tests_count,
       mlab_tests_count: mlab_tests_count,
 
-      less_than_5: less_than_5, 
-      less_than_25: less_than_25, 
-      faster_than_100: faster_than_100, 
-      faster_than_250: faster_than_250,      
+      less_than_5: less_than_5,
+      less_than_25: less_than_25,
+      faster_than_100: faster_than_100,
+      faster_than_250: faster_than_250,
     }
   end
 
@@ -494,18 +498,18 @@ class Submission < ActiveRecord::Base
     {
       speedup_tests_count: sua_count,
       mlab_tests_count: total_count - sua_count,
-      
-      less_than_5: less_than_5, 
-      less_than_25: less_than_25, 
-      faster_than_100: faster_than_100, 
-      faster_than_250: faster_than_250,      
+
+      less_than_5: less_than_5,
+      less_than_25: less_than_25,
+      faster_than_100: faster_than_100,
+      faster_than_250: faster_than_250,
     }
   end
 
   def self.calculate_speed_breakdown_data(submissions, test_type, providers)
     categories = get_speed_ranges()
     series = []
-    
+
     providers.each do |provider|
       provider_submissions = submissions.with_provider(provider)
       values = speed_breakdown(test_type, provider_submissions)
@@ -526,7 +530,7 @@ class Submission < ActiveRecord::Base
         column = SPEED_BREAKDOWN_COLUMNS[index]
         values << stats["#{test_type}_#{column}"]
       end
-        
+
       series << { name: stats.stat_id, data: values }
     end
 
@@ -574,10 +578,10 @@ class Submission < ActiveRecord::Base
         if monthly_stats.nil?
           median_speed_values = 0
           tests_count_values = 0
-        else 
+        else
           median_speed_values << monthly_stats["#{test_type}_median"]
           tests_count_values << monthly_stats["#{test_type}_count"]
-        end  
+        end
       end
 
       median_speed_series << { name: provider, data: median_speed_values }
@@ -636,7 +640,7 @@ class Submission < ActiveRecord::Base
       '1001+' => '1001 Mbps+',
     }[range]
   end
-  
+
   def self.speed_breakdown(test_type, provider_submissions)
     SPEED_BREAKDOWN_RANGES.map do |range|
       count = count_between(provider_submissions, range, test_type)
@@ -771,6 +775,39 @@ class Submission < ActiveRecord::Base
   def get_provider
     result = ISP_DB.lookup(ip_address)
     Submission.provider_mapping(result["autonomous_system_organization"]) if result.found?
+  end
+
+  def populate_location
+    conn = ActiveRecord::Base.connection
+    conn.execute("UPDATE submissions SET location = POINT(longitude, latitude) WHERE id = #{id}")
+  end
+
+  def populate_boundaries
+    conn = ActiveRecord::Base.connection
+    query = "SELECT boundary_type, boundary_id FROM boundaries WHERE "\
+      "ST_Contains(geometry, (SELECT location FROM submissions WHERE id = #{id} LIMIT 1));"
+    result = conn.select_rows(query)
+
+    self.assign_attributes(:census_status => Submission::CENSUS_STATUS[:pending])
+
+    result.each do |row|
+      case row[0]
+      when 'state'
+        self.assign_attributes(:region => row[1])
+        self.assign_attributes(:country_code => 'US')
+      when 'county'
+        self.assign_attributes(:county => row[1])
+      when 'zip_code'
+        self.assign_attributes(:zip_code => row[1])
+      when 'census_tract'
+        self.assign_attributes(:census_code => row[1])
+        self.assign_attributes(:census_status => Submission::CENSUS_STATUS[:saved])
+      when 'census_block'
+        self.assign_attributes(:census_block => row[1])
+      end
+    end
+
+    self.save()
   end
 
   def self.stats_data

@@ -154,14 +154,18 @@ class SubmissionsImporter
       submission.address             = row[:city]
       submission.zip_code            = row[:postal_code]
       submission.hostname            = row[:client_hostname]
-      submission.latitude            = row[:client_latitude]
-      submission.longitude           = row[:client_longitude]
-      submission.provider            = submission.get_provider
       submission.actual_down_speed   = row[:downloadThroughput]
       submission.actual_upload_speed = row[:uploadThroughput]
-      submission.census_status       = Submission::CENSUS_STATUS[:pending]
 
+      submission.provider            = submission.get_provider
+
+      submission.latitude            = row[:client_latitude]
+      submission.longitude           = row[:client_longitude]
+      submission.location            = nil
       submission.save
+
+      submission.populate_location
+      submission.populate_boundaries
     end
   end
 

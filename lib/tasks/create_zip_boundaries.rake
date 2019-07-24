@@ -2,7 +2,8 @@ require 'mechanize'
 require 'json'
 require 'rake'
 require 'georuby'
-require 'geo_ruby/ewk' 
+require 'geo_ruby/geojson'
+require 'geo_ruby/ewk'
 
 
 task :populate_zip_boundaries => [:environment] do
@@ -13,7 +14,7 @@ task :populate_zip_boundaries => [:environment] do
 
   # read in the JSON line by line
   IO.foreach("/suyc/data/us_zip_codes.json") { |line|
-    
+
     # parse the line
     data = JSON.parse(line)
 
@@ -24,22 +25,35 @@ task :populate_zip_boundaries => [:environment] do
     #next if !(data["county"].include? "Lane")
 
     # if it's already in ZipBoundary, ignore it
-    next if ZipBoundary.where(name: data["zip_code"]).present?
-    
-    zip_type = "Polygon"
-    polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(data["zcta_geom"])
-    if data["zcta_geom"].start_with?('MULTIPOLYGON')
-      zip_type = "MultiPolygon"
-      polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["zcta_geom"])
+    if ZipBoundary.where(name: data["zip_code"]).empty?
+      zip_type = "Polygon"
+      polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(data["zcta_geom"])
+      if data["zcta_geom"].start_with?('MULTIPOLYGON')
+        zip_type = "MultiPolygon"
+        polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["zcta_geom"])
+      end
+
+      # otherwise, create a new record
+      ZipBoundary.create(name: data["zip_code"], zip_type: zip_type, bounds: polygon.to_coordinates())
+
+      # increment the count
+      add_count += 1
     end
 
-    # otherwise, create a new record
-    ZipBoundary.create(name: data["zip_code"], zip_type: zip_type, bounds: polygon.to_coordinates())
+    # if not in Boundaries, add it
+    if Boundaries.where(boundary_type: 'zip_code', boundary_id: data["zip_code"]).empty?
+      if data["zcta_geom"].start_with?('POLYGON')
+        geo = ActiveRecord::Base.connection.execute("SELECT ST_PolygonFromText('#{data['zcta_geom']}')").first[0]
+      elsif data["zcta_geom"].start_with?('MULTIPOLYGON')
+        geo = ActiveRecord::Base.connection.execute("SELECT ST_MultiPolygonFromText('#{data['zcta_geom']}')").first[0]
+      else
+        raise "invalid polygon"
+      end
 
-    # increment the count
-    add_count += 1
+      Boundaries.create(boundary_type: 'zip_code', boundary_id: data["zip_code"], geometry: geo)
+    end
   }
 
   puts "Added #{add_count} zip codes."
-  
+
 end
