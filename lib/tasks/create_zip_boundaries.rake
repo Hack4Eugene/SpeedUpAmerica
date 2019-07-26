@@ -39,19 +39,6 @@ task :populate_zip_boundaries => [:environment] do
       # increment the count
       add_count += 1
     end
-
-    # if not in Boundaries, add it
-    if Boundaries.where(boundary_type: 'zip_code', boundary_id: data["zip_code"]).empty?
-      if data["zcta_geom"].start_with?('POLYGON')
-        geo = ActiveRecord::Base.connection.execute("SELECT ST_PolygonFromText('#{data['zcta_geom']}')").first[0]
-      elsif data["zcta_geom"].start_with?('MULTIPOLYGON')
-        geo = ActiveRecord::Base.connection.execute("SELECT ST_MultiPolygonFromText('#{data['zcta_geom']}')").first[0]
-      else
-        raise "invalid polygon"
-      end
-
-      Boundaries.create(boundary_type: 'zip_code', boundary_id: data["zip_code"], geometry: geo)
-    end
   }
 
   puts "Added #{add_count} zip codes."

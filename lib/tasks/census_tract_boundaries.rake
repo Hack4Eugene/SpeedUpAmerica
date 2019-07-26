@@ -37,22 +37,6 @@ task :populate_census_tracts => [:environment] do
       # increment the count
       add_count += 1
     end
-
-    # if not in Boundaries, add it
-    if Boundaries.where(boundary_type: 'census_tract', boundary_id: data["GEOID"]).empty?
-      if data["tract_polygons"].start_with?('POLYGON')
-        geo = ActiveRecord::Base.connection.execute("SELECT ST_PolygonFromText('#{data['tract_polygons']}')").first[0]
-      elsif data["tract_polygons"].start_with?('MULTIPOLYGON')
-        geo = ActiveRecord::Base.connection.execute("SELECT ST_MultiPolygonFromText('#{data['tract_polygons']}')").first[0]
-      else
-        raise "invalid polygon"
-      end
-
-      Boundaries.create(boundary_type: 'census_tract', boundary_id: data["GEOID"], geometry: geo)
-
-      # increment the count
-      add_count += 1
-    end
   }
 
   puts "Added #{add_count} census tracts."

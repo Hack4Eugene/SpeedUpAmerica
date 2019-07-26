@@ -792,7 +792,7 @@ class Submission < ActiveRecord::Base
 
     result.each do |row|
       case row[0]
-      when 'state'
+      when 'region'
         self.assign_attributes(:region => row[1])
         self.assign_attributes(:country_code => 'US')
       when 'county'

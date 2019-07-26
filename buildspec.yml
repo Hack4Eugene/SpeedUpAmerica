@@ -28,6 +28,12 @@ phases:
       - aws s3 cp s3://sua-datafiles/tl_2018_16_tabblock10.json data/tl_2018_16_tabblock10.json
       - aws s3 cp s3://sua-datafiles/tl_2018_41_tabblock10.json data/tl_2018_41_tabblock10.json
       - aws s3 cp s3://sua-datafiles/tl_2018_53_tabblock10.json data/tl_2018_53_tabblock10.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_16_tract.json data/tl_2018_16_tract.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_41_tract.json data/tl_2018_41_tract.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_53_tract.json data/tl_2018_53_tract.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_us_zcta510.json data/tl_2018_us_zcta510.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_us_county.json data/tl_2018_us_county.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_us_state.json data/tl_2018_us_state.json
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
