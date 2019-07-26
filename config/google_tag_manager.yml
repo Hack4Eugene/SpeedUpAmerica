@@ -1,0 +1,14 @@
+defaults: &defaults
+  sua: GTM-KMMTJCL
+
+development:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+production:
+  sua: GTM-T4CR7LB
