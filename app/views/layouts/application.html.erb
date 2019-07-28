@@ -25,7 +25,8 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
-  <%= analytics_init if GoogleAnalytics.valid_tracker? %>
+
+  <%= google_tag_manager_script_tag(:sua) %>
 
   <% if Rails.env.production? == false %>
     <meta name="robots" content="noindex,nofollow">
@@ -49,6 +50,8 @@
 </head>
 
 <body class='<%= body_css_class %>'>
+  <%= google_tag_manager_noscript_tag(:sua) %>
+
   <div class='wrapper-container'>
     <%= render "shared/#{header_file_name}" %>
 
