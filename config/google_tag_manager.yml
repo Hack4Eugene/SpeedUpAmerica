@@ -4,10 +4,10 @@ defaults: &defaults
 development:
   <<: *defaults
 
-development:
+test:
   <<: *defaults
 
-development:
+staging:
   <<: *defaults
 
 production:
