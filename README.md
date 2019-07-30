@@ -198,12 +198,17 @@ $ docker-compose run frontend rake update_stats_cache
 
 ## Loading new boundaries
 
+> Assumes you have recent `.sql` files downloaded from links in setup instructions.
+
 When boundaries are updated each developer must reload their boundary tables:
+
 ```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/boundaries.sql
 ```
 
 >For Windows OS please use the following:
@@ -211,9 +216,11 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sq
 $ docker-compose exec mysql mysql -u suyc -psuyc suyc
 $ mysql> TRUNCATE census_boundaries;
 $ mysql> TRUNCATE zip_boundaries;
+$ mysql> TRUNCATE boundaries;
 $ mysql> exit
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/boundaries.sql
 ```
 
 ### Updating the Census and Zip Code boundaries SQL files
@@ -224,6 +231,9 @@ Assumes you have these files in `data/`:
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_16_tabblock10.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_41_tabblock10.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_53_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_zcta510.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_county.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_state.json
 
 ```bash
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
@@ -240,6 +250,7 @@ Once imported you can update the SQL files by:
 ```bash
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc census_boundaries > data/census_tracts.sql
 $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
+$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc boundaries > data/boundaries.sql
 ```
 
 ### Creating new submissions.sql

@@ -164,6 +164,7 @@ class SubmissionsImporter
       submission.location            = nil
       submission.save
 
+      # These execute update queries using the new submissions id
       submission.populate_location
       submission.populate_boundaries
     end
