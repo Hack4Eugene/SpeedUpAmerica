@@ -97,7 +97,7 @@ Use and set the Default pulic token as your `MAPBOX_API_KEY` in the `local.env`f
 
 Download this SQL file and place it in the projects `data` directory:
 
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/suyc_20190803.sql
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_20190803.sql
 
 > Contributors: If you update this file make sure to change the filename and
 > update all references in this document.
@@ -105,7 +105,7 @@ Download this SQL file and place it in the projects `data` directory:
 Run this line:
 
 ```bash
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/suyc_20190803.sql
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/sua_20190803.sql
 ```
 
 ## Running
