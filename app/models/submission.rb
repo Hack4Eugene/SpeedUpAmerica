@@ -7,8 +7,6 @@ class Submission < ActiveRecord::Base
   obfuscate_id spin: 81238123
   MOBILE_MAXIMUM_SPEED = 50
 
-  CENSUS_STATUS = { pending: 'pending', saved: 'saved' }
-
   MAP_FILTERS = {
     connection_type: {
       home_wifi: 'Home Wifi',
@@ -93,7 +91,6 @@ class Submission < ActiveRecord::Base
     submission.completed = true
     submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
     submission.provider = submission.get_provider
-    submission.census_status = Submission::CENSUS_STATUS[:pending]
     submission.save
 
     submission.populate_location
@@ -788,8 +785,6 @@ class Submission < ActiveRecord::Base
       "ST_Contains(geometry, (SELECT location FROM submissions WHERE id = #{id} LIMIT 1));"
     result = conn.select_rows(query)
 
-    self.assign_attributes(:census_status => Submission::CENSUS_STATUS[:pending])
-
     result.each do |row|
       case row[0]
       when 'region'
@@ -801,7 +796,6 @@ class Submission < ActiveRecord::Base
         self.assign_attributes(:zip_code => row[1])
       when 'census_tract'
         self.assign_attributes(:census_code => row[1])
-        self.assign_attributes(:census_status => Submission::CENSUS_STATUS[:saved])
       when 'census_block'
         self.assign_attributes(:census_block => row[1])
       end

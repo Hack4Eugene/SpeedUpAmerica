@@ -54,6 +54,11 @@ task :populate_boundaries => [:environment] do
 
   types.each {|type, details|
     details[:files].each { | jsonFile |
+      puts "Processing #{jsonFile}"
+      STDOUT.flush
+
+      process_count = 0
+
       IO.foreach("/suyc/data/#{jsonFile}") { |line|
         # parse the line
         parser = GeoRuby::GeoJSONParser.new
@@ -80,7 +85,22 @@ task :populate_boundaries => [:environment] do
           # increment the count
           add_count += 1
         end
+
+        process_count += 1
+
+        if process_count % 1000 == 0
+          print "*"
+          STDOUT.flush
+        end
+
+        if process_count % 10000 == 0
+          print "\n"
+          STDOUT.flush
+        end
       }
+
+      print "\n"
+      STDOUT.flush
     }
   }
 
@@ -89,7 +109,9 @@ task :populate_boundaries => [:environment] do
 end
 
 task :populate_missing_boundaries => [:environment] do
-  puts 'Populating boundaries'
+  puts 'Populating missing boundaries'
+
+  count = 0
 
   clause = "region IS NULL OR county IS NULL OR zip_code IS NULL OR "\
     " census_code IS NULL OR census_block IS NULL"
@@ -97,5 +119,18 @@ task :populate_missing_boundaries => [:environment] do
     batch.each do |submission|
       submission.populate_boundaries
     end
+
+    count += 1
+
+    print "*"
+    STDOUT.flush
+
+    if count % 10 == 0
+      print "\n"
+      STDOUT.flush
+    end
   end
+
+  print "\n"
+  STDOUT.flush
 end

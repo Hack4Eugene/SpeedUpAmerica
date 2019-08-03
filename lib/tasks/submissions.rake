@@ -17,50 +17,6 @@ task :import_mlab_submissions => [:environment] do
   puts '*' * 50
 end
 
-task :update_pending_census_codes => [:environment] do
-  puts 'Updating pending census_codes for submissions'
-
-  count = 0
-  submissions = Submission.select("latitude, longitude")
-    .where(census_status: Submission::CENSUS_STATUS[:pending])
-    .group("latitude, longitude")
-
-  submissions.each do |s|
-    census_tract = get_census_code(s.latitude, s.longitude)
-    next if census_tract.nil?
-
-    latlong = Submission.unscoped.where('latitude = ? AND longitude = ? AND census_status = ?',
-      s.latitude, s.longitude, Submission::CENSUS_STATUS[:pending])
-    latlong.update_all({:census_code => census_tract, :census_status => Submission::CENSUS_STATUS[:saved]})
-
-    count += 1
-  end
-
-  puts "Updated census_codes of #{count} submissions from #{submissions.size} submissions."
-  puts '*' * 50
-end
-
-task :create_test_data => [:environment] do
-  puts "Creating test data from existing submissions"
-
-  tracts = CensusBoundary.all()
-  countTracts = tracts.length
-
-  zips = ZipBoundary.all()
-  countZips = zips.length
-
-  submissions = Submission.all()
-  submissions.each_with_index do |s, index|
-    s.census_code = tracts[index % countTracts].geo_id
-    s.census_status = 'saved'
-    s.zip_code = zips[index % countZips].name
-    s.save
-  end
-
-  puts "Done"
-  puts '*' * 50
-end
-
 task :populate_median_speeds => [:environment] do
   puts 'Populating median speeds...'
   data = Submission.where(upload_median: nil, download_median: nil).group_by { |s| [s.longitude, s.latitude] }
