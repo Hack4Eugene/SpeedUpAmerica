@@ -188,9 +188,9 @@ $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc --ign
 
 ## Updating your boundaries the long way
 
-Follow the next three sections to get the latest data, clear your
-boundaries tables, and load data from the files. You should only be following
-these directions if dumping your DB and loading the lastest SQL dump is not
+Follow the next three sections to download the latest data, clear your
+boundaries tables, and load the data. You should only be following
+these directions if deleting your DB and loading the lastest SQL dump is not
 an option.
 
 ### Download boundary data files
