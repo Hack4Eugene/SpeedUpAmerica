@@ -16,7 +16,7 @@ The goal of this project is to increase awareness of inequities in speed and qua
 
 Welcome!
 
-_The current implementation of SpeedUpAmerica has scaled to cover the state of Oregon (June 2019), with Washington and Idaho to come online next (July 2019)._
+_The current implementation of SpeedUpAmerica has scaled to cover the state of Oregon in June 2019. Washington and Idaho were added in July 2019. State and county boundaries are being added sometime during August 2019._
 
 ## Digital Inclusion
 
