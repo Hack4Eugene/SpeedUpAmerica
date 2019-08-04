@@ -1,3 +1,14 @@
+<script type='application/javascript'>
+var MAPBOX_API_KEY = '<%= ENV['MAPBOX_API_KEY'] %>';
+<% if defined?(submission) &&  defined?(submission.longitude) && defined?(submission.latitude)  %>
+var MAPBOX_LOCATION = [<%= submission.longitude %>, <%= submission.latitude %>];
+var MAPBOX_ZOOM = 9;
+<% elsif %>
+var MAPBOX_LOCATION = [-117.879376, 45.392022];
+var MAPBOX_ZOOM = 5;
+<% end %>
+</script>
+
 <div id='map-container'>
   <div class='row mapbox-heading'>
     <h3>View all tests from SpeedUpAmerica below:</h3>
