@@ -12,10 +12,10 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image... 
+      - echo Building the Docker image...
       - chmod +x ./update_data.sh
       - echo Getting latest GeoLite2 ASN DB
-      - wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz 
+      - wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
       - tar -xf GeoLite2-ASN.tar.gz
       - cp GeoLite2-ASN_*/GeoLite2-ASN.mmdb .
       - rm -r GeoLite2-ASN_*
@@ -25,6 +25,15 @@ phases:
       - mkdir -p data
       - aws s3 cp s3://sua-datafiles/cb_2016_us_census_tracts.json data/cb_2016_us_census_tracts.json
       - aws s3 cp s3://sua-datafiles/us_zip_codes.json data/us_zip_codes.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_16_tabblock10.json data/tl_2018_16_tabblock10.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_41_tabblock10.json data/tl_2018_41_tabblock10.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_53_tabblock10.json data/tl_2018_53_tabblock10.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_16_tract.json data/tl_2018_16_tract.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_41_tract.json data/tl_2018_41_tract.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_53_tract.json data/tl_2018_53_tract.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_us_zcta510.json data/tl_2018_us_zcta510.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_us_county.json data/tl_2018_us_county.json
+      - aws s3 cp s3://sua-datafiles/tl_2018_us_state.json data/tl_2018_us_state.json
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:

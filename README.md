@@ -16,7 +16,7 @@ The goal of this project is to increase awareness of inequities in speed and qua
 
 Welcome!
 
-_The current implementation of SpeedUpAmerica has scaled to cover the state of Oregon (June 2019), with Washington and Idaho to come online next (July 2019)._
+_The current implementation of SpeedUpAmerica has scaled to cover the state of Oregon in June 2019. Washington and Idaho were added in July 2019. State and county boundaries are being added sometime during August 2019._
 
 ## Digital Inclusion
 
@@ -67,12 +67,11 @@ Install [Git](https://git-scm.com/downloads) Windows/Mac/Linux
 
 Install [Docker](https://docs.docker.com/install/#supported-platforms) and [Docker Compose](https://docs.docker.com/compose/install/) (Docker Compose is already included with Mac and Windows Docker installs, but not Linux. Please also note the Win Home install differs from Pro).
 
-> A minimum of 4GB of local memory allocation is needed for some tasks to run. After starting Docker, go into it's settings and adjust the amount of memory it's allowed to use.
-
-[Memory - Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/#memory)
-
-[Memory - Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/)
-
+> A minimum of 6GB of local memory allocation is needed. After starting Docker, go into it's settings and adjust the amount of memory it's allowed to use.
+>
+> [Memory - Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/#memory)
+>
+> [Memory - Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/)
 
 > Depending on your OS, you may have to make sure to use `copy` instead of `cp`.
 
@@ -89,29 +88,24 @@ $ docker-compose run frontend rake secret
 
 Locate your `local.env` in the root of the SpeedUpAmerica directory which now resides on your local system.
 Use the long alphanermeric string output from `rake secret` as the value for `SECRET_KEY_BASE`.
-Go to [Mapbox](https://account.mapbox.com) and create a free account, to get a mapbox api access token. 
+Go to [Mapbox](https://account.mapbox.com) and create a free account, to get a mapbox api access token.
 Use and set the Default pulic token as your `MAPBOX_API_KEY` in the `local.env`file.
 
 > These instructions assume Windows users are not using the WSL, which has documented problems with Docker's bind mounts. Installing and configuring Docker for Windows to work with the WSL is outside the scope of this document.
 
-## Load an initial dataset
+## Load the dataset
 
-Download these files and place them in the projects `data` directory:
+Download this SQL file and place it in the projects `data` directory:
 
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/zip_codes.sql
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/census_tracts.sql
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/submissions.sql
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/stats_caches.sql
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_20190803.sql
 
-Run these lines:
+> Contributors: If you update this file make sure to change the filename and
+> update all references in this document.
+
+Run this line:
 
 ```bash
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/submissions.sql
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/stats_caches.sql
-$ docker-compose run frontend rake update_providers_statistics
-$ docker-compose run frontend rake update_stats_cache
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/sua_20190803.sql
 ```
 
 ## Running
@@ -143,6 +137,8 @@ $ docker-compose logs migrator
 $ docker-compose logs mysql
 ```
 
+## Frontend is exiting
+
 If `docker-compose ps` shows "Exit 1" for any process, one likely cause is that the process's Docker image needs to be rebuilt. This is generally due to dependencies having changed since the last time you built the image. An additional hint that this is the cause is if the logs show errors indicating that a dependency could not be found.
 
 To resolve this, rebuild the Docker image for that specific process. For example, if the `frontend` process exited with an error status:
@@ -155,18 +151,100 @@ If `docker-compose ps` continues to throw an "Exit 1" error for any process afte
 
 If after enabling your firewall persmissions you still have trouble with an "Exit 1", you may need to delete tmp/pids/server.pid and then `docker-compose up -d`
 
-### Running Docker on Ubuntu
+## Running Docker on Ubuntu
 Installation on [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
 
 Running the environment locally on a Linux-based OS could require running `docker-compose` commands as super user, `sudo docker-compose [commands]`.
 
 [Here is a guide for managing Docker as a non-root user](https://docs.docker.com/install/linux/linux-postinstall/).
 
-# Data tasks
+# Tasks contributors need to do occassionally
 
-There are just the tasks that have been run to populate and prepare the data for operation. The other tasks need investigated and documented.
+## Reload the database from most recent backup
 
-Most of theses tasks are run by `./update_data.sh` each night on Test and Production.
+> Assumes you have the recent `.sql` file downloaded from the setup instructions.
+
+When boundaries are updated each developer must reload their boundaries. As new boundaries
+can also require adding columns to the submissions table it's best to completely reload your
+database.
+
+```bash
+$ docker-compose stop mysql
+$ docker-compose rm mysql
+$ docker-compose up mysql
+$ docker-compose up --build migrator
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/sua_20190803.sql
+```
+
+## Creating database dump
+
+> When updating the SQL files make sure to remove the warning from the first line of the file.
+
+Make sure to replace `<date>` with todays date in a concise format (e.g. `20190801`).
+
+```bash
+$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc --ignore-table=suyc.schema_migrations > data/sua_<date>.sql
+```
+
+## Updating your boundaries the long way
+
+Follow the next three sections to download the latest data, clear your
+boundaries tables, and load the data. You should only be following
+these directions if deleting your DB and loading the lastest SQL dump is not
+an option.
+
+### Download boundary data files
+
+Assumes you have these files in `data/`:
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_16_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_41_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_53_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_zcta510.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_county.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_state.json
+
+### Empty your boundaries tables
+
+For Linux and MacOS please use the following:
+
+```bash
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
+$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE boundaries;"
+```
+
+For Windows OS please use the following:
+
+```
+$ docker-compose exec mysql mysql -u suyc -psuyc suyc
+$ mysql> TRUNCATE census_boundaries;
+$ mysql> TRUNCATE zip_boundaries;
+$ mysql> TRUNCATE boundaries;
+$ mysql> exit
+```
+
+### Load
+
+```
+$ docker-compose run frontend rake populate_zip_boundaries
+$ docker-compose run frontend rake populate_census_tracts
+$ docker-compose run frontend rake populate_boundaries
+```
+
+## Data import process
+
+Each night the Test and Production environments run the data import process, which imports
+recent M-Lab data, updates boundaries, recalcualtes the caches, and other data related tasks.
+
+> Some steps of the nightly import process requires a BigQuery Service Key with access to the Measurement Lab data.
+
+The nightly process is start by running `./update_data.sh`. On your local enviornment you can:
+
+```bash
+$ docker-compose run frontend ./update_data.sh
+```
 
 ### Importing M-Lab submissions:
 
@@ -176,10 +254,10 @@ Requires a BigQuery Service Key with access to the Measurement Lab data.
 $ docker-compose run frontend rake import_mlab_submissions
 ```
 
-### Populating submissions with Census Tract IDs
+### Populating submissions with missing boundaries
 
 ```bash
-$ docker-compose run frontend rake update_pending_census_codes
+$ docker-compose run frontend rake populate_missing_boundaries
 ```
 
 ### Updating provider statistics
@@ -188,68 +266,10 @@ $ docker-compose run frontend rake update_pending_census_codes
 $ docker-compose run frontend rake update_providers_statistics
 ```
 
-### Updating cached data 
+### Updating cached data
 
 ```
 $ docker-compose run frontend rake update_stats_cache
-```
-
-## Loading new boundaries
-
-When boundaries are updated each developer must reload their boundary tables:
-```bash
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
-```
-
->For Windows OS please use the following:
-```bash
-$ docker-compose exec mysql mysql -u suyc -psuyc suyc
-$ mysql> TRUNCATE census_boundaries;
-$ mysql> TRUNCATE zip_boundaries;
-$ mysql> exit
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/zip_codes.sql
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/census_tracts.sql
-```
-
-### Updating the Census and Zip Code boundaries SQL files
-
-Assumes you have these files in `data/`:
-* https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
-* https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
-
-```bash 
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
-$ docker-compose run frontend rake populate_census_tracts
-$ docker-compose run frontend rake populate_zip_boundaries
-```
-
-> When updating the SQL files make sure to remove the warning from the first line of the file.
-
-Once imported you can update the SQL files by:
-```bash
-$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc census_boundaries > data/census_tracts.sql
-$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc zip_boundaries > data/zip_codes.sql
-```
-
-### Creating new submissions.sql
-
-> When updating the SQL files make sure to remove the warning from the first line of the file.
-
-```bash
-$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc submissions > data/submissions.sql
-```
-
-### Creating new stats_caches.sql
-
-> When updating the SQL files make sure to remove the warning from the first line of the file.
-
-```bash
-$ docker-compose run frontend rake update_stats_cache
-$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc stats_caches > data/stats_caches.sql
 ```
 
 # Governance and contribution
