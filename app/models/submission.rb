@@ -166,7 +166,7 @@ class Submission < ActiveRecord::Base
         'all_count': number_with_delimiter(submissions.length, delimiter: ','),
         'all_fast': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
         'color': set_color(median_speed),
-        'fillOpacity': 0.7,
+        'fillOpacity': 0.6,
       }
     end
 
@@ -185,7 +185,7 @@ class Submission < ActiveRecord::Base
     stats.each do |stats|
       result = {
         'id': stats.stat_id,
-        'fillOpacity': 0.7,
+        'fillOpacity': 0.6,
       }
 
       if test_type == 'download'

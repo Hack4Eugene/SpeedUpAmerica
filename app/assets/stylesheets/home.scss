@@ -1,15 +1,9 @@
-body {
-  //background: image-url('background.png');
-  font-family: 'Roboto', sans-serif;
-}
-
 body.result-page {
   background: #D3D3D3;
-  font-family: 'Roboto', sans-serif;
 }
 
 #loader {
-  padding-top: 200px;
+  padding-top: 250px;
   height: 668px;
   position: absolute;
   z-index: 2000; // Mapbox zoom controls have a z-index of 1000
