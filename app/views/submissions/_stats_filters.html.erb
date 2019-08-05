@@ -1,3 +1,10 @@
+<script type='applicaton/javascript'>
+<% if defined?(submission) && defined?(submission.zip_code) %>
+var ZIP_CODE = [<% submission.zip_code %>];
+<% elsif %>
+var ZIP_CODE = 'all';
+<% end %>
+</script>
 <div id='stats_filters' class='stats-filters'>
   <div class='row'>
 

@@ -73,6 +73,7 @@ tests_per_isp_chart = (data) ->
     series: data.series
 
 window.draw_stats_charts = (statistics, filter) ->
+  statistics.zip_code = [ZIP_CODE]
   disable_filters('stats_filters', true)
   $.ajax
     url: '/speed_data'

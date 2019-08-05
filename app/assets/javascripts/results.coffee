@@ -74,6 +74,7 @@ apply_stats_filters = ->
     $('#stats_loader').removeClass('hide')
     filter = $(this).attr('id')
     statistics = get_stats_filters()
+    ZIP_CODE = statistics['zip_code']
     disable_filters('stats_filters', true)
 
     update_statistics(statistics, filter)
