@@ -14,6 +14,7 @@ $ ->
     )
     
     # Create stats map
+    $("#selected_zip_code").val(ZIP_CODE)
     apply_stats_filters()
     $('#stats_filters #stats_test_type').change()
         
@@ -101,7 +102,6 @@ update_csv_link = (date_range) ->
 update_all_option = (elem) ->
   return if $.inArray(elem.prop('id'), ['provider', 'stats_provider', 'zip_code', 'census_code']) < 0
   selected_elem_value = $("#selected_#{elem.prop('id')}").val().split(',')
-
   new_selected = elem.val()
 
   if new_selected != null &&
