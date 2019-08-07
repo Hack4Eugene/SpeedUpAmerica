@@ -71,7 +71,22 @@ module SubmissionsHelper
     ProviderStatistic.all.map { |p| [p.name, p.id] }
   end
 
-  def get_list_values(codes)
+  def get_list_zip_code_values(codes)
+    if params[:id].blank?
+      all_option = ['All', 'all']
+      codes.map { |code| [code, code] }.unshift(all_option)
+    else
+      submission = Submission.find(params[:id])
+      puts 'Get List Zip Code Values'
+      puts submission.zip_code.nil?
+      zip_code = submission.zip_code if submission.zip_code.nil? || 'All'
+      puts zip_code
+      all_option = [zip_code, 'all']
+      codes.map { |code| [code, code] }.unshift(all_option)
+    end
+  end
+
+  def get_list_census_code_values(codes)
     all_option = ['All', 'all']
     codes.map { |code| [code, code] }.unshift(all_option)
   end

@@ -111,7 +111,8 @@ class SubmissionsController < ApplicationController
         ids = ProviderStatistic.unscoped.order(:applications).last(3).map(&:id)
       else
         submission = Submission.find(params[:id])
-        ids = Submission.with_zip_code(submission.zip_code).select('provider, count(id) as num_submissions').group('provider').order('num_submissions').last(3).map(&:id)
+
+        ids = ProviderStatistic.unscoped.order(:applications).last(3).map(&:id)
       end
       @selected_provider_ids = ids
     end
