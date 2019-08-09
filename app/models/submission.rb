@@ -276,41 +276,6 @@ class Submission < ActiveRecord::Base
     end
   end
 
-  def self.get_location_data(params)
-    Geocoder.configure(timeout: 15)
-    result = Geocoder.search("#{params[:latitude]}, #{params[:longitude]}").first
-
-    country = nil
-    region = nil
-    city = 'unknown'
-    postal_code = nil
-
-    if result.present? && result.country == "USA"
-      if result.city.present?
-        city = result.city
-      end
-
-      if result.postal_code.present?
-        postal_code = result.postal_code[0...5]
-      end
-
-      if result.country_code.present?
-        country = result.country_code
-      end
-
-      if result.state_code.present?
-        region = result.state_code
-      end
-    end
-
-    data = {
-      'address' => city,
-      'zip_code' => postal_code,
-      'country' => country.upcase,
-      'region' => region.upcase
-    }
-  end
-
   def self.to_csv(date_range)
     range = date_range.split(' - ')
     CSV.generate do |csv|
