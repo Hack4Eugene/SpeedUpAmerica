@@ -195,7 +195,7 @@ $ ->
         $('#location_button').addClass('hide')
         $('#location-address-input').removeClass('hide')
 
-      if $('#location_disable').prop('checked')
+      if $('#location_disabled').prop('checked')
         $('#location_button').addClass('hide')
         $('#location-address-input').addClass('hide')
         $('#location_next_button').attr('disabled', false)
@@ -223,7 +223,7 @@ $ ->
           $('#address-input').removeClass('error-input');
         ), 2500
 
-    if $('#location_disable').prop('checked')
+    if $('#location_disabled').prop('checked')
       show_step_one()
 
 
