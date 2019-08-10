@@ -1,5 +1,5 @@
 class SubmissionsController < ApplicationController
-  before_action :validate_referer, only: [:show]
+  #before_action :validate_referer, only: [:show]
   before_action :initialize_stats_data, only: [:show, :embeddable_view]
   before_action :set_selected_providers, only: [:show, :result_page]
   skip_before_action :verify_authenticity_token, only: [:embed]

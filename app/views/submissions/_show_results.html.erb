@@ -1,51 +1,33 @@
 <div class='container'>
   <div class='row'>
     <div class='col-md-12 col-centered table-responsive bdrNone resultTableForDesktop'>
-    <% if !submission.connected_with.blank? %>
-      <div class='col-md-5 col-xs-12'>
-        <h3>Your Results</h3>
+    <% if submission.zip_code.blank? %>
+      <div class='col-md-12 col-xs-12'>
+    <% else %>
+      <div class='col-md-6 col-xs-12'>
+    <% end %>
+        <h3 class='text-center'>Your Results</h3>
         <table class='col-md-12 text-left'>
           <tr>
-            <td>Download Speed</td>
-            <td class='pull-right'><h4><%= print_speed(submission.actual_down_speed) %></h4></td>
+            <td class='text-right'><h4>Download Speed</h4></td>
+            <td class='text-left'><h4><%= print_speed(submission.actual_down_speed) %></h4></td>
           </tr>
           <% unless submission.testing_for == 'Mobile Data' %>
             <tr>
-              <td>Upload Speed</td>
-              <td class='pull-right'><%= print_speed(submission.actual_upload_speed) %></td>
+              <td class='text-right'd>Upload Speed</td>
+              <td class='text-left'><%= print_speed(submission.actual_upload_speed) %></td>
             </tr>
           <% end %>
           <tr>
-            <td>Ping</td>
-            <td class='pull-right'><%= print_ping(submission.ping) %></td>
+            <td class='text-right'>Ping</td>
+            <td class='text-left'><%= print_ping(submission.ping) %></td>
           </tr>
         </table>
       </div>
-
-      <div class='col-md-5 col-xs-12 text-left'>
-        <h3>Comparison</h3>
+    <% if !submission.zip_code.blank? %>
+      <div class='col-md-6 col-xs-12 text-left'>
+        <h3 class='text-center'>Comparison</h3>
         <%= render partial: 'result_comparison_table', locals: {submission: submission} %>
-      </div>
-
-    <% elsif submission.connected_with.blank? %>
-      <div class='col-md-5 col-xs-12 width-100'>
-      <h3>Your Results</h3>
-        <table class='col-md-12 text-left'>
-          <tr>
-            <td>Download Speed</td>
-            <td class='pull-right'><h4><%= print_speed(submission.actual_down_speed) %></h4></td>
-          </tr>
-          <% unless submission.testing_for == 'Mobile Data' %>
-            <tr>
-              <td>Upload Speed</td>
-              <td class='pull-right'><%= print_speed(submission.actual_upload_speed) %></td>
-            </tr>
-          <% end %>
-          <tr>
-            <td>Ping</td>
-            <td class='pull-right'><%= print_ping(submission.ping) %></td>
-          </tr>
-        </table>
       </div>
     <% end %>
     </div>

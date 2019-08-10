@@ -281,12 +281,16 @@ body.in-stats .background-container,
   padding-bottom: 35px;
 
   table {
+    table-layout: fixed;
     width: 100%;
     height: 135px;
-    border: 1px solid white;
 
     td {
       padding: 5px;
+    }
+
+    h4 {
+      font-weight: 700
     }
   }
 
