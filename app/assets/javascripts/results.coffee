@@ -75,9 +75,13 @@ apply_stats_filters = ->
     if $('#stats_group_by').val() is 'census_code'
       $('#zip_selector').css('display', 'none')
       $('#census_selector').css('display', 'block')
+      $('#zip_selector').prop('disabled', true)
+      $('#census_selector').prop('disabled', false)
     else
       $('#zip_selector').css('display', 'block')
       $('#census_selector').css('display', 'none')
+      $('#census_selector').prop('disabled', true)
+      $('#zip_selector').prop('disabled', false)
       
     filter = $(this).attr('id')
     statistics = get_stats_filters()
