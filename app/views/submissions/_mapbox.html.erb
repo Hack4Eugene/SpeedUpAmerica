@@ -1,6 +1,7 @@
 <script type='application/javascript'>
 var MAPBOX_API_KEY = '<%= ENV['MAPBOX_API_KEY'] %>';
-<% if defined?(submission) &&  defined?(submission.longitude) && defined?(submission.latitude)  %>
+<% if defined?(submission) && defined?(submission.longitude) && defined?(submission.latitude) &&
+  submission.longitude.nil? == false && submission.latitude.nil? == false %>
 var MAPBOX_LOCATION = [<%= submission.longitude %>, <%= submission.latitude %>];
 var MAPBOX_ZOOM = 9;
 <% elsif %>
