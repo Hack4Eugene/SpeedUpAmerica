@@ -769,17 +769,6 @@ class Submission < ActiveRecord::Base
     self.save()
   end
 
-  def self.stats_data
-    all_results = get_all_results
-    home_submissions = in_zip_code_list.with_connection_type(MAP_FILTERS[:connection_type][:home_wifi])
-    mobile_submissions = in_zip_code_list.with_connection_type(MAP_FILTERS[:connection_type][:mobile_data])
-    public_submissions = in_zip_code_list.with_connection_type(MAP_FILTERS[:connection_type][:public_wifi])
-    total_submissions = in_zip_code_list.count
-    home_avg_speed_by_zipcode = average_speed_by_zipcode(home_submissions)
-
-    [all_results, home_submissions, mobile_submissions, public_submissions, total_submissions, home_avg_speed_by_zipcode]
-  end
-
   def source
     from_mlab && 'MLab' || 'SpeedUp'
   end
