@@ -2,7 +2,6 @@ Rails.application.routes.draw do
 
   resources :home, only: :index do
     collection do
-      post :get_location_data
       post :calculate_ping
     end
   end

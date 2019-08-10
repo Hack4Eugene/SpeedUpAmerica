@@ -19,34 +19,14 @@ set_coords = (accuracy, latitude, longitude) ->
   $('#submission_latitude').attr 'value', latitude
   $('#submission_longitude').attr 'value', longitude
   $("input[name='submission[accuracy]']").attr 'value', accuracy
-  $.ajax
-      url: 'home/get_location_data'
-      type: 'POST'
-      dataType: 'json'
-      data:
-        latitude: latitude
-        longitude: longitude
-      success: (data) ->
-        $("input[name='submission[address]']").attr 'value', data['address']
-        $("input[name='submission[zip_code]']").attr 'value', data['zip_code']
 
-      error: (request, statusText, errorText) ->
-        err = new Error("get location data failed")
-
-        Sentry.setExtra("status_code", request.status)
-        Sentry.setExtra("body",  request.responseText)
-        Sentry.setExtra("response_status",  statusText)
-        Sentry.setExtra("response_error",  errorText)
-        Sentry.captureException(err)
+  location_finished()
 
 set_coords_by_geolocation = (position) ->
   set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
-  if $('#location_geolocation').prop('checked')
-    $('#location_button').prop('innerHTML', 'Get My Location')
-
-  $('#error-geolocation').modal('show')
+  location_error()
 
   Sentry.setExtra("error_code", err.code)
   Sentry.setExtra("error_message", err.message)
@@ -54,7 +34,11 @@ block_callback = (err) ->
 
 get_location = ->
   if navigator.geolocation
+    location_start()
     navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
+  else
+    # TODO replace with error specific for geolocation
+    location_error()
 
 check_fields_validity = ->
   is_valid = true
@@ -122,29 +106,40 @@ set_error_for_invalid_fields = ->
       $('#submission_provider_down_speed').removeClass('got-error')
       $('#speed_error_span').addClass('hide')
 
+location_start = ->
+  if $('#location_geolocation').prop('checked')
+    $('#location_button').prop('innerHTML', 'Loading...')
+
+  if $('#location_address').prop('checked')
+    $('#location_next_button').prop('innerHTML', 'Loading...');
+
+location_finished = ->
+  if $('#location_geolocation').prop('checked') && $('#location_success').prop('value', 'true')
+    $('#location_button').prop('innerHTML', 'Location Success!')
+    $('#location_button').addClass('button-disabled')
+    $('#location_button').prop('disabled', true)
+
+  if $('#location_address').prop('checked')
+    $('#location_next_button').prop('innerHTML', "Let's begin");
+
+  $("#location_success").attr 'value', true
+  $('.test-speed-btn').prop('disabled', false)
+  $('.location-warning').addClass('hide')
+  $('#location_next_button').attr('disabled', false)
+  $('#location_next_button').removeClass('button-disabled')
+
+location_error = ->
+  if $('#location_geolocation').prop('checked')
+    $('#location_button').prop('innerHTML', 'Get My Location')
+
+  $('#error-geolocation').modal('show')
+
 ajax_interactions = ->
   $(document)
     .ajaxStart ->
-      if $('#location_geolocation').prop('checked')
-        $('#location_button').prop('innerHTML', 'Loading...')
-      if $('#location_address').prop('checked')
-        $('#location_next_button').prop('innerHTML', 'Loading...');
+      lcoation_start()
     .ajaxStop ->
-      if $('#location_geolocation').prop('checked') &&
-          $('#location_success').prop('value', 'true')
-        $('#location_button').prop('innerHTML', 'Location Success!')
-        $('#location_button').addClass('button-disabled')
-        $('#location_button').prop('disabled', true)
-
-
-
-      if $('#location_address').prop('checked')
-        $('#location_next_button').prop('innerHTML', "Let's begin");
-      $("#location_success").attr 'value', true
-      $('.test-speed-btn').prop('disabled', false)
-      $('.location-warning').addClass('hide')
-      $('#location_next_button').attr('disabled', false)
-      $('#location_next_button').removeClass('button-disabled')
+      location_finished()
 
 places_autocomplete = ->
   placesAutocomplete = places({
@@ -200,7 +195,7 @@ $ ->
         $('#location_button').addClass('hide')
         $('#location-address-input').removeClass('hide')
 
-      if $('#location_disable').prop('checked')
+      if $('#location_disabled').prop('checked')
         $('#location_button').addClass('hide')
         $('#location-address-input').addClass('hide')
         $('#location_next_button').attr('disabled', false)
@@ -214,20 +209,11 @@ $ ->
     if $('#location_geolocation').prop('checked')
       if $("#location_success").prop('value') == 'false'
         navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
-      $('#form-step-0').addClass('hide')
-      $('#form-step-1').removeClass('hide')
-      $('#form-step-1 input').prop('disabled', false)
-      $('.test-speed-btn').prop('disabled', false)
-      $('.location-warning').addClass('hide')
+      show_step_one()
 
     if $('#location_address').prop('checked')
       if $("#location_success").prop('value') == 'true'
-        $('#form-step-0').addClass('hide')
-        $('#form-step-1').removeClass('hide')
-        $('#form-step-1 input').prop('disabled', false)
-        $('.test-speed-btn').prop('disabled', false)
-        $('.location-warning').addClass('hide')
-
+        show_step_one()
       else
         $('#address-input').addClass('error-input')
         $('#location_next_button').attr('disabled', true)
@@ -237,14 +223,8 @@ $ ->
           $('#address-input').removeClass('error-input');
         ), 2500
 
-    if $('#location_disable').prop('checked')
-      $("input[name='submission[accuracy]']").attr 'value', undefined
-      $('#testing_speed').modal('show');
-      $('#form-step-0').addClass('hide')
-
-      setTimeout (->
-        $('#start_ndt_test').click()
-      ), 200
+    if $('#location_disabled').prop('checked')
+      show_step_one()
 
 
   $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
@@ -260,3 +240,9 @@ $ ->
     $(testing_for + ' select').prop('disabled', false)
     $('#form-step-1').addClass('hide')
 
+show_step_one = ->
+  $('#form-step-0').addClass('hide')
+  $('#form-step-1').removeClass('hide')
+  $('#form-step-1 input').prop('disabled', false)
+  $('.test-speed-btn').prop('disabled', false)
+  $('.location-warning').addClass('hide')

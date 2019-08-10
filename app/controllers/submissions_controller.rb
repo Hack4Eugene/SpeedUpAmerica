@@ -21,8 +21,8 @@ class SubmissionsController < ApplicationController
   def tileset_groupby
     data = Submission.fetch_tileset_groupby(params)
     render json: data
-  #rescue StandardError => e
-  #  render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
+  rescue StandardError => e
+    render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
   end
 
   def result_page
@@ -41,7 +41,7 @@ class SubmissionsController < ApplicationController
     if statistics[:provider].nil?
       render status: 400, json: {'status': 'error', 'error': 'Bad request: missing provider'}
     end
-    
+
     data = Submission.internet_stats_data(statistics) || []
     render json: data
   end
@@ -58,7 +58,7 @@ class SubmissionsController < ApplicationController
 
   private
 
-    def render_csv    
+    def render_csv
       set_file_headers
       set_streaming_headers
 

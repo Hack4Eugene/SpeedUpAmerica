@@ -5,7 +5,7 @@
   var ALGOLIA_APP_ID = '<%= ENV['ALGOLIA_APP_ID'] %>';
   var ALGOLIA_API_KEY = '<%= ENV['ALGOLIA_API_KEY'] %>';
   </script>
-  
+
   <div class='checkboxes-container'>
     <p class='bold'>To put your speed test results on the map, we'd like to use your location.</p>
     <div class='checkbox checkbox-info'>
@@ -19,8 +19,8 @@
     </div>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'location_disable', data: { target: '#form-step-1' } }, 'Location Disable', false %>
-      <%= label_tag :location_disable, "Do not use my location".html_safe %>
+      <%= f.check_box :location, { id: 'location_disabled', data: { target: '#form-step-1' } }, 'Location Disabled', false %>
+      <%= label_tag :location_disabled, "Do not use my location".html_safe %>
     </div>
   </div>
 
