@@ -103,7 +103,7 @@ class SubmissionsController < ApplicationController
     end
 
     def initialize_stats_data
-      @all_results, @home_submissions, @mobile_submissions, @public_submissions, @total_submissions, @home_avg_speed_by_zipcode = Submission.stats_data
+      @all_results = Submission.get_all_results
     end
 
     def set_selected_providers
