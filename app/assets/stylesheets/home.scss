@@ -389,6 +389,14 @@ body.in-stats .background-container,
   text-align: center !important;
 }
 
+#error-position_unavailable.modal {
+  top:20% !important;
+}
+
+#error-position_unavailable .modal-footer {
+  text-align: center !important;
+}
+
 .opacity-100 {
   opacity: 1.0 !important;
 }
@@ -425,6 +433,9 @@ body.in-stats .background-container,
   font-size: 16px;
 }
 
+#error-position_unavailable h5 {
+  font-size: 16px;
+}
 .checkbox.checkbox-info label {
   padding-left: 15px;
 }

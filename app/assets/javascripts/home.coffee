@@ -46,12 +46,18 @@ block_callback = (err) ->
   if $('#location_geolocation').prop('checked')
     $('#location_button').prop('innerHTML', 'Get My Location')
 
-  $('#error-geolocation').modal('show')
+  $('#error-geolocation').modal('hide')
 
   Sentry.setExtra("error_code", err.code)
   Sentry.setExtra("error_message", err.message)
   Sentry.captureException(err)
 
+  if err.code === err.POSITION_UNAVAILABLE
+   $('#error-position_unavailable').modal('show')
+  
+  else 
+   $('#error-position_unavailable').modal('show')
+  
 get_location = ->
   if navigator.geolocation
     navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
