@@ -55,14 +55,12 @@ block_callback = (err) ->
 		$('#error-geolocation').modal('show')
 
 is_safari = ->
-	ua = navigator.userAgent.toLowerCase()
-	if ua.indexOf('safari') != -1
-		if ua.indexOf('chrome') > -1
-			return false
-	else
-		return true
-
-	return false
+  ua = navigator.userAgent.toLowerCase()
+  if ua.indexOf('safari') != -1
+    if ua.indexOf('chrome') > -1
+      return false
+    return true
+  return false
 
 	Sentry.setExtra("error_code", err.code)
 	Sentry.setExtra("error_message", err.message)
@@ -275,4 +273,3 @@ $ ->
 		$(testing_for + ' input').prop('disabled', false)
 		$(testing_for + ' select').prop('disabled', false)
 		$('#form-step-1').addClass('hide')
-
