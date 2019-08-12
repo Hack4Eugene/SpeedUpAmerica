@@ -49,23 +49,22 @@ block_callback = (err) ->
   $('#error-geolocation').modal('hide')
   $('#error-position_unavailable').modal('hide')
 
-  
-  if err.code == err.POSITION_UNAVAILABLE && is_safari
+  if err.code == err.POSITION_UNAVAILABLE && is_safari()
     $('#error-position_unavailable').modal('show')
   else 
     $('#error-geolocation').modal('show')
 
-  is_safari = ->
+  Sentry.setExtra("error_code", err.code)
+  Sentry.setExtra("error_message", err.message)
+  Sentry.captureException(err)
+
+is_safari = ->
   ua = navigator.userAgent.toLowerCase()
   if ua.indexOf('safari') != -1
     if ua.indexOf('chrome') > -1
       return false
     return true
   return false
-
-  Sentry.setExtra("error_code", err.code)
-  Sentry.setExtra("error_message", err.message)
-  Sentry.captureException(err)
 
   
 get_location = ->
