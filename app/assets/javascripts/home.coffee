@@ -50,7 +50,7 @@ block_callback = (err) ->
   $('#error-position_unavailable').modal('hide')
 
   
-  if err.code == err.POSITION_UNAVAILABLE
+  if err.code == err.POSITION_UNAVAILABLE && is_safari
     $('#error-position_unavailable').modal('show')
   else 
     $('#error-geolocation').modal('show')
@@ -66,6 +66,7 @@ block_callback = (err) ->
   Sentry.setExtra("error_code", err.code)
   Sentry.setExtra("error_message", err.message)
   Sentry.captureException(err)
+
   
 get_location = ->
   if navigator.geolocation
