@@ -54,13 +54,13 @@ block_callback = (err) ->
 	else 
 		$('#error-geolocation').modal('show')
 
-is_safari = ->
-  ua = navigator.userAgent.toLowerCase()
-  if ua.indexOf('safari') != -1
-    if ua.indexOf('chrome') > -1
-      return false
-    return true
-  return false
+	is_safari = ->
+  	ua = navigator.userAgent.toLowerCase()
+  		if ua.indexOf('safari') != -1
+    	if ua.indexOf('chrome') > -1
+      	return false
+    		return true
+  	return false
 
 	Sentry.setExtra("error_code", err.code)
 	Sentry.setExtra("error_message", err.message)
