@@ -16,16 +16,23 @@ bind_ndt_speed_calculation = ->
         if xhr.status == 200
           ndtServer = JSON.parse(xhr.responseText).fqdn
           ndtServerIp = JSON.parse(xhr.responseText).ip
+
           console.log 'Using M-Lab Server ' + ndtServer
           document.getElementById('submission_hostname').value = ndtServer;
+
+          # Track NDT server used
+          Sentry.setExtra("mlab_server", ndtServer)
         else
           console.log 'M-Lab NS lookup failed.'
+
+          # Track NDT server used
+          Sentry.setExtra("mlab_server", 'failed')
       return
     return
 
   getNdtServer()
   uncheckAcknowledgement()
-  
+
   NDT_meter = new NDTmeter('#ndt-svg')
   $('#start_ndt_test').on 'click', ->
     NDT_client = new NDTjs(ndtServer, ndtPort, ndtProtocol, ndtPath, NDT_meter, ndtUpdateInterval)
