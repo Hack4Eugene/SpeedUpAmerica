@@ -1,6 +1,10 @@
 <div id='form-step-0'>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.0/mapbox-gl-geocoder.min.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.0/mapbox-gl-geocoder.css' type='text/css' />
+  <script type='application/javascript'>
+  var ALGOLIA_APP_ID = '<%= ENV['ALGOLIA_APP_ID'] %>';
+  var ALGOLIA_API_KEY = '<%= ENV['ALGOLIA_API_KEY'] %>';
+  </script>
 
   <div class='checkboxes-container'>
     <p class='bold'>To put your speed test results on the map, we'd like to use your location.</p>
@@ -15,8 +19,8 @@
     </div>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'location_disable', data: { target: '#form-step-1' } }, 'Location Disable', false %>
-      <%= label_tag :location_disable, "Do not use my location".html_safe %>
+      <%= f.check_box :location, { id: 'location_disabled', data: { target: '#form-step-1' } }, 'Location Disabled', false %>
+      <%= label_tag :location_disabled, "Do not use my location".html_safe %>
     </div>
   </div>
 

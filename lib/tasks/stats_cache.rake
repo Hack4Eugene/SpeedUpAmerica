@@ -21,8 +21,8 @@ task :update_stats_cache => [:environment] do
 
     all_uploads = Submission.get_zip_code_for_stats_cache(stats_id, "upload")
     all_downloads = Submission.get_zip_code_for_stats_cache(stats_id, "download")
-    sua_uploads = Submission.get_zip_code_for_stats_cache(stats_id, "upload").not_from_mlab
-    sua_downloads = Submission.get_zip_code_for_stats_cache(stats_id, "download").not_from_mlab
+    sua_uploads = all_uploads.not_from_mlab
+    sua_downloads = all_downloads.not_from_mlab
 
     upsertStats('zip_code', stats_id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
 
@@ -37,7 +37,7 @@ task :update_stats_cache => [:environment] do
 
       upsertStats('zip_code', stats_id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month,
         all_downloads_month, sua_uploads_month, sua_downloads_month)
-    end      
+    end
   end
 
   puts "Census Tracts - #{Time.now}"
@@ -54,8 +54,8 @@ task :update_stats_cache => [:environment] do
 
     all_uploads = Submission.get_census_tract_for_stats_cache(stats_id, "upload")
     all_downloads = Submission.get_census_tract_for_stats_cache(stats_id, "download")
-    sua_uploads = Submission.get_census_tract_for_stats_cache(stats_id, "upload").not_from_mlab
-    sua_downloads = Submission.get_census_tract_for_stats_cache(stats_id, "download").not_from_mlab
+    sua_uploads = all_uploads.not_from_mlab
+    sua_downloads = all_downloads.not_from_mlab
 
     upsertStats('census_tract', stats_id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
 
@@ -70,7 +70,7 @@ task :update_stats_cache => [:environment] do
 
       upsertStats('census_tract', stats_id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month,
         all_downloads_month, sua_uploads_month, sua_downloads_month)
-    end    
+    end
   end
 
   puts "Providers - #{Time.now}"
@@ -87,8 +87,8 @@ task :update_stats_cache => [:environment] do
 
     all_uploads = Submission.get_provider_for_stats_cache(stats_id, "upload")
     all_downloads = Submission.get_provider_for_stats_cache(stats_id, "download")
-    sua_uploads = Submission.get_provider_for_stats_cache(stats_id, "upload").not_from_mlab
-    sua_downloads = Submission.get_provider_for_stats_cache(stats_id, "download").not_from_mlab
+    sua_uploads = all_uploads.not_from_mlab
+    sua_downloads = all_downloads.not_from_mlab
 
     upsertStats('provider', stats_id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
 
@@ -103,7 +103,7 @@ task :update_stats_cache => [:environment] do
 
       upsertStats('provider', stats_id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month,
         all_downloads_month, sua_uploads_month, sua_downloads_month)
-    end   
+    end
   end
 
   puts "Finished update stats cache. #{Time.now}"
@@ -117,7 +117,7 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
     date_type: date_type,
     date_value: date_value,
   }
-  
+
   record = StatsCache.where(key).first
   if record.nil?
     record = StatsCache.new(key)
@@ -127,10 +127,10 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
   all_downloads = all_downloads.select("actual_down_speed")
   all_downloads_array = all_downloads.map(&:"actual_down_speed").compact
   all_count_download = all_downloads_array.length
-  if all_count_download > 0 
+  if all_count_download > 0
     # calculate basic stats
     all_avg_download, all_median_download, all_fast_download = calculate_basic_stats(all_downloads_array)
-    
+
     # breakdown (bucket counts)
     all_breakdown_download = calculate_speed_breakdown(all_downloads_array)
 
@@ -161,7 +161,7 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
   if all_count_upload > 0
     # calculate basic stats
     all_avg_upload, all_median_upload, all_fast_upload = calculate_basic_stats(all_uploads_array)
-    
+
     # breakdown (bucket counts)
     all_breakdown_upload =  calculate_speed_breakdown(all_uploads_array)
 
@@ -177,7 +177,7 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
   sua_uploads = sua_uploads.select("actual_upload_speed")
   sua_uploads_array = sua_uploads.map(&:"actual_upload_speed").compact
   sua_count_uploads = sua_uploads_array.length
-  if sua_count_uploads > 0 
+  if sua_count_uploads > 0
      # calculate basic stats
      sua_avg_upload, sua_median_upload, sua_fast_upload = calculate_basic_stats(sua_uploads_array)
   end
@@ -199,13 +199,13 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
     download_0_5: all_breakdown_download.nil? ? 0 : all_breakdown_download[0],
     download_6_10: all_breakdown_download.nil? ? 0 : all_breakdown_download[1],
     download_11_20: all_breakdown_download.nil? ? 0 : all_breakdown_download[2],
-    download_21_40: all_breakdown_download.nil? ? 0 : all_breakdown_download[3], 
-    download_40_60: all_breakdown_download.nil? ? 0 : all_breakdown_download[4], 
-    download_61_80: all_breakdown_download.nil? ? 0 : all_breakdown_download[5], 
+    download_21_40: all_breakdown_download.nil? ? 0 : all_breakdown_download[3],
+    download_40_60: all_breakdown_download.nil? ? 0 : all_breakdown_download[4],
+    download_61_80: all_breakdown_download.nil? ? 0 : all_breakdown_download[5],
     download_81_100: all_breakdown_download.nil? ? 0 : all_breakdown_download[6],
-    download_101_250: all_breakdown_download.nil? ? 0 : all_breakdown_download[7], 
-    download_251_500: all_breakdown_download.nil? ? 0 : all_breakdown_download[8], 
-    download_500_1000: all_breakdown_download.nil? ? 0 : all_breakdown_download[9], 
+    download_101_250: all_breakdown_download.nil? ? 0 : all_breakdown_download[7],
+    download_251_500: all_breakdown_download.nil? ? 0 : all_breakdown_download[8],
+    download_500_1000: all_breakdown_download.nil? ? 0 : all_breakdown_download[9],
     download_1001: all_breakdown_download.nil? ? 0 : all_breakdown_download[10],
 
     download_less_than_5: all_download_less_than_5.nil? ? 0 : all_download_less_than_5,
@@ -226,13 +226,13 @@ def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_do
     upload_0_5: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[0],
     upload_6_10: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[1],
     upload_11_20: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[2],
-    upload_21_40: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[3], 
-    upload_40_60: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[4], 
-    upload_61_80: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[5], 
+    upload_21_40: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[3],
+    upload_40_60: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[4],
+    upload_61_80: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[5],
     upload_81_100: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[6],
-    upload_101_250: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[7], 
-    upload_251_500: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[8], 
-    upload_500_1000: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[9], 
+    upload_101_250: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[7],
+    upload_251_500: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[8],
+    upload_500_1000: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[9],
     upload_1001: all_breakdown_upload.nil? ? 0 : all_breakdown_upload[10],
 
     upload_less_than_5: all_upload_less_than_5.nil? ? 0 : all_upload_less_than_5,

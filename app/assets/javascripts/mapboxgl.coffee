@@ -19,8 +19,8 @@ window.initialize_mapboxgl = (elmID) ->
   map = new mapboxgl.Map({
     container: elmID,
     style: 'mapbox://styles/mapbox/light-v9',
-    center: [-117.879376, 45.392022],
-    zoom: 5,
+    center: MAPBOX_LOCATION,
+    zoom: MAPBOX_ZOOM,
     maxZoom: maxZoom
   })
 
@@ -28,7 +28,7 @@ window.initialize_mapboxgl = (elmID) ->
   map.dragRotate.disable();
 
   # disable map rotation using touch rotation gesture
-  map.touchZoomRotate.disableRotation();  
+  map.touchZoomRotate.disableRotation();
 
   # Add zoom and rotation controls to the map.
   map.addControl(new mapboxgl.NavigationControl({showCompass: false}))
@@ -41,9 +41,9 @@ get_map_loader = (map) ->
   map_id = map.getContainer().id
   loader_id = '#loader'
   $(loader_id)
-  
+
 clearMap = (map) ->
-  if popup 
+  if popup
     popup.remove()
 
   for layer in [census_layer, zip_layer]
@@ -52,7 +52,7 @@ clearMap = (map) ->
     if map.getSource(layer.source)
       map.removeSource(layer.source)
 
-addLayer = (map, layer, data, test_type, layer_type) -> 
+addLayer = (map, layer, data, test_type, layer_type) ->
   map.addSource(layer.source, {
     type: "vector",
     url: layer.url
@@ -66,13 +66,13 @@ addLayer = (map, layer, data, test_type, layer_type) ->
     colorExpression.push(row["id"], row["color"])
     opacityExpression.push(row["id"], row["fillOpacity"])
     lineExpression.push(row["id"], "#000000")
-  )  
+  )
   # Last value is the default, used where there is no data
   colorExpression.push("rgba(0, 0, 0, 0)");
   opacityExpression.push(0.0)
   lineExpression.push("rgba(0, 0, 0, 0)");
 
-  
+
   # Add layer from the vector tile source with data-driven style
   map.addLayer({
     "id": layer.name,
@@ -87,11 +87,11 @@ addLayer = (map, layer, data, test_type, layer_type) ->
     }
   })
 
-  map.on('mouseenter',  layer.name, () -> 
+  map.on('mouseenter',  layer.name, () ->
     map.getCanvas().style.cursor = 'pointer';
   )
 
-  map.on('mouseleave', layer.name,  () -> 
+  map.on('mouseleave', layer.name,  () ->
     map.getCanvas().style.cursor = '';
   )
 
@@ -116,15 +116,15 @@ addLayer = (map, layer, data, test_type, layer_type) ->
         stats.all_median + " Mbps</strong></p>" +
       "<p>Fastest #{test_type[0].toUpperCase() + test_type[1..-1]} Speed: <strong>" +
         stats.all_fast + " Mbps</strong></p>"
-    
-    if popup 
+
+    if popup
       popup.remove()
 
     popup = new mapboxgl.Popup()
       .setLngLat(e.lngLat)
       .setHTML(content)
       .addTo(map)
-  )  
+  )
 
 window.set_mapbox_zip_data_gl = (map, provider, group_by='zip_code', test_type='download') ->
   loader = get_map_loader(map)

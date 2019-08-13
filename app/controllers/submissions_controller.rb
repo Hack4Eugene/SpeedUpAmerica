@@ -1,5 +1,5 @@
 class SubmissionsController < ApplicationController
-  before_action :validate_referer, only: [:show]
+  #before_action :validate_referer, only: [:show]
   before_action :initialize_stats_data, only: [:show, :embeddable_view]
   before_action :set_selected_providers, only: [:show, :result_page]
   skip_before_action :verify_authenticity_token, only: [:embed]
@@ -21,8 +21,8 @@ class SubmissionsController < ApplicationController
   def tileset_groupby
     data = Submission.fetch_tileset_groupby(params)
     render json: data
-  #rescue StandardError => e
-  #  render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
+  rescue StandardError => e
+    render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
   end
 
   def result_page
@@ -41,7 +41,7 @@ class SubmissionsController < ApplicationController
     if statistics[:provider].nil?
       render status: 400, json: {'status': 'error', 'error': 'Bad request: missing provider'}
     end
-    
+
     data = Submission.internet_stats_data(statistics) || []
     render json: data
   end
@@ -58,7 +58,7 @@ class SubmissionsController < ApplicationController
 
   private
 
-    def render_csv    
+    def render_csv
       set_file_headers
       set_streaming_headers
 
@@ -103,7 +103,7 @@ class SubmissionsController < ApplicationController
     end
 
     def initialize_stats_data
-      @all_results, @home_submissions, @mobile_submissions, @public_submissions, @total_submissions, @home_avg_speed_by_zipcode = Submission.stats_data
+      @all_results = Submission.get_all_results
     end
 
     def set_selected_providers

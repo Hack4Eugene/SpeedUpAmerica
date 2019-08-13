@@ -2,7 +2,8 @@ require 'mechanize'
 require 'json'
 require 'rake'
 require 'georuby'
-require 'geo_ruby/ewk' 
+require 'geo_ruby/geojson'
+require 'geo_ruby/ewk'
 
 
 task :populate_zip_boundaries => [:environment] do
@@ -13,7 +14,7 @@ task :populate_zip_boundaries => [:environment] do
 
   # read in the JSON line by line
   IO.foreach("/suyc/data/us_zip_codes.json") { |line|
-    
+
     # parse the line
     data = JSON.parse(line)
 
@@ -24,22 +25,22 @@ task :populate_zip_boundaries => [:environment] do
     #next if !(data["county"].include? "Lane")
 
     # if it's already in ZipBoundary, ignore it
-    next if ZipBoundary.where(name: data["zip_code"]).present?
-    
-    zip_type = "Polygon"
-    polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(data["zcta_geom"])
-    if data["zcta_geom"].start_with?('MULTIPOLYGON')
-      zip_type = "MultiPolygon"
-      polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["zcta_geom"])
+    if ZipBoundary.where(name: data["zip_code"]).empty?
+      zip_type = "Polygon"
+      polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(data["zcta_geom"])
+      if data["zcta_geom"].start_with?('MULTIPOLYGON')
+        zip_type = "MultiPolygon"
+        polygon = GeoRuby::SimpleFeatures::MultiPolygon.from_ewkt(data["zcta_geom"])
+      end
+
+      # otherwise, create a new record
+      ZipBoundary.create(name: data["zip_code"], zip_type: zip_type, bounds: polygon.to_coordinates())
+
+      # increment the count
+      add_count += 1
     end
-
-    # otherwise, create a new record
-    ZipBoundary.create(name: data["zip_code"], zip_type: zip_type, bounds: polygon.to_coordinates())
-
-    # increment the count
-    add_count += 1
   }
 
   puts "Added #{add_count} zip codes."
-  
+
 end

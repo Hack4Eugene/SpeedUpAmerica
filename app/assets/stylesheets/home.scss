@@ -1,15 +1,9 @@
-body {
-  //background: image-url('background.png');
-  font-family: 'Roboto', sans-serif;
-}
-
 body.result-page {
   background: #D3D3D3;
-  font-family: 'Roboto', sans-serif;
 }
 
 #loader {
-  padding-top: 200px;
+  padding-top: 250px;
   height: 668px;
   position: absolute;
   z-index: 2000; // Mapbox zoom controls have a z-index of 1000
@@ -287,12 +281,16 @@ body.in-stats .background-container,
   padding-bottom: 35px;
 
   table {
+    table-layout: fixed;
     width: 100%;
     height: 135px;
-    border: 1px solid white;
 
     td {
       padding: 5px;
+    }
+
+    h4 {
+      font-weight: 700;
     }
   }
 
