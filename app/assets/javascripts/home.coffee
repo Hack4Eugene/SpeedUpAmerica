@@ -26,7 +26,6 @@ set_coords_by_geolocation = (position) ->
   set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
-<<<<<<< HEAD
   if $('#location_geolocation').prop('checked')
     $('#location_button').prop('innerHTML', 'Get My Location')
 
@@ -37,9 +36,6 @@ block_callback = (err) ->
     $('#error-position_unavailable').modal('show')
   else 
     $('#error-geolocation').modal('show')
-=======
-  location_error()
->>>>>>> master
 
   Sentry.setExtra("error_code", err.code)
   Sentry.setExtra("error_message", err.message)
@@ -59,8 +55,18 @@ get_location = ->
     location_start()
     navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
   else
-    # TODO replace with error specific for geolocation
     location_error()
+     if $('#location_geolocation').prop('checked')
+    $('#location_button').prop('innerHTML', 'Get My Location')
+
+  $('#error-geolocation').modal('show')
+
+ajax_interactions = ->
+  $(document)
+    .ajaxStart ->
+      lcoation_start()
+    .ajaxStop ->
+      location_finished()
 
 check_fields_validity = ->
   is_valid = true
