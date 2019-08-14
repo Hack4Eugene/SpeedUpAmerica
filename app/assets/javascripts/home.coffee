@@ -57,7 +57,7 @@ get_location = ->
   else
     location_error()
      if $('#location_geolocation').prop('checked')
-    $('#location_button').prop('innerHTML', 'Get My Location')
+      $('#location_button').prop('innerHTML', 'Get My Location')
 
   $('#error-geolocation').modal('show')
 
