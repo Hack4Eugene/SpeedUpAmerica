@@ -56,8 +56,8 @@ get_location = ->
     navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
   else
     location_error()
-       if $('#location_geolocation').prop('checked')
-         $('#location_button').prop('innerHTML', 'Get My Location')
+        if $('#location_geolocation').prop('checked')
+          $('#location_button').prop('innerHTML', 'Get My Location')
 
      $('#error-geolocation').modal('show')
 
