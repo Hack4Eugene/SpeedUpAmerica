@@ -3,21 +3,22 @@
     <div class='modal-content'>
       <div class='modal-header'>
         <%= button_tag '×', type: 'button', class: 'close', data: { dismiss: 'modal' }, aria: { hidden: 'true' } %>
-        <h4 class='text-center'>You are using Safari.</h4>
+        <h4 class='text-center'>We noticed you are using Safari.</h4>
       </div>
 
       <div class='modal-body'>
       <div class='row'>
           <div class='col-md-12'>
             <h5 class='text-center'>
-              <b>Safari Browser:</b> Please Turn on WiFi and Location Services. You can always use Chrome or Firefox to run the test.
+              <b>Safari Browser:</b> Please Turn on WiFi and Location Services.
+              <%= link_to ' Location Services.', 'https://support.apple.com/en-us/HT204690', target: '_blank', rel: 'noopener' %>
             </h5>
           </div>
         </div>
         <div class='row'>
           <div class='col-md-12'>
             <h5 class='text-center'>
-              In order to use the Speed Test, please allow location services. This is to ensure that all speed tests are submitted from the zip-code area only.
+              Safari requires that your WiFi is turned on and your Location Services enabled. Alternatively, you can run this test using a different web browser including, Chrome and Firefox.
             </h5>
           </div>
         </div>

@@ -58,13 +58,12 @@ get_location = ->
     location_error()
     if $('#location_geolocation').prop('checked')
         $('#location_button').prop('innerHTML', 'Get My Location')
-
       $('#error-geolocation').modal('show')
 
 ajax_interactions = ->
   $(document)
     .ajaxStart ->
-      lcoation_start()
+      location_start()
     .ajaxStop ->
       location_finished()
 
