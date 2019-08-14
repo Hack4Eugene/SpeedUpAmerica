@@ -63,7 +63,7 @@ get_location = ->
 ajax_interactions = ->
   $(document)
     .ajaxStart ->
-      lcoation_start()
+      location_start()
     .ajaxStop ->
       location_finished()
 
