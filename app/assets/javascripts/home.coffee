@@ -44,9 +44,8 @@ block_callback = (err) ->
 is_safari = ->
   ua = navigator.userAgent.toLowerCase()
   if ua.indexOf('safari') != -1
-    if ua.indexOf('chrome') > -1
-      return false
-    return true
+    if ua.indexOf('chrome') == -1
+      return (ua.indexOf('safari') != -1) && (ua.indexOf('chrome') == -1)
   return false
 
   
