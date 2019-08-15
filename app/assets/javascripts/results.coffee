@@ -72,6 +72,19 @@ apply_stats_filters = ->
     update_all_option($(this))
     $('.stats-section').addClass('blurred')
     $('#stats_loader').removeClass('hide')
+    if $('#stats_group_by').val() is 'census_code'
+      $('#zip_selector').css('display', 'none')
+      $('#census_selector').css('display', 'block')
+      $('#zip_code').val("all")
+      $('#zip_selector').prop('disabled', true)
+      $('#census_selector').prop('disabled', false)
+    else
+      $('#zip_selector').css('display', 'block')
+      $('#census_selector').css('display', 'none')
+      $('#census_code').val("all")
+      $('#census_selector').prop('disabled', true)
+      $('#zip_selector').prop('disabled', false)
+      
     filter = $(this).attr('id')
     statistics = get_stats_filters()
     disable_filters('stats_filters', true)
