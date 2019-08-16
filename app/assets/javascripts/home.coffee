@@ -27,7 +27,7 @@ set_coords_by_geolocation = (position) ->
 
 block_callback = (err) ->
   if $('#location_geolocation').prop('checked')
-    $('#location_button').prop('innerHTML', 'Get My Location')
+    $('#location_button').html('Get My Location')
 
   $('#error-geolocation').modal('hide')
   $('#error-position_unavailable').modal('hide')
@@ -43,11 +43,7 @@ block_callback = (err) ->
 
 is_safari = ->
   ua = navigator.userAgent.toLowerCase()
-  if ua.indexOf('safari') != -1
-    if ua.indexOf('chrome') > -1
-      return false
-    return true
-  return false
+  return (ua.indexOf('safari') != -1) && (ua.indexOf('chrome') == -1)
 
   
 get_location = ->
@@ -57,7 +53,7 @@ get_location = ->
   else
     location_error()
     if $('#location_geolocation').prop('checked')
-        $('#location_button').prop('innerHTML', 'Get My Location')
+        $('#location_button').html('Get My Location')
       $('#error-geolocation').modal('show')
 
 ajax_interactions = ->
