@@ -26,19 +26,42 @@ set_coords_by_geolocation = (position) ->
   set_coords(position.coords.accuracy, position.coords.latitude, position.coords.longitude)
 
 block_callback = (err) ->
-  location_error()
+  if $('#location_geolocation').prop('checked')
+    $('#location_button').html('Get My Location')
+
+  $('#error-geolocation').modal('hide')
+  $('#error-position_unavailable').modal('hide')
+
+  if err.code == err.POSITION_UNAVAILABLE && is_safari()
+    $('#error-position_unavailable').modal('show')
+  else 
+    $('#error-geolocation').modal('show')
 
   Sentry.setExtra("error_code", err.code)
   Sentry.setExtra("error_message", err.message)
   Sentry.captureException(err)
 
+is_safari = ->
+  ua = navigator.userAgent.toLowerCase()
+  return (ua.indexOf('safari') != -1) && (ua.indexOf('chrome') == -1)
+
+  
 get_location = ->
   if navigator.geolocation
     location_start()
     navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
   else
-    # TODO replace with error specific for geolocation
     location_error()
+    if $('#location_geolocation').prop('checked')
+        $('#location_button').html('Get My Location')
+      $('#error-geolocation').modal('show')
+
+ajax_interactions = ->
+  $(document)
+    .ajaxStart ->
+      location_start()
+    .ajaxStop ->
+      location_finished()
 
 check_fields_validity = ->
   is_valid = true
