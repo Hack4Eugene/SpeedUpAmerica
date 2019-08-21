@@ -87,7 +87,6 @@ GEM
     ffi (1.11.1)
     font-awesome-sass (4.5.0)
       sass (>= 3.2)
-    geocoder (1.5.1)
     georuby (2.5.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -170,7 +169,7 @@ GEM
     net-http-digest_auth (1.4.1)
     net-http-persistent (3.0.1)
       connection_pool (~> 2.2)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
     obfuscate_id (0.2.0)
@@ -290,7 +289,6 @@ DEPENDENCIES
   dotenv-rails
   exception_notification
   font-awesome-sass (~> 4.5.0)
-  geocoder
   georuby (~> 2.5, >= 2.5.2)
   google-api-client
   google-cloud-bigquery
