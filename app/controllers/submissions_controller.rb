@@ -1,11 +1,12 @@
 class SubmissionsController < ApplicationController
   #before_action :validate_referer, only: [:show]
   before_action :initialize_stats_data, only: [:show, :embeddable_view]
-  before_action :set_selected_providers, only: [:show, :result_page]
+  before_action :set_submission, only: [:show]
+  before_action :set_selected_providers, only: [:result_page]
+  before_action :set_selected_providers_for_submission, only: [:show]
   skip_before_action :verify_authenticity_token, only: [:embed]
 
   def show
-    @submission = Submission.find(params[:id])
   end
 
   def create
@@ -68,6 +69,10 @@ class SubmissionsController < ApplicationController
       self.response_body = csv_lines(params)
     end
 
+    def set_submissions
+      @submission = Submission.find(params[:id])
+    end
+
     def set_file_headers
       file_name = "submissions_#{Time.now.to_i}.csv"
       headers["Content-Type"] = "text/csv"
@@ -104,6 +109,16 @@ class SubmissionsController < ApplicationController
 
     def initialize_stats_data
       @all_results = Submission.get_all_results
+    end
+
+    def set_selected_providers_for_submission
+      # if zip_code not set for some reason get top 3
+      if @submissions.zip_code.nil?
+        return set_selected_providers
+      end
+
+      ids = Submissions.select(provider, 'count(*) AS count').where(:zip_code => @submissions.zip_code).group(:provider).order(:count).map(&:provider)
+      @selected_provider_ids = ids
     end
 
     def set_selected_providers
