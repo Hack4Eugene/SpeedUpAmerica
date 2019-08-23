@@ -72,6 +72,7 @@ apply_stats_filters = ->
     update_all_option($(this))
     $('.stats-section').addClass('blurred')
     $('#stats_loader').removeClass('hide')
+    
     if $('#stats_group_by').val() is 'census_code'
       $('#zip_selector').css('display', 'none')
       $('#census_selector').css('display', 'block')
@@ -84,13 +85,23 @@ apply_stats_filters = ->
       $('#census_code').val("all")
       $('#census_selector').prop('disabled', true)
       $('#zip_selector').prop('disabled', false)
-      
+    #set the selected isps to the results of a get_isps method
+    $('#stats_provider').val(get_isps())  
     filter = $(this).attr('id')
     statistics = get_stats_filters()
     disable_filters('stats_filters', true)
 
     update_statistics(statistics, filter)
 
+get_isps = ->
+  {
+    #check whether we are grouping by zip or census 
+    if $('stats_group_by').val() is 'census_code'
+    else
+    #got stuck here. Can't figure out how to get a subset of the data via submissions_controller.rb
+    
+
+  }
 
 get_stats_filters = ->
   {
