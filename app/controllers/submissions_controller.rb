@@ -4,6 +4,7 @@ class SubmissionsController < ApplicationController
   before_action :set_submission, only: [:show]
   before_action :set_selected_providers, only: [:result_page]
   before_action :set_selected_providers_for_submission, only: [:show]
+  before_action :set_selected_zip_codes, only: [:show]
   skip_before_action :verify_authenticity_token, only: [:embed]
 
   def show
@@ -69,7 +70,7 @@ class SubmissionsController < ApplicationController
       self.response_body = csv_lines(params)
     end
 
-    def set_submissions
+    def set_submission
       @submission = Submission.find(params[:id])
     end
 
@@ -111,13 +112,26 @@ class SubmissionsController < ApplicationController
       @all_results = Submission.get_all_results
     end
 
+    def set_selected_zip_codes
+      if @submission.zip_code.nil?
+        @selected_zip_codes = nil
+        return
+      end
+
+      @selected_zip_codes = @submission.zip_code
+    end
+
     def set_selected_providers_for_submission
       # if zip_code not set for some reason get top 3
-      if @submissions.zip_code.nil?
+      if @submission.zip_code.nil?
         return set_selected_providers
       end
 
-      ids = Submissions.select(provider, 'count(*) AS count').where(:zip_code => @submissions.zip_code).group(:provider).order(:count).map(&:provider)
+      ids = Submission.unscoped.select('p.id AS id', 'count(*) AS count')
+        .joins("LEFT JOIN provider_statistics AS p ON submissions.provider = p.name")
+        .where(:zip_code => @submission.zip_code).where("submissions.test_date >= CURDATE() - INTERVAL 1 month")
+        .group('p.id').order('count DESC').first(3).map(&:id)
+
       @selected_provider_ids = ids
     end
 
