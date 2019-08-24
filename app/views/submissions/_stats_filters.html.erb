@@ -10,13 +10,14 @@
     <div class='col-xs-12 col-sm-12 col-md-3 col-lg-4 filter-container'>
       <p>Group By:</p>
       <%= select_tag :group_by, options_for_select([['Zip Code', 'zip_code'], ['Census Tract', 'census_code']]), { id: 'stats_group_by',disabled: true,  class: 'chosen-select filter' } %>
-      
+
       </div>
 
     <div class='col-xs-12 col-sm-12 col-md-4 col-lg-4 filter-container' id='zip_selector'>
       <p>Zip Codes:</p>
 
-      <%= select_tag :zip_code, options_for_select(get_list_values(Submission::ZIP_CODES)), { disabled: true, class: 'chosen-select filter', multiple: true } %>
+      <%= select_tag :zip_code, options_for_select(get_list_values(Submission::ZIP_CODES)),
+       { disabled: true, class: 'chosen-select filter', multiple: true, data: { selected_ids: @selected_zip_codes } } %>
       <%= hidden_field_tag :selected_zip_code %>
     </div>
 
@@ -32,7 +33,10 @@
     <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 filter-container'>
       <p>Internet Service Providers:</p>
 
-      <%= select_tag :provider, options_for_select(get_stats_providers_list), { id: 'stats_provider', disabled: true, class: 'chosen-select filter', multiple: true, data: { placeholder: 'Select Client ISP to view', selected_ids: @selected_provider_ids } } %>
+      <%= select_tag :provider, options_for_select(get_stats_providers_list),
+        { id: 'stats_provider', disabled: true, class: 'chosen-select filter',
+        multiple: true, data: { placeholder: 'Select Client ISP to view',
+        selected_ids: @selected_provider_ids } } %>
       <%= hidden_field_tag :selected_stats_provider %>
     </div>
   </div>
