@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
 
   get 'all-results', to: 'submissions#result_page', as: :result_page
-  get 'result/:id', to: 'submissions#show', as: :submission
+  get 'result/:test_id', to: 'submissions#show', as: :submission
   post 'stats/groupby', to: 'submissions#tileset_groupby', defaults: { format: :json }
   get 'speed_data', to: 'submissions#speed_data'
   get 'isps_data', to: 'submissions#isps_data'

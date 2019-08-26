@@ -1,5 +1,5 @@
 class SubmissionsController < ApplicationController
-  #before_action :validate_referer, only: [:show]
+  before_action :validate_referer, only: [:show]
   before_action :initialize_stats_data, only: [:show, :embeddable_view]
   before_action :set_submission, only: [:show]
   before_action :set_selected_providers, only: [:result_page]
@@ -71,7 +71,7 @@ class SubmissionsController < ApplicationController
     end
 
     def set_submission
-      @submission = Submission.find(params[:id])
+      @submission = Submission.find(params[:test_id])
     end
 
     def set_file_headers
