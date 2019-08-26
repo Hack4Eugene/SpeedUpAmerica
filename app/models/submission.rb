@@ -771,7 +771,7 @@ class Submission < ActiveRecord::Base
     from_mlab && 'MLab' || 'SpeedUp'
   end
 
-  def self.to_param #overridden
+  def to_param #overridden
     test_id
   end
 
