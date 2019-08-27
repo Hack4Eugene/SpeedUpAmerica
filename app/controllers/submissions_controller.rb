@@ -71,7 +71,7 @@ class SubmissionsController < ApplicationController
     end
 
     def set_submission
-      @submission = Submission.find_by(params[:test_id])
+      @submission = Submission.find_by_test_id(params[:test_id])
     end
 
     def set_file_headers
