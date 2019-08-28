@@ -12,21 +12,30 @@ $ ->
       # Add functionality to UI
       apply_submission_filters()
     )
-    
+
     # Create stats map
     apply_stats_filters()
     $('#stats_filters #stats_test_type').change()
-        
+
 
 bind_chosen_select = ->
   $('.chosen-select').chosen
     no_results_text: 'No results matched'
 
   selected_ids = $('#stats_provider').data('selected-ids')
-  $('#provider').val('all').trigger('chosen:updated')
   $('#stats_provider').val(selected_ids).trigger('chosen:updated')
+
+  selected_zip_codes = $('#zip_code').data('selected-ids')
+  $('#zip_code').val(selected_zip_codes).trigger('chosen:updated')
+
+  $('#provider').val('all').trigger('chosen:updated')
   $('#period').val('Month').trigger('chosen:updated')
-  $('#zip_code, #census_code').val('all').trigger('chosen:updated')
+
+  if $('#zip_code').val() == null
+    $('#zip_code').val("all")
+
+  $('#census_code').val('all')
+  $('#zip_code, #census_code').trigger('chosen:updated')
 
 set_multiple_selected_values = ->
   $.each ['provider', 'stats_provider', 'zip_code', 'census_code'], (index, id) ->
@@ -35,13 +44,13 @@ set_multiple_selected_values = ->
 monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
   "July", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
- 
+
 apply_filters = (map) ->
   update_map = ->
     provider = $('#provider').val()
     group_by = $('#group_by').val()
     test_type = $('#test_type').val()
-    
+
     update_csv_link()
     disable_filters('map-filters', true)
 
@@ -51,11 +60,11 @@ apply_filters = (map) ->
       set_mapbox_zip_data_gl(map, provider, group_by, test_type)
     else if group_by == 'census_code'
       set_mapbox_census_data_gl(map, provider, test_type, '', '', '')
-  
+
   $('#map-filters .filter').on 'change', ->
     update_all_option($(this))
     update_map()
-  
+
   update_map()
 
 apply_submission_filters = ->
@@ -66,12 +75,24 @@ apply_submission_filters = ->
     active_button = $('.connection-type-buttons').find("button[data-value='" + $('#connecion_type').attr('value') + "']")
     active_button.removeClass().addClass('btn btn-primary')
 
-
 apply_stats_filters = ->
   $('#stats_filters .filter').on 'change', ->
     update_all_option($(this))
     $('.stats-section').addClass('blurred')
     $('#stats_loader').removeClass('hide')
+    if $('#stats_group_by').val() is 'census_code'
+      $('#zip_selector').css('display', 'none')
+      $('#census_selector').css('display', 'block')
+      $('#zip_code').val("all")
+      $('#zip_selector').prop('disabled', true)
+      $('#census_selector').prop('disabled', false)
+    else
+      $('#zip_selector').css('display', 'block')
+      $('#census_selector').css('display', 'none')
+      $('#census_code').val("all")
+      $('#census_selector').prop('disabled', true)
+      $('#zip_selector').prop('disabled', false)
+
     filter = $(this).attr('id')
     statistics = get_stats_filters()
     disable_filters('stats_filters', true)

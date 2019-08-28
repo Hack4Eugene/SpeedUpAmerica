@@ -3,8 +3,6 @@ class Submission < ActiveRecord::Base
   require 'csv'
 
   ISP_DB = MaxMindDB.new('GeoLite2-ASN.mmdb')
-
-  obfuscate_id spin: 81238123
   MOBILE_MAXIMUM_SPEED = 50
 
   MAP_FILTERS = {
@@ -772,4 +770,9 @@ class Submission < ActiveRecord::Base
   def source
     from_mlab && 'MLab' || 'SpeedUp'
   end
+
+  def to_param #overridden
+    test_id
+  end
+
 end
