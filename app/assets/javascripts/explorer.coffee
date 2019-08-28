@@ -86,7 +86,6 @@ window.draw_stats_charts = (statistics, filter) ->
         speed_breakdown_by_isp_chart(data.speed_breakdown_chart_data)
         median_speed_by_isp_chart(data.median_speed_chart_data)
         tests_per_isp_chart(data.tests_count_data)
-        $('.total-tests').text(data.total_tests)
         disable_filters('stats_filters', false)
       else
         $('.stats-section').removeClass('blurred')
