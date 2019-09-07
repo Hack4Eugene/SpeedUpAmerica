@@ -283,6 +283,7 @@ Committers:
 * Kirk Hutchison
 * Bishop Lafer
 * Cory Borman
+* James Coulter
 
 Technical Committee:
 
