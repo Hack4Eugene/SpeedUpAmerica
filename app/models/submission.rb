@@ -381,7 +381,6 @@ class Submission < ActiveRecord::Base
 
   def self.calculate_speed_data(params, providers, start_date, end_date, date_ranges)
     submissions = self.valid_test
-    total_tests = submissions.count
     submissions = submissions.with_date_range(start_date, end_date)  if date_ranges.present?
     submissions = submissions.with_test_type(params[:test_type]) if params[:test_type].present?
     submissions = submissions.with_zip_code(params[:zip_code])   if params[:zip_code].present? && params[:zip_code].any?
@@ -398,7 +397,6 @@ class Submission < ActiveRecord::Base
       speed_breakdown_chart_data: calculate_speed_breakdown_data(submissions, test_type, providers),
       median_speed_chart_data: isps_data[:median_data],
       tests_count_data: isps_data[:tests_count_data],
-      total_tests: total_tests,
       from_cache: false,
     }
   end
@@ -409,8 +407,6 @@ class Submission < ActiveRecord::Base
     test_type = params[:test_type]
     categories = date_ranges.collect { |range| range[:name] }
 
-    total_tests = stats.map(&:"#{test_type}_count").inject(0){|sum, x| sum + x }
-
     speed_comparison_data = cached_speed_comparison_data(stats, test_type)
     speed_breakdown_chart_data = cached_speed_breakdown_data(stats, test_type, providers)
     isps_tests_data = cached_isps_tests_data(test_type, providers, date_ranges, categories)
@@ -420,7 +416,6 @@ class Submission < ActiveRecord::Base
       speed_breakdown_chart_data: speed_breakdown_chart_data,
       median_speed_chart_data: isps_tests_data[:median_data],
       tests_count_data: isps_tests_data[:tests_count_data],
-      total_tests: total_tests,
       from_cache: true,
     }
   end
