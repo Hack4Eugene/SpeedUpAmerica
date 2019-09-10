@@ -5,8 +5,7 @@
         <%= f.label :connected_with, 'How are you connected?', class: 'col-md-6' %>
         
         <div class='col-md-6'>
-          <%= f.select(:connected_with, connected_list, {:include_blank => '--Select Connection Type--', :disable => '--Select Connection Type--'}, 
-          class: 'form-control pull-right', required: 'true') %>
+          <%= f.select(:connected_with, connected_list, {disabled: '', selected: ''}, class: 'form-control pull-right') %>
         </div>
       </div>
     </div>
