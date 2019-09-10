@@ -3,9 +3,10 @@
     <div class='form-group col-md-12'>
       <div class='row'>
         <%= f.label :connected_with, 'How are you connected?', class: 'col-md-6' %>
-
+        
         <div class='col-md-6'>
-          <%= f.select :connected_with, connected_list, {}, class: 'form-control pull-right', disabled: true %>
+          <%= f.select(:connected_with, connected_list, {:include_blank => '--Select Connection Type--', :disable => '--Select Connection Type--'}, 
+          class: 'form-control pull-right', required: 'true') %>
         </div>
       </div>
     </div>
