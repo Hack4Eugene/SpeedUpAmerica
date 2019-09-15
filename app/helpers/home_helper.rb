@@ -5,9 +5,10 @@ module HomeHelper
 
   def connected_list
     [
-      'Wired connection',
-      'Wireless connection, single device',
-      'Wireless connection, multiple devices in household',
+      ['---Choose Connection Type---', ''],
+      ['Wired connection', 'Wired connection'],
+      ['Wireless connection, single device, Wireless connection, single device'],
+      ['Wireless connection, multiple devices in household', 'Wireless connection, multiple devices in household'],
     ]
   end
 end
