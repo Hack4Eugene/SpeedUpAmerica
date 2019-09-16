@@ -100,7 +100,7 @@ Download one of the two SQL files and place it in the projects `data` directory:
 * https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_lane_20190915.sql - Lane County (121MB)
 * https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_20190803.sql - OR, WA, ID (4.3GB, requires Docker being allocated 8GB RAM and an SSD is recommended)
 
-> Contributors: If you update this file make sure to change the filename and
+> Contributors: If you update any of these files, make sure to change the filename and
 > update all references in this document.
 
 Replace the filename and run this line:
