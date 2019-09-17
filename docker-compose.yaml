@@ -28,7 +28,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/suyc
-  jupyter:
+  notebooks:
     build:
       context: ./notebooks
     depends_on:
@@ -38,4 +38,5 @@ services:
     env_file:
       - local.env
     volumes:
+      - ./data:/home/jovyan/data/
       - ./notebooks:/home/jovyan/
