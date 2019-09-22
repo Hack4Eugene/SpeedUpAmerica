@@ -4,4 +4,4 @@ USER root
 RUN apt-get update && apt install -y libmysqlclient-dev
 
 USER jovyan
-RUN pip install mysqlclient ipython-sql
+RUN pip install mysqlclient ipython-sql mapboxgl geojson shapely

@@ -116,6 +116,10 @@ $ docker-compose up -d
 
 The site can be accessed at `http://localhost:3000/`. The Ruby app is configured to not cache and it doesn't require restarting the Docker container to load changes, unless it's a config change. Just make your changes and reload the page. First page load make take a little bit. See `docker-compose logs frontend` for stdout/stderr.
 
+### Notebooks
+
+The `docker-compose.yml` includes a Jupyter Hub container based on `jupyter/datascience-notebook`. It includes some addition Python modules for working with MySQL, and Mapbox. After setting up the database and loading a dataset you can start Jupyter Hub by running `docker-compose up notebooks`. Once ready it will output a URL and token that you will need to use to access the Jypyter Hub in your browser. Notebooks and other files are saved in `./notebooks`, make sure to check in and PR new/updated notebooks.
+
 ## Stopping
 
 ```bash
