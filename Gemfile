@@ -24,7 +24,6 @@ group :development do
 end
 
 gem 'bootstrap-sass', '>= 3.4.1'
-gem 'obfuscate_id'
 gem 'rack', '>= 1.6.11'
 gem 'nokogiri', '>= 1.8.5'
 gem 'loofah', '>= 2.2.3'
