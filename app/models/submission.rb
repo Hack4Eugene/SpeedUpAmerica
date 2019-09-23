@@ -1,4 +1,4 @@
-class Submission < ActiveRecord::Base
+class Submission < ApplicationRecord
   extend ActionView::Helpers::NumberHelper
   require 'csv'
 

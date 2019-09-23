@@ -1,4 +1,4 @@
-class ProviderStatistic < ActiveRecord::Base
+class ProviderStatistic < ApplicationRecord
   validates :name,
             :applications,
             :rating,

@@ -1,3 +1,3 @@
-class CensusBoundary < ActiveRecord::Base
+class CensusBoundary < ApplicationRecord
   serialize :bounds, Array
 end
