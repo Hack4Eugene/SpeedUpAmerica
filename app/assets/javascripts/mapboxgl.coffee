@@ -1,14 +1,14 @@
 popup = null
 census_layer = {
-  url: 'mapbox://mattsayre.1pdu0bcw',
+  url: 'mapbox.enterprise-boundaries-s3-v2',
   source: 'census-tracts',
-  name: 'tracts',
+  name: 'boundaries_stats_3',
   data_id: 'GEOID'
 }
 zip_layer = {
-  url: 'mapbox://mattsayre.857dv4qz',
+  url: 'mapbox.enterprise-boundaries-p4-v2',
   source: 'zip-codes',
-  name: 'cb_2018_us_zcta510_500k',
+  name: 'boundaries_postal_4',
   data_id: 'ZCTA5CE10'
 }
 
