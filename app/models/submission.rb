@@ -29,8 +29,9 @@ class Submission < ActiveRecord::Base
     },
   }
 
-  ZIP_CODES = ZipBoundary.pluck(:name)
-  CENSUS_CODES = CensusBoundary.pluck(:geo_id)
+  #TODO we can't keep storing these, we need to replace all usage with a endpoint for searching boundaries
+  ZIP_CODES = Boundaries.where(:boundary_type => "zip_code", :enabled => true).pluck(:boundary_id)
+  CENSUS_TRACTS = Boundaries.where(:boundary_type => "census_tract", :enabled => true).pluck(:boundary_id)
 
   SPEED_BREAKDOWN_RANGES = [
     '0..5.99', '6..10.99', '11..20.99', '21..40.99', '40..60.99', '61..80.99', '81..100.99',
@@ -49,10 +50,8 @@ class Submission < ActiveRecord::Base
 
   default_scope { where('from_mlab = 0 OR (from_mlab = 1 AND provider IS NOT NULL)') }
 
-  scope :mapbox_filter, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('latitude, longitude, zip_code, actual_down_speed, actual_upload_speed, upload_median, download_median') }
   scope :with_date_range, -> (start_date, end_date) { where('test_date >= ? AND test_date <= ?', start_date, end_date.end_of_day) }
   scope :with_test_type, -> (test_type) { where(test_type: [test_type, 'both']) }
-  scope :in_zip_code_list, -> { valid_test.where(zip_code: ZIP_CODES).where.not(zip_code: [nil, '']) }
   scope :valid_test, -> { where.not(test_type: 'duplicate') }
   scope :invalid_test, -> { where('testing_for = ? AND actual_down_speed > ?', 'Mobile Data', MOBILE_MAXIMUM_SPEED) }
   scope :with_connection_type, -> (connection_type) { where(testing_for: connection_type) }
@@ -63,14 +62,28 @@ class Submission < ActiveRecord::Base
   scope :valid_rating, -> { where('rating > 0') }
   scope :from_mlab, -> { where(from_mlab: true) }
   scope :not_from_mlab, -> { where(from_mlab: false) }
-  scope :in_census_code_list, -> { valid_test.where(census_code: CENSUS_CODES) }
   scope :with_census_code, -> (census_code) { where(census_code: census_code) }
 
-  scope :mapbox_filter_by_zip_code, -> (test_type) { in_zip_code_list.with_test_type(test_type).select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code) }
-  scope :mapbox_filter_by_census_code, -> (test_type) { in_census_code_list.with_test_type(test_type).select('census_code, actual_down_speed, actual_upload_speed').group_by(&:census_code) }
+  scope :mapbox_filter_by_boundary, -> (boundary_type, test_type) {
+    subs = valid_test.with_test_type(test_type)
 
-  scope :get_zip_code_for_stats_cache, -> (zip_code, test_type) { where(zip_code: zip_code).with_test_type(test_type) }
-  scope :get_census_tract_for_stats_cache, -> (census_tract, test_type) { where(census_code: census_tract).with_test_type(test_type) }
+    if boundary_type == 'census_code'
+      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'census_tract' AND submissions.census_code = b.boundary_id")
+      subs = subs.where('b.enabled = true')
+      subs.select('census_code, actual_down_speed, actual_upload_speed').group_by(&:census_code)
+    elsif boundary_type == 'census_block'
+      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'census_block' AND submissions.census_block = b.boundary_id")
+      subs = subs.where('b.enabled = true')
+      subs.select('census_block, actual_down_speed, actual_upload_speed').group_by(&:census_block)
+    elsif boundary_type == 'zip_code'
+      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'zip_code' AND submissions.zip_code = b.boundary_id")
+      subs = subs.where('b.enabled = true')
+      subs.select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code)
+    else
+      raise 'unknown boundary type: ' + boundary_type
+    end
+  }
+
   scope :get_provider_for_stats_cache, -> (provider, test_type) { where(provider: provider).with_test_type(test_type) }
 
   def self.create_submission(params)
@@ -139,22 +152,9 @@ class Submission < ActiveRecord::Base
   def self.calculate_tileset_groupby(params, providers)
     polygon_data = valid_test
     polygon_data = polygon_data.where(provider: providers)              if providers.present? && providers.any?
-    polygon_data = polygon_data.with_zip_code(params[:zip_code])        if params[:zip_code].present? && params[:zip_code].any?
-    polygon_data = polygon_data.with_census_code(params[:census_code])  if params[:census_code].present? && params[:census_code].any?
-
-    if params[:group_by] == 'zip_code'
-      polygon_data = polygon_data.mapbox_filter_by_zip_code(params[:test_type]) if params[:test_type].present?
-    else
-      polygon_data = polygon_data.mapbox_filter_by_census_code(params[:test_type]) if params[:test_type].present?
-    end
+    polygon_data = polygon_data.mapbox_filter_by_boundary(params[:group_by], params[:test_type])
 
     stats = polygon_data.map do |id, submissions|
-      if params[:group_by] == 'zip_code'
-        next if  ZIP_CODES.include? id == false
-      else
-        next if  CENSUS_CODES.include? id == false
-      end
-
       attribute_name = speed_attribute(params[:test_type])
       median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
 
@@ -221,19 +221,6 @@ class Submission < ActiveRecord::Base
     ((sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0).round(4) if sorted.present?
   end
 
-  def self.search(provider, test_type, date_range)
-    date_range = date_range.to_s.split(' - ')
-    start_date, end_date = Time.parse(date_range[0]).utc, Time.parse(date_range[1]).utc if date_range.present?
-    providers = ProviderStatistic.where(id: provider).pluck(:name)
-
-    submissions = valid_test
-    submissions = submissions.where(provider: providers)            if providers.present?
-    submissions = submissions.mapbox_filter(test_type)              if test_type.present?
-    submissions = submissions.with_date_range(start_date, end_date) if date_range.present?
-
-    submissions
-  end
-
   def self.set_color(speed)
     case speed
       when 0..5.9999999999 then '#D73027'
@@ -274,23 +261,6 @@ class Submission < ActiveRecord::Base
     end
   end
 
-  def self.to_csv(date_range)
-    range = date_range.split(' - ')
-    CSV.generate do |csv|
-      csv << CSV_COLUMNS
-      in_zip_code_list.with_date_range(Time.parse(range[0]), Time.parse(range[1])).find_in_batches(batch_size: 1000) do |submissions|
-        submissions.each do |submission|
-          csv <<  [
-            submission.id, submission.source, submission.test_date.strftime('%B %d, %Y'), submission.test_date.in_time_zone('EST').strftime('%R %Z'),
-            testing_for_mapping(submission.testing_for), submission.zip_code, submission.census_code, submission.provider, submission.connected_with,
-            submission.monthly_price, submission.provider_down_speed, submission.rating, submission.actual_down_speed, submission.actual_upload_speed,
-            submission.provider_price, submission.actual_price, submission.ping
-          ]
-        end
-      end
-    end
-  end
-
   CSV_COLUMNS = [
     'Response #', 'Source', 'Date', 'How Are You Testing', 'Zip', 'Census Tract',
     'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed',
@@ -320,10 +290,28 @@ class Submission < ActiveRecord::Base
     start_date = Date.today.at_beginning_of_month - 13.months
     end_date = Date.today
 
-    data = in_zip_code_list.not_from_mlab.with_date_range(start_date, end_date)
+    data = not_from_mlab.with_date_range(start_date, end_date)
     data.find_each(batch_size: 1000) do |transaction|
       yield transaction
     end
+  end
+
+  BOUNDARY_TYPE_TO_SUBS_COLUMN = {
+    'region' => 'region',
+    'county' => 'county',
+    'zip_code' => 'zip_code',
+    'census_tract' => 'census_code',
+    'census_block' => 'census_block',
+  }
+
+  def self.find_for_boundary(type, id)
+    if BOUNDARY_TYPE_TO_SUBS_COLUMN.key?(type) == false
+      raise 'boundary type not supported'
+    end
+
+    column = BOUNDARY_TYPE_TO_SUBS_COLUMN[type]
+    quoted_column = Submission.connection.quote_column_name(column)
+    Submission.where("#{quoted_column} = ?", id)
   end
 
   def self.testing_for_mapping(testing_for)
@@ -640,75 +628,6 @@ class Submission < ActiveRecord::Base
     end
 
     average_speeds.sort_by { |k, v| v }
-  end
-
-  def self.service_providers_data(type, categories, connection_type, provider)
-    submissions = in_zip_code_list
-    return service_providers_usage_data(categories, connection_type, submissions) if type == 'isps_usage'
-    return service_providers_satisfactions_data(categories, connection_type, provider, submissions) if type == 'isps_satisfactions'
-    return mobile_service_providers_data(categories, connection_type, type, submissions) if type.in?(['mobile_isps_speeds', 'mobile_isps_satisfactions'])
-  end
-
-  def self.service_providers_usage_data(categories, connection_type, submissions)
-    usage_percentages = []
-    submissions = submissions.with_connection_type(connection_type)
-
-    categories.each do |category|
-      if category == 'Other'
-        isps_submissions = submissions.where.not(provider: categories)
-      else
-        isps_submissions = submissions.with_provider(category)
-      end
-
-      entity = { name: category, y: percentage(isps_submissions.length, submissions.count) }
-      usage_percentages << entity
-    end
-
-    { usage_percentages: usage_percentages }
-  end
-
-  def self.service_providers_satisfactions_data(categories, connection_type, provider, submissions)
-    satisfaction_ratings = []
-    if provider == 'all'
-      submissions = submissions.valid_rating.with_connection_type(connection_type)
-    else
-      submissions = submissions.valid_rating.with_connection_type(connection_type).with_provider(provider)
-    end
-
-    categories.each do |category|
-      ratings = submissions.with_rating(satisfactions_mapping(category)).pluck(:rating)
-      entity = { name: category, y: percentage(ratings.count, submissions.count) }
-      satisfaction_ratings << entity
-    end
-
-    satisfaction_ratings
-  end
-
-  def self.mobile_service_providers_data(categories, connection_type, type, submissions)
-    values = []
-    submissions = submissions.with_connection_type(connection_type)
-
-    categories.each do |category|
-      if type == 'mobile_isps_speeds'
-        provider_submissions = submissions.with_provider(category)
-        value = (provider_submissions.pluck(:actual_down_speed).sum/provider_submissions.count.to_f).round(2)
-      elsif type == 'mobile_isps_satisfactions'
-        provider_submissions = submissions.valid_rating.with_provider(category)
-        value = (provider_submissions.with_provider(category).pluck(:rating).sum/provider_submissions.count.to_f).round(2)
-      end
-
-      values << value
-    end
-
-    { categories: categories, values: values }
-  end
-
-  def self.satisfactions_mapping(value)
-    {
-      'Negative' => [0..3.99],
-      'Neutral'  => [4..5.99],
-      'Positive' => [6..7],
-    }[value]
   end
 
   def invalid_test_result

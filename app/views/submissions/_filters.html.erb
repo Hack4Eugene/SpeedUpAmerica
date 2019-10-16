@@ -31,7 +31,7 @@
           <p>Group By:</p>
 
           <div class='group-by-filter'>
-            <%= select_tag :group_by, options_for_select(Submission::MAP_FILTERS[:group_by].map { |k, v| [k.to_s.titleize, v] }), { disabled: true, class: 'chosen-select filter' } %>
+            <%= select_tag :group_by, options_for_select(get_group_bys.map { |k, v| [k.to_s.titleize, v] }), { disabled: true, class: 'chosen-select filter' } %>
           </div>
         </div>
       </div>

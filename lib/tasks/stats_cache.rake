@@ -7,79 +7,40 @@ task :update_stats_cache => [:environment] do
   end_date = Date.today.end_of_month
   ranges = Submission.get_date_ranges("month", start_date, end_date)
 
-  puts "Zip Codes - #{Time.now}"
-  ZipBoundary.all.select(:name).each do |zip|
-    stats_id = zip.name
+  puts "Boundaries - #{Time.now}"
+  Boundaries.where(:enabled => true).select(:boundary_type, :boundary_id).each do |boundary|
+    boundary_type = boundary.boundary_type
+    boundary_id = boundary.boundary_id
 
     # Check if we have new records newer than the cache
-    newest = Submission.where(:zip_code => stats_id).order("updated_at DESC").take
-    cached = StatsCache.where(:stat_type => 'zip_code', :stat_id => stats_id,
+    newest = Submission.find_for_boundary(boundary_type, boundary_id).order("updated_at DESC").take
+    cached = StatsCache.where(:stat_type => boundary_type, :stat_id => boundary_id,
       :date_type => 'all', :date_value => '1970-01-01').take
     if cached.present? && newest.present? && newest[:updated_at] <= cached[:updated_at]
       next
     end
 
-    all_uploads = Submission.get_zip_code_for_stats_cache(stats_id, "upload")
-    all_downloads = Submission.get_zip_code_for_stats_cache(stats_id, "download")
+    all_uploads = Submission.find_for_boundary(boundary_type, boundary_id).with_test_type("upload")
+    all_downloads = Submission.find_for_boundary(boundary_type, boundary_id).with_test_type("download")
     sua_uploads = all_uploads.not_from_mlab
     sua_downloads = all_downloads.not_from_mlab
 
-    upsertStats('zip_code', stats_id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
-
-    ranges.each do |range|
-      range_start = range[:range][0]
-      range_end = range[:range][1]
-
-      all_uploads_month = all_uploads.with_date_range(range_start, range_end)
-      all_downloads_month = all_downloads.with_date_range(range_start, range_end)
-      sua_uploads_month = sua_uploads.with_date_range(range_start, range_end)
-      sua_downloads_month = sua_downloads.with_date_range(range_start, range_end)
-
-      upsertStats('zip_code', stats_id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month,
-        all_downloads_month, sua_uploads_month, sua_downloads_month)
-    end
+    updateCache(boundary_type, boundary_id, ranges, all_uploads, all_downloads, sua_uploads, sua_downloads)
   end
 
-  puts "Census Tracts - #{Time.now}"
-  CensusBoundary.all.select(:geo_id).each do |tract|
-    stats_id = tract.geo_id
-
-    # Check if we have new records newer than the cache
-    newest = Submission.where(:census_code => stats_id).order("updated_at DESC").take
-    cached = StatsCache.where(:stat_type => 'census_tract', :stat_id => stats_id,
-      :date_type => 'all', :date_value => '1970-01-01').take
-    if cached.present? && newest.present? && newest[:updated_at] <= cached[:updated_at]
-      next
-    end
-
-    all_uploads = Submission.get_census_tract_for_stats_cache(stats_id, "upload")
-    all_downloads = Submission.get_census_tract_for_stats_cache(stats_id, "download")
-    sua_uploads = all_uploads.not_from_mlab
-    sua_downloads = all_downloads.not_from_mlab
-
-    upsertStats('census_tract', stats_id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
-
-    ranges.each do |range|
-      range_start = range[:range][0]
-      range_end = range[:range][1]
-
-      all_uploads_month = all_uploads.with_date_range(range_start, range_end)
-      all_downloads_month = all_downloads.with_date_range(range_start, range_end)
-      sua_uploads_month = sua_uploads.with_date_range(range_start, range_end)
-      sua_downloads_month = sua_downloads.with_date_range(range_start, range_end)
-
-      upsertStats('census_tract', stats_id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month,
-        all_downloads_month, sua_uploads_month, sua_downloads_month)
-    end
-  end
+  # TODO cleanup old records
+  # DELETE FROM stats_caches s
+  # LEFT JOIN boundary b ON s.stat_id = b.boundary_id AND s.stat_type = b.boundary_type
+  # WHERE b.enabled = false
 
   puts "Providers - #{Time.now}"
   ProviderStatistic.all.select(:name).each do |provider|
+    stats_type = 'provider'
     stats_id = provider.name
 
     # Check if we have new records newer than the cache
     newest = Submission.where(:provider => stats_id).order("updated_at DESC").take
-    cached = StatsCache.where(:stat_type => 'provider', :stat_id => stats_id,
+    cached = StatsCache.where(:stat_type => stats_type, :stat_id => stats_id,
       :date_type => 'all', :date_value => '1970-01-01').take
     if cached.present? && newest.present? && newest[:updated_at] <= cached[:updated_at]
       next
@@ -90,24 +51,39 @@ task :update_stats_cache => [:environment] do
     sua_uploads = all_uploads.not_from_mlab
     sua_downloads = all_downloads.not_from_mlab
 
-    upsertStats('provider', stats_id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
-
-    ranges.each do |range|
-      range_start = range[:range][0]
-      range_end = range[:range][1]
-
-      all_uploads_month = all_uploads.with_date_range(range_start, range_end)
-      all_downloads_month = all_downloads.with_date_range(range_start, range_end)
-      sua_uploads_month = sua_uploads.with_date_range(range_start, range_end)
-      sua_downloads_month = sua_downloads.with_date_range(range_start, range_end)
-
-      upsertStats('provider', stats_id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month,
-        all_downloads_month, sua_uploads_month, sua_downloads_month)
-    end
+    updateCache(stats_type, stats_id, ranges, all_uploads, all_downloads, sua_uploads, sua_downloads)
   end
+
+  # TODO cleanup providers that are not referenced by submissions
 
   puts "Finished update stats cache. #{Time.now}"
   puts '*' * 50
+end
+
+def updateCache(type, id, ranges, all_uploads, all_downloads, sua_uploads, sua_downloads)
+  # If no data don't create/update and delete all existing records
+  if all_uploads.count() == 0 && all_downloads.count() == 0
+    StatsCache.delete_all(:stat_type => type, :stat_id => id)
+    return
+  end
+
+  # Update "all" record
+  upsertStats(type, id, 'all', '1970-01-01', all_uploads, all_downloads, sua_uploads, sua_downloads)
+
+  # Update monthly records
+  ranges.each do |range|
+    range_start = range[:range][0]
+    range_end = range[:range][1]
+
+    all_uploads_month = all_uploads.with_date_range(range_start, range_end)
+    all_downloads_month = all_downloads.with_date_range(range_start, range_end)
+    sua_uploads_month = sua_uploads.with_date_range(range_start, range_end)
+    sua_downloads_month = sua_downloads.with_date_range(range_start, range_end)
+
+    upsertStats(type, id, 'month', range_start.strftime("%Y-%m-%d"), all_uploads_month, all_downloads_month,
+      sua_uploads_month, sua_downloads_month)
+  end
+
 end
 
 def upsertStats(stats_type, stats_id, date_type, date_value, all_uploads, all_downloads, sua_uploads, sua_downloads)
