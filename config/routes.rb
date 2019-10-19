@@ -16,7 +16,6 @@ Rails.application.routes.draw do
   get 'result/:test_id', to: 'submissions#show', as: :submission
   post 'stats/groupby', to: 'submissions#tileset_groupby', defaults: { format: :json }
   get 'speed_data', to: 'submissions#speed_data'
-  get 'isps_data', to: 'submissions#isps_data'
   get 'internet-stats', to: redirect('all-results')
   get 'embeddable_view', to: 'submissions#embeddable_view'
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
