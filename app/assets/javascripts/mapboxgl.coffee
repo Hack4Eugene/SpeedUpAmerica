@@ -24,6 +24,9 @@ layers = {
   }
 }
 
+# Our data layer is added above this layer
+layer_position = "building"
+
 window.initialize_mapboxgl = (elmID) ->
   mapboxgl.accessToken = MAPBOX_API_KEY
   maxZoom = 14
@@ -103,7 +106,7 @@ addLayer = (map, group_by, data, test_type) ->
       'fill-color': colorExpression,
       'fill-opacity': opacityExpression
     }
-  })
+  }, layer_position)
 
   map.on('mouseenter',  layer.name, () ->
     map.getCanvas().style.cursor = 'pointer'
