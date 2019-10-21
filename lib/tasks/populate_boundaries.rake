@@ -3,6 +3,7 @@ require 'json'
 require 'rake'
 require 'georuby'
 require 'geo_ruby/ewk'
+require 'geo_ruby/geojson'
 
 types = {
   :region => {
