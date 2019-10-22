@@ -43,7 +43,7 @@ set_multiple_selected_values = ->
 
 monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
   "July", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
+]
 
 apply_filters = (map) ->
   update_map = ->
@@ -56,10 +56,7 @@ apply_filters = (map) ->
 
     $('#all_results_map').removeClass('hide')
 
-    if group_by == 'zip_code'
-      set_mapbox_zip_data_gl(map, provider, group_by, test_type)
-    else if group_by == 'census_code'
-      set_mapbox_census_data_gl(map, provider, test_type, '', '', '')
+    set_mapbox_groupby(map, provider, group_by, test_type)
 
   $('#map-filters .filter').on 'change', ->
     update_all_option($(this))

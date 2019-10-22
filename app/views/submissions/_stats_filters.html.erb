@@ -24,7 +24,7 @@
     <div class='col-xs-12 col-sm-12 col-md-4 col-lg-4 filter-container' id='census_selector'>
       <p>Census Tracts:</p>
 
-      <%= select_tag :census_code, options_for_select(get_list_values(Submission::CENSUS_CODES)), { disabled: true, class: 'chosen-select filter', multiple: true } %>
+      <%= select_tag :census_code, options_for_select(get_list_values(Submission::CENSUS_TRACTS)), { disabled: true, class: 'chosen-select filter', multiple: true } %>
       <%= hidden_field_tag :selected_census_code %>
     </div>
 

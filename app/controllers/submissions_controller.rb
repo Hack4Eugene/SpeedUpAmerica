@@ -3,6 +3,7 @@ class SubmissionsController < ApplicationController
   before_action :initialize_stats_data, only: [:show, :embeddable_view]
   before_action :set_submission, only: [:show]
   before_action :set_selected_providers, only: [:result_page]
+  before_action :set_feature_blocks, only: [:result_page]
   before_action :set_selected_providers_for_submission, only: [:show]
   before_action :set_selected_zip_codes, only: [:show]
   skip_before_action :verify_authenticity_token, only: [:embed]
@@ -24,7 +25,7 @@ class SubmissionsController < ApplicationController
     data = Submission.fetch_tileset_groupby(params)
     render json: data
   rescue StandardError => e
-    render status: 500, json: {'status': 'error', 'error': 'problem getting stats'}
+    render status: 500, json: {'status': 'error', 'error': e.message}
   end
 
   def result_page
@@ -48,13 +49,7 @@ class SubmissionsController < ApplicationController
     render json: data
   end
 
-  def isps_data
-    data = Submission.service_providers_data(params[:type], params[:categories], params[:connection_type], params[:provider])
-    render json: data
-  end
-
   def export_csv
-    # send_data Submission.to_csv(params[:date_range]), filename: "submissions - #{Time.now}.csv"
     render_csv
   end
 
@@ -133,6 +128,12 @@ class SubmissionsController < ApplicationController
         .group('p.id').order('count DESC').first(3).map(&:id)
 
       @selected_provider_ids = ids
+    end
+
+    def set_feature_blocks
+      if request.query_parameters[:feature_blocks].present?
+        @feature_blocks = true
+      end
     end
 
     def set_selected_providers

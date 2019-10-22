@@ -75,4 +75,14 @@ module SubmissionsHelper
     all_option = ['All', 'all']
     codes.map { |code| [code, code] }.unshift(all_option)
   end
+
+  def get_group_bys()
+    group_bys = Submission::MAP_FILTERS[:group_by]
+
+    if @feature_blocks == true
+      group_bys[:census_block] = 'census_block'
+    end
+
+    return group_bys
+  end
 end
