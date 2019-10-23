@@ -285,6 +285,7 @@ Committers:
 * Bishop Lafer
 * Cory Borman
 * James Coulter
+* Ryan Olds
 
 Technical Committee:
 
@@ -292,4 +293,3 @@ Technical Committee:
 * Chris Ritzo
 * Chris Sjoblom
 * Antonio Ortega
-* Ryan Olds
