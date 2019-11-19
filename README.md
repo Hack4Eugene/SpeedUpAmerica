@@ -97,8 +97,8 @@ Use and set the Default pulic token as your `MAPBOX_API_KEY` in the `local.env`f
 
 Download one of the two SQL files and place it in the projects `data` directory:
 
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_lane_20190915.sql - Lane County (121MB)
-* https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_20190803.sql - OR, WA, ID (4.3GB, requires Docker being allocated 8GB RAM and an SSD is recommended)
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_lane_20191022.sql - Lane County (121MB)
+* https://sua-datafiles.s3-us-west-2.amazonaws.com/sua_20191022.sql - OR, WA, ID (4.3GB, requires Docker being allocated 8GB RAM and an SSD is recommended)
 
 > Contributors: If you update any of these files, make sure to change the filename and
 > update all references in this document.
@@ -190,18 +190,19 @@ $ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc --ign
 ## Updating your boundaries the long way
 
 Follow the next three sections to download the latest data, clear your
-boundaries tables, and load the data. You should only be following
+boundaries table, and load the data. You should only be following
 these directions if deleting your DB and loading the lastest SQL dump is not
 an option.
 
 ### Download boundary data files
 
 Assumes you have these files in `data/`:
-* https://s3-us-west-2.amazonaws.com/sua-datafiles/cb_2016_us_census_tracts
-* https://s3-us-west-2.amazonaws.com/sua-datafiles/us_zip_codes.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_16_tabblock10.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_41_tabblock10.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_53_tabblock10.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_16_tract.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_41_tract.json
+* https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_53_tract.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_zcta510.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_county.json
 * https://s3-us-west-2.amazonaws.com/sua-datafiles/tl_2018_us_state.json
@@ -211,8 +212,6 @@ Assumes you have these files in `data/`:
 For Linux and MacOS please use the following:
 
 ```bash
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE zip_boundaries;"
-$ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE census_boundaries;"
 $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc <<< "TRUNCATE boundaries;"
 ```
 
@@ -220,8 +219,6 @@ For Windows OS please use the following:
 
 ```
 $ docker-compose exec mysql mysql -u suyc -psuyc suyc
-$ mysql> TRUNCATE census_boundaries;
-$ mysql> TRUNCATE zip_boundaries;
 $ mysql> TRUNCATE boundaries;
 $ mysql> exit
 ```
@@ -229,8 +226,6 @@ $ mysql> exit
 ### Load
 
 ```
-$ docker-compose run frontend rake populate_zip_boundaries
-$ docker-compose run frontend rake populate_census_tracts
 $ docker-compose run frontend rake populate_boundaries
 ```
 
