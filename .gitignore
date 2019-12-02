@@ -44,3 +44,7 @@ tmp/*
 ##################
 public/assets/application-*
 public/assets/.sprockets-manifest-*
+
+# Notebooks #
+#############
+notebooks/.*

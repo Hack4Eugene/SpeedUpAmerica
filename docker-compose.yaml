@@ -28,3 +28,15 @@ services:
       - "3000:3000"
     volumes:
       - .:/suyc
+  notebooks:
+    build:
+      context: ./notebooks
+    depends_on:
+      - mysql
+    ports:
+      - 8888:8888
+    env_file:
+      - local.env
+    volumes:
+      - ./data:/home/jovyan/data/
+      - ./notebooks:/home/jovyan/
