@@ -6,7 +6,7 @@ layers = {
     source: 'census-tracts',
     name: 'tracts',
     data_id: 'GEOID',
-    label: 'Census Tact'
+    label: 'Census Tract'
   },
   census_block: {
     url: 'mapbox://mattsayre.3cpval7a',
