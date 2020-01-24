@@ -188,7 +188,7 @@ $ docker-compose exec -T mysql mysql -u suyc -psuyc suyc < data/sua_20190803.sql
 Make sure to replace `<date>` with todays date in a concise format (e.g. `20190801`).
 
 ```bash
-$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc --ignore-table=suyc.schema_migrations > data/sua_<date>.sql
+$ docker-compose exec mysql mysqldump --no-create-info -u suyc -psuyc suyc --ignore-table=suyc.schema_migrations --hex-blob > data/sua_<date>.sql
 ```
 
 ## Updating your boundaries the long way
