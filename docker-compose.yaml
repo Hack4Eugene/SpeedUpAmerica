@@ -27,7 +27,12 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/suyc
+      - ./app:/suyc/app
+      - ./config:/suyc/config
+      - ./data:/suyc/data
+      - ./lib:/suyc/lib
+      - ./log:/suyc/log
+      - ./public:/suyc/public
   notebooks:
     build:
       context: ./notebooks
