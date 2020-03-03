@@ -3,16 +3,14 @@
     <ul class='list-inline'>
       <li>
         <%= button_tag type: 'button', id: 'take_test' do %>
-          <%= image_tag 'take_the_test.png', class: 'take-test-img' %>
+          <%= image_tag 'take_the_test.png', class: 'test_icon' %>
         <% end %>
-          <p>Take the Test!!</p>
       </li>
 
       <li>
         <%= link_to result_page_path, data: {no_turbolink: true} do %>
-          <%= image_tag 'view_results.png', width: '65%' %>
+          <%= image_tag 'view_results.png', class: 'test_icon' %>
         <% end %>
-        <p>View Results</p>
       </li>
     </ul>
   </div>

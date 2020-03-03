@@ -1,3 +1,7 @@
+body {
+  background-color: rgb(232, 232, 232);
+}
+
 body.result-page {
   background: #D3D3D3;
 }
@@ -75,12 +79,26 @@ body.result-page {
 }
 
 .home-wrapper {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgb(232, 232, 232);
   display: table;
   margin: 0 auto;
   float: none !important;
   padding: 10px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.test_icon {
+  color: rgb(232, 232, 232);
+
+  background-color: rgb(232, 232, 232);
+  border-radius: 100%;
+  box-shadow: 0 20px 20px #e8e8e8, 0 6px 6px rgba(0, 0, 0, 0.26);
+}
+
+.test_icon:hover {
+  color: rgb(232, 232, 232);
+  background-color: rgb(232, 232, 232);
+  border-radius: 100%;
+  box-shadow: 0 20px 20px rgba(226, 223, 223, 0.63), 0 6px 6px rgba(0, 0, 0, 0.26);
 }
 
 .bold {
@@ -265,10 +283,6 @@ body.in-stats .background-container,
   }
   li {
     width: 40%;
-
-    img {
-      max-width: 100%
-    }
   }
 }
 
@@ -556,12 +570,6 @@ body.in-stats .background-container,
 
 .percent-val {
   font-size: 20px;
-}
-
-.take-test-img {
-  -ms-transform: rotate(270deg);
-  -webkit-transform: rotate(270deg);
-  transform: rotate(270deg);
 }
 
 .results-sharing-box {
