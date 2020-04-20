@@ -1,5 +1,7 @@
 version: 0.2
-
+env:
+  parameter-store:
+      SUA_GEOLITE_ACCESS_KEY: "SUA_GEOLITE_ACCESS_KEY"
 phases:
   pre_build:
     commands:
@@ -15,7 +17,6 @@ phases:
       - echo Building the Docker image...
       - chmod +x ./update_data.sh
       - echo Getting latest GeoLite2 ASN DB
-      g- aws s3 cp s3://sua-private/$SUA_GEOLITE_ACCESS_KEY $SUA_GEOLITE_ACCESS_KEY
       - wget https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=`$SUA_GEOLITE_ACCESS_KEY`&suffix=tar.gz
       - tar -xf GeoLite2-ASN.tar.gz
       - cp GeoLite2-ASN_*/GeoLite2-ASN.mmdb .
