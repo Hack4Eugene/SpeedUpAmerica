@@ -7,6 +7,7 @@ phases:
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - REPOSITORY_URI=238241637211.dkr.ecr.us-west-2.amazonaws.com/speedupamerica
+      - GEOLITE_SUA=RcD40UE1ygFfILpv
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
@@ -15,7 +16,8 @@ phases:
       - echo Building the Docker image...
       - chmod +x ./update_data.sh
       - echo Getting latest GeoLite2 ASN DB
-      - wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
+      - aws s3 cp s3://sua-private/$SUA_GEOLITE_ACCESS_KEY $SUA_GEOLITE_ACCESS_KEY
+      - wget https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=`$SUA_GEOLITE_ACCESS_KEY `&suffix=tar.gz
       - tar -xf GeoLite2-ASN.tar.gz
       - cp GeoLite2-ASN_*/GeoLite2-ASN.mmdb .
       - rm -r GeoLite2-ASN_*
