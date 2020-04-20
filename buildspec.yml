@@ -1,7 +1,7 @@
 version: 0.2
 env:
   parameter-store:
-      SUA_GEOLITE_ACCESS_KEY: "SUA_GEOLITE_ACCESS_KEY"
+      SUA_GEOLITE_ACCESS_KEY: SUA_GEOLITE_ACCESS_KEY
 phases:
   pre_build:
     commands:
