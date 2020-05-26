@@ -17,7 +17,7 @@ phases:
       - echo Building the Docker image...
       - chmod +x ./update_data.sh
       - echo Getting latest GeoLite2 ASN DB
-      - curl -O "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=${SUA_GEOLITE_ACCESS_KEY}&suffix=tar.gz"
+      - curl -o GeoLite2-ASN.tar.gz -s --show-error "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=${SUA_GEOLITE_ACCESS_KEY}&suffix=tar.gz"
       - tar -xf GeoLite2-ASN.tar.gz
       - cp GeoLite2-ASN_*/GeoLite2-ASN.mmdb .
       - rm -r GeoLite2-ASN_*
