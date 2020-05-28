@@ -71,60 +71,61 @@ class SubmissionsImporter
     puts "Getting upload data for #{country_code} #{region} between #{start_date} and #{end_date}"
 
     "#standardSQL
-    SELECT
-      ndt5.ParseInfo.TaskFileName AS test_id,
-      TIMESTAMP_SECONDS(ndt5.log_time) AS UTC_date_time,
-      ndt5.result.ClientIP AS client_ip,
-      tcpinfo.Client.Geo.latitude AS client_latitude,
-      tcpinfo.Client.Geo.longitude AS client_longitude,
-      tcpinfo.Client.Geo.country_code AS country_code,
-      tcpinfo.Client.Geo.region AS region,
-      tcpinfo.Client.Geo.city AS city,
-      tcpinfo.Client.Geo.postal_code AS postal_code,
-      ndt5.result.C2S.MeanThroughputMbps AS uploadThroughput,
+    SELECT 
+      tcpinfo.ParseInfo.TaskFileName AS test_id,  
+      a.TestTime AS UTC_date_time,
+      ndt.client.IP AS client_ip,
+      ndt.Client.Geo.latitude AS client_latitude,
+      ndt.Client.Geo.longitude AS client_longitude,
+      ndt.Client.Geo.country_code AS country_code,
+      ndt.Client.Geo.region AS region,
+      ndt.Client.Geo.city AS city,
+      ndt.Client.Geo.postal_code AS postal_code,
+      a.MeanThroughputMbps AS uploadThroughput,
       NULL AS downloadThroughput,
-      TIMESTAMP_DIFF(ndt5.result.C2S.EndTime, ndt5.result.C2S.StartTime, MICROSECOND) AS duration,
-      tcpinfo.FinalSnapshot.TCPInfo.BytesReceived AS HCThruOctetsRecv,
-      ndt5.result.C2S.UUID AS test_UUID
-    FROM
-      `measurement-lab.ndt.ndt5` ndt5,
-      `measurement-lab.ndt.tcpinfo` tcpinfo
+      TIMESTAMP_DIFF(ndt5.result.S2C.EndTime, ndt5.result.S2C.StartTime, MICROSECOND) AS duration,
+      FinalSnapshot.TCPInfo.BytesReceived AS HCThruOctetsRecv
+    FROM `measurement-lab.ndt.unified_uploads` ndt,
+         `measurement-lab.ndt.ndt5` ndt5,
+         `measurement-lab.ndt.tcpinfo` tcpinfo
     WHERE
-      ndt5.partition_date BETWEEN '#{start_date}' AND '#{end_date}'
-      AND ndt5.result.C2S.UUID = tcpinfo.UUID
-      AND tcpinfo.Client.Geo.country_code = '#{country_code}'
-      AND tcpinfo.Client.Geo.region = '#{region}'
-    ORDER BY ndt5.partition_date ASC, ndt5.log_time ASC"
+      a.UUID = tcpinfo.UUID
+      AND a.UUID = ndt5.result.S2C.UUID
+      AND test_date BETWEEN '#{start_date}' AND '#{end_date}'
+      AND ndt.Client.Geo.country_code = '#{country_code}'
+      AND ndt.Client.Geo.region = '#{region}'
+    ORDER BY UTC_date_time ASC"
   end
 
   def self.download_query(country_code, region, start_date, end_date)
     puts "Getting download data for #{country_code} #{region} between #{start_date} and #{end_date}"
 
     "#standardSQL
-    SELECT
-      ndt5.ParseInfo.TaskFileName AS test_id,
-      TIMESTAMP_SECONDS(ndt5.log_time) AS UTC_date_time,
-      ndt5.result.ClientIP AS client_ip,
-      tcpinfo.Client.Geo.latitude AS client_latitude,
-      tcpinfo.Client.Geo.longitude AS client_longitude,
-      tcpinfo.Client.Geo.country_code AS country_code,
-      tcpinfo.Client.Geo.region AS region,
-      tcpinfo.Client.Geo.city AS city,
-      tcpinfo.Client.Geo.postal_code AS postal_code,
-      ndt5.result.S2C.MeanThroughputMbps AS downloadThroughput,
+#standardSQL
+    SELECT 
+      tcpinfo.ParseInfo.TaskFileName AS test_id,  
+      a.TestTime AS UTC_date_time,
+      ndt.client.IP AS client_ip,
+      ndt.Client.Geo.latitude AS client_latitude,
+      ndt.Client.Geo.longitude AS client_longitude,
+      ndt.Client.Geo.country_code AS country_code,
+      ndt.Client.Geo.region AS region,
+      ndt.Client.Geo.city AS city,
+      ndt.Client.Geo.postal_code AS postal_code,
+      a.MeanThroughputMbps AS downloadThroughput,
       NULL AS uploadThroughput,
       TIMESTAMP_DIFF(ndt5.result.S2C.EndTime, ndt5.result.S2C.StartTime, MICROSECOND) AS duration,
-      tcpinfo.FinalSnapshot.TCPInfo.BytesReceived AS HCThruOctetsRecv,
-      ndt5.result.S2C.UUID AS test_UUID
-    FROM
-      `measurement-lab.ndt.ndt5` ndt5,
-      `measurement-lab.ndt.tcpinfo` tcpinfo
+      FinalSnapshot.TCPInfo.BytesReceived AS HCThruOctetsRecv
+    FROM `measurement-lab.ndt.unified_downloads` ndt,
+         `measurement-lab.ndt.ndt5` ndt5,
+         `measurement-lab.ndt.tcpinfo` tcpinfo
     WHERE
-      ndt5.partition_date BETWEEN '#{start_date}' AND '#{end_date}'
-      AND ndt5.result.C2S.UUID = tcpinfo.UUID
-      AND tcpinfo.Client.Geo.country_code = '#{country_code}'
-      AND tcpinfo.Client.Geo.region = '#{region}'
-    ORDER BY ndt5.partition_date ASC, ndt5.log_time ASC"
+      a.UUID = tcpinfo.UUID
+      AND a.UUID = ndt5.result.S2C.UUID
+      AND test_date BETWEEN '#{start_date}' AND '#{end_date}'
+      AND ndt.Client.Geo.country_code = '#{country_code}'
+      AND ndt.Client.Geo.region = '#{region}'
+    ORDER BY UTC_date_time ASC"
   end
 
   def self.get_start_time(country_code, region, test_type)
