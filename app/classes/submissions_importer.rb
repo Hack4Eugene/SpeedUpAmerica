@@ -145,7 +145,7 @@ class SubmissionsImporter
 
     data.each do |row|
       count = Submission.unscoped.where('test_date = ? AND ip_address = ? AND test_type = ?',
-        Date.parse(row[:UTC_date_time]), row[:client_ip], test_type).count
+        row[:UTC_date_time], row[:client_ip], test_type).count
       next if count > 0
 
       submission = Submission.new
