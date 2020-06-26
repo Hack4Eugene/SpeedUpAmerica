@@ -31,7 +31,6 @@ bind_ndt_speed_calculation = ->
     return
 
   getNdtServer()
-  uncheckAcknowledgement()
 
   NDT_meter = new NDTmeter('#ndt-svg')
   $('#start_ndt_test').on 'click', ->
