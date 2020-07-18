@@ -34,7 +34,7 @@ block_callback = (err) ->
 
   if err.code == err.POSITION_UNAVAILABLE && is_safari()
     $('#error-position_unavailable').modal('show')
-  else 
+  else
     $('#error-geolocation').modal('show')
 
   Sentry.setExtra("error_code", err.code)
@@ -45,7 +45,6 @@ is_safari = ->
   ua = navigator.userAgent.toLowerCase()
   return (ua.indexOf('safari') != -1) && (ua.indexOf('chrome') == -1)
 
-  
 get_location = ->
   if navigator.geolocation
     location_start()
@@ -248,7 +247,6 @@ $ ->
 
     if $('#location_disabled').prop('checked')
       show_step_one()
-
 
   $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
     $(".checkboxes-container input[name='submission[testing_for]']").each ->
