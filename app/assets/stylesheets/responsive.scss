@@ -304,20 +304,24 @@
     margin-bottom: 30px;
   }
   ul.header-links {
-    background: white;
     margin-top: 0;
   }
-  .navbar-inverse .navbar-toggle .icon-bar {
-    color: #333;
-  }
-  .navbar-inverse .navbar-toggle:hover {
-    background: #333;
-  }
-  .navbar-inverse .navbar-toggle .icon-bar {
-    color: #333;
+  .navbar-inverse .navbar-collapse {
+    // Show mobile menu on top of later page content
+    position: relative;
+    z-index: 1;
+
+    // Add colors to visually distinguish mobile menu from surrounding content
+    background: #eee;
+    border: none;
+    border-bottom: 1px solid #ccc;
   }
   .navbar-inverse .navbar-toggle {
     border-color: white;
+    background: #bbb;
+    &:hover {
+      background: #333;
+    }
   }
   .navbar-inverse .navbar-nav > li > a {
     color: #333 !important;

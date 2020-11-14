@@ -62,6 +62,7 @@ body.result-page {
 .navbar-inverse {
   background-color: #ffffff;
   border: none;
+  border-bottom: 1px solid #eee;
   height: 50px;
 }
 
@@ -936,7 +937,7 @@ body.in-stats h2 {
 }
 
 #zip_selector {
-    display: block; 
+    display: block;
 }
 
 #census_selector {
