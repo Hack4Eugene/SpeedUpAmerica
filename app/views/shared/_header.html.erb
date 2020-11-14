@@ -12,7 +12,7 @@
         <span class='icon-bar'></span>
       <% end %>
 
-      <%= link_to root_path, data: {no_turbolink: true}, class: 'navbar-brand color-white' do %>
+      <%= link_to root_path, class: 'navbar-brand color-white' do %>
         <%= image_tag('speedupamerica-brand.png', class: 'logo-img') %>
         # <span>SpeedUpAmerica</span>
       <% end %>
@@ -20,7 +20,7 @@
 
     <div class='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>
       <ul class='nav navbar-nav navbar-right header-links'>
-        <li><%= link_to 'View Map >', result_page_path, data: { no_turbolink: true }%></li>
+        <li><%= link_to 'View Map >', result_page_path %></li>
       </ul>
     </div>
   </div>
