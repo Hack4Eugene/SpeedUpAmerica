@@ -49,8 +49,12 @@
   background-color: #D73027;
 }
 
+.yield-container {
+  overflow: hidden;
+}
+
 #map-container {
-  margin-top: -55px;overflow: hidden;
+  overflow: hidden;
 
   .map {
     height: 668px;
@@ -58,7 +62,7 @@
   }
 
   #map-filters {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #4c4c4c;
     min-height: 668px;
     color: #000000;
 
@@ -143,7 +147,7 @@
       margin: 8px 5px 3px 0;
       color: black;
     }
-    .chosen-container-multi .chosen-choices, 
+    .chosen-container-multi .chosen-choices,
     .chosen-container-single .chosen-single {
       min-height: 40px !important;
       border-radius: 4px;
