@@ -1,5 +1,5 @@
 body.result-page {
-  background: #D3D3D3;
+  background: #30b2a8;
 }
 
 #loader {
@@ -62,6 +62,7 @@ body.result-page {
 .navbar-inverse {
   background-color: #ffffff;
   border: none;
+  border-bottom: 1px solid #eee;
   height: 50px;
 }
 
@@ -580,7 +581,6 @@ body.in-stats .background-container,
 }
 
 .mapbox-heading {
-  background-color: #D3D3D3;
   text-align: center;
   padding: 10px 0;
 }
@@ -936,7 +936,7 @@ body.in-stats h2 {
 }
 
 #zip_selector {
-    display: block; 
+    display: block;
 }
 
 #census_selector {

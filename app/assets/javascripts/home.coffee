@@ -176,6 +176,37 @@ places_autocomplete = ->
       set_coords(50, latlng.lat, latlng.lng)
   placesAutocomplete
 
+# This function only works on the home page
+take_the_test = ->
+  $('.title-container').addClass('hidden')
+  $('#form-container').removeClass('hide')
+  $('#form-step-0 input').prop('disabled', false)
+  $('#introduction').addClass('hide')
+  $('.home-wrapper').addClass('mobile-wrapper-margin')
+
+  $(".checkboxes-container input[name='submission[location]']").on 'change', ->
+    $('#location_button').prop('disabled', false)
+    if $("#location_success").prop('value') == 'false'
+      $('#location_next_button').prop('disabled', true)
+      $('#location_next_button').addClass('button-disabled')
+    $(".checkboxes-container input[name='submission[location]']").each ->
+      $(this).prop('checked', false)
+    $(this).prop('checked', true)
+
+    if $('#location_geolocation').prop('checked')
+      $('#location_button').removeClass('hide')
+      $('#location-address-input').addClass('hide')
+
+    if $('#location_address').prop('checked')
+      $('#location_button').addClass('hide')
+      $('#location-address-input').removeClass('hide')
+
+    if $('#location_disabled').prop('checked')
+      $('#location_button').addClass('hide')
+      $('#location-address-input').addClass('hide')
+      $('#location_next_button').attr('disabled', false)
+      $('#location_next_button').removeClass('button-disabled')
+
 $ ->
   bind_rating_stars()
   disable_form_inputs()
@@ -189,39 +220,17 @@ $ ->
     $(".checkboxes-container input[name='submission[location]']").each ->
       $(this).prop('checked', false)
 
+    # Start the test when the user clicks either the button or the nav link
+    $('#take_test, .nav-link-take-test').on 'click', take_the_test
+
+    # Start the test if the user arrived via a link pointing to the test
+    if window.location.hash == '#take_test'
+      window.scrollTo(0, 0)
+      take_the_test()
+
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
   $(".checkboxes-container input[name='submission[testing_for]']").prop('checked', false)
-
-  $('#take_test').on 'click', ->
-    $('.title-container').addClass('hidden');
-    $('#form-container').removeClass('hide')
-    $('#form-step-0 input').prop('disabled', false)
-    $('#introduction').addClass('hide')
-    $('.home-wrapper').addClass('mobile-wrapper-margin')
-
-    $(".checkboxes-container input[name='submission[location]']").on 'change', ->
-      $('#location_button').prop('disabled', false)
-      if $("#location_success").prop('value') == 'false'
-        $('#location_next_button').prop('disabled', true)
-        $('#location_next_button').addClass('button-disabled')
-      $(".checkboxes-container input[name='submission[location]']").each ->
-        $(this).prop('checked', false)
-      $(this).prop('checked', true)
-
-      if $('#location_geolocation').prop('checked')
-        $('#location_button').removeClass('hide')
-        $('#location-address-input').addClass('hide')
-
-      if $('#location_address').prop('checked')
-        $('#location_button').addClass('hide')
-        $('#location-address-input').removeClass('hide')
-
-      if $('#location_disabled').prop('checked')
-        $('#location_button').addClass('hide')
-        $('#location-address-input').addClass('hide')
-        $('#location_next_button').attr('disabled', false)
-        $('#location_next_button').removeClass('button-disabled')
 
   $('#location_button').on 'click', ->
     $('#location_button').prop('innerHTML', 'Loading...')
