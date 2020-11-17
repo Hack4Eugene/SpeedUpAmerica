@@ -14,13 +14,14 @@
 
       <%= link_to root_path, class: 'navbar-brand color-white' do %>
         <%= image_tag('speedupamerica-brand.png', class: 'logo-img') %>
-        # <span>SpeedUpAmerica</span>
       <% end %>
     </div>
 
     <div class='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>
       <ul class='nav navbar-nav navbar-right header-links'>
         <li><%= link_to 'Take the Test', root_path(anchor: 'take_test'), class: 'nav-link-take-test' %></li>
+        <li><%= link_to 'About SpeedUpAmerica', '/about' %></li>
+        <li><%= link_to 'FAQ', '/faq' %></li>
         <li><%= link_to 'View Map >', result_page_path %></li>
       </ul>
     </div>
