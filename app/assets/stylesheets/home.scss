@@ -112,6 +112,9 @@ body.result-page {
       font-weight: normal;
     }
   }
+  .table th, .table td {
+    vertical-align: middle;
+  }
 }
 
 .bold {
