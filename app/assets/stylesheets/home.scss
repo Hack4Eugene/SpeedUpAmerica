@@ -85,15 +85,32 @@ body.result-page {
 }
 
 .prose-container {
+  padding: 0 25px;
+  font-size: 16px;
+
   h1, h2 {
     text-align: center;
   }
   p {
-    margin: 20px 20px 0;
-    font-size: 16px;
+    margin: 20px 0;
     line-height: 28px;
     text-align: justify;
     color: #1d283a;
+  }
+  dl {
+    margin: 20px;
+    p {
+      margin-top: 0;
+    }
+  }
+  dt {
+    float: left;
+    line-height: 26px;
+    &:after {
+      margin: 0 0.5em;
+      content: "—";
+      font-weight: normal;
+    }
   }
 }
 
