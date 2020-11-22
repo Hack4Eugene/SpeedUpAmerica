@@ -84,6 +84,39 @@ body.result-page {
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
+.prose-container {
+  padding: 0 25px;
+  font-size: 16px;
+
+  h1, h2 {
+    text-align: center;
+  }
+  p {
+    margin: 20px 0;
+    line-height: 28px;
+    text-align: justify;
+    color: #1d283a;
+  }
+  dl {
+    margin: 20px;
+    p {
+      margin-top: 0;
+    }
+  }
+  dt {
+    float: left;
+    line-height: 26px;
+    &:after {
+      margin: 0 0.5em;
+      content: "—";
+      font-weight: normal;
+    }
+  }
+  .table th, .table td {
+    vertical-align: middle;
+  }
+}
+
 .bold {
   font-weight: bold
 }
@@ -257,7 +290,7 @@ body.in-stats .background-container,
     font-size: 16px;
     line-height: 28px;
     text-align: justify;
-    color: #1d283a
+    color: #1d283a;
   }
 
   .list-inline {

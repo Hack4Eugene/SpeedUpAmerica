@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'internet-stats', to: redirect('all-results')
   get 'embeddable_view', to: 'submissions#embeddable_view'
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
+  get '/:page', to: 'static#show'
   root 'home#index'
 
   #match '*invalid_path', to: errors#not_found
