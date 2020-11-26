@@ -9,7 +9,6 @@ phases:
       - aws --version
       - REPOSITORY_URI=238241637211.dkr.ecr.us-west-2.amazonaws.com/speedupamerica
       - $(aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI)
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
