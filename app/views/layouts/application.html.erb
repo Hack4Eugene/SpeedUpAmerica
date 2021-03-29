@@ -58,6 +58,7 @@
     <div class='yield-container'>
       <%= yield %>
     </div>
+    <%= render "shared/footer" %>
     <%= hidden_field_tag 'rails_env_constant', Rails.env, id: 'rails_env_constant' %>
   </div>
 
