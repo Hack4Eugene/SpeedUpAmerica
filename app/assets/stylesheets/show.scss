@@ -115,7 +115,7 @@
       }
     }
 
-    .group-by, .test-type, .provider {
+    .group-by, .test-type, .provider, .from-mlab {
       margin-bottom: 10px;
 
       button {
@@ -139,7 +139,7 @@
     float: left;
     width: 100%;
     padding-top: 20px;
-    p {
+    p,  .check-box-label {
       color: white;
     }
 
@@ -239,6 +239,9 @@
   margin-top: 20px;
 }
 
-input, textarea, select {
+// Including "input" causes checkboxes to not appear
+// https://stackoverflow.com/questions/16632955/checkboxes-not-displaying-chrome-work-in-other-browsers/23705615
+// input, textarea, select {
+textarea, select {
    -webkit-appearance: none !important;
 }
