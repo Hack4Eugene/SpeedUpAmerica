@@ -68,6 +68,7 @@ clearMap = (map) ->
       map.removeSource(layer.source)
 
 addLayer = (map, group_by, data, test_type) ->
+  console.log('addLayer', data)
   layer = layers[group_by]
   if layer == undefined
     throw new Error('unknown layer: ' + group_by)
@@ -147,9 +148,10 @@ addLayer = (map, group_by, data, test_type) ->
       .addTo(map)
   )
 
-window.set_mapbox_groupby = (map, provider, group_by, test_type, label) ->
+window.set_mapbox_groupby = (map, provider, group_by, test_type, is_from_mlab, label) ->
   loader = get_map_loader(map)
   loader.removeClass('hide')
+  console.log('set_mapbox_groupby', is_from_mlab)
 
   clearMap(map)
 
@@ -161,6 +163,7 @@ window.set_mapbox_groupby = (map, provider, group_by, test_type, label) ->
       provider: provider
       group_by: group_by
       test_type: test_type
+      is_from_mlab: is_from_mlab
     success: (data) ->
       addLayer(map, group_by, data.result, test_type)
 

@@ -368,12 +368,14 @@ class Submission < ActiveRecord::Base
   end
 
   def self.calculate_speed_data(params, providers, start_date, end_date, date_ranges)
+
     submissions = self.valid_test
     submissions = submissions.with_date_range(start_date, end_date)  if date_ranges.present?
     submissions = submissions.with_test_type(params[:test_type]) if params[:test_type].present?
     submissions = submissions.with_zip_code(params[:zip_code])   if params[:zip_code].present? && params[:zip_code].any?
     submissions = submissions.with_census_code(params[:census_code]) if params[:census_code].present? && params[:census_code].any?
     submissions = submissions.where(provider: providers)
+    # submissions = submissions.where(from_mlab: 1)
 
     test_type = params[:test_type]
     categories = date_ranges.collect { |range| range[:name] }
