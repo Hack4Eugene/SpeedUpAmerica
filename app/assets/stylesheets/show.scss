@@ -239,9 +239,11 @@
   margin-top: 20px;
 }
 
-// Including "input" causes checkboxes to not appear
+// Including "input" in these selectors causes checkboxes to not appear on Chrome, unless we add the rule that's below it
 // https://stackoverflow.com/questions/16632955/checkboxes-not-displaying-chrome-work-in-other-browsers/23705615
-// input, textarea, select {
-textarea, select {
+input, textarea, select {
    -webkit-appearance: none !important;
+}
+input[type=checkbox] {
+  -webkit-appearance: checkbox !important;
 }
