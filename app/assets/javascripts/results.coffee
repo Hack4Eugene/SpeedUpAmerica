@@ -50,13 +50,14 @@ apply_filters = (map) ->
     provider = $('#provider').val()
     group_by = $('#group_by').val()
     test_type = $('#test_type').val()
+    include_from_mlab = $('#include_from_mlab').is(":checked")
 
     update_csv_link()
     disable_filters('map-filters', true)
 
     $('#all_results_map').removeClass('hide')
 
-    set_mapbox_groupby(map, provider, group_by, test_type)
+    set_mapbox_groupby(map, provider, group_by, test_type, include_from_mlab)
 
   $('#map-filters .filter').on 'change', ->
     update_all_option($(this))

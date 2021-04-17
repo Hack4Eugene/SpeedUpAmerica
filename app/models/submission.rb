@@ -138,7 +138,7 @@ class Submission < ActiveRecord::Base
       stats = calculate_tileset_groupby(params, providers)
     else
       from_cache = true
-      stats = cached_tileset_groupby(params[:group_by], params[:test_type])
+      stats = cached_tileset_groupby(params[:group_by], params[:test_type], params[:include_from_mlab])
     end
 
     {
@@ -171,7 +171,8 @@ class Submission < ActiveRecord::Base
     stats
   end
 
-  def self.cached_tileset_groupby(group_by, test_type)
+  def self.cached_tileset_groupby(group_by, test_type, include_from_mlab)
+
     # Deal with census tract being poorly named in the rest of the code base
     if group_by == 'census_code'
       group_by = 'census_tract'
@@ -186,20 +187,38 @@ class Submission < ActiveRecord::Base
         'fillOpacity': 0.6,
       }
 
-      if test_type == 'download'
-        next if stats.download_count == 0
+      if include_from_mlab == "true"
+        if test_type == 'download'
+          next if stats.download_count == 0
 
-        result[:all_avg] = stats.download_avg
-        result[:all_median] = stats.download_median
-        result[:all_fast] = stats.download_max
-        result[:all_count] = stats.download_count
+          result[:all_avg] = stats.download_avg
+          result[:all_median] = stats.download_median
+          result[:all_fast] = stats.download_max
+          result[:all_count] = stats.download_count
+        else
+          next if stats.upload_count == 0
+
+          result[:all_avg] = stats.upload_avg
+          result[:all_median] = stats.upload_median
+          result[:all_fast] = stats.upload_max
+          result[:all_count] = stats.upload_count
+        end
       else
-        next if stats.upload_count == 0
+        if test_type == 'download'
+          next if stats.download_count == 0
 
-        result[:all_avg] = stats.upload_avg
-        result[:all_median] = stats.upload_median
-        result[:all_fast] = stats.upload_max
-        result[:all_count] = stats.upload_count
+          result[:all_avg] = stats.download_sua_avg
+          result[:all_median] = stats.download_sua_median
+          result[:all_fast] = stats.download_sua_max
+          result[:all_count] = stats.download_sua_count
+        else
+          next if stats.upload_count == 0
+
+          result[:all_avg] = stats.upload_sua_avg
+          result[:all_median] = stats.upload_sua_median
+          result[:all_fast] = stats.upload_sua_max
+          result[:all_count] = stats.upload_sua_count
+        end
       end
 
       result[:color] = set_color(result[:all_median])
