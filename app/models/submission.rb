@@ -288,7 +288,7 @@ class Submission < ActiveRecord::Base
   ]
 
   CSV_KEYS = [
-    :id, :source, :date, :testing_for, :zip_code, :census_code, :census_block, :latitude, :longitude, :accuracy, :provider, :provider, :connected_with,
+    :id, :source, :date, :testing_for, :zip_code, :census_code, :census_block, :latitude, :longitude, :accuracy, :provider, :connected_with,
     :monthly_price, :provider_down_speed, :rating,:actual_down_speed, :actual_upload_speed,
     :provider_price, :actual_price, :ping
   ]
