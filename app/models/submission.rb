@@ -281,14 +281,14 @@ class Submission < ActiveRecord::Base
   end
 
   CSV_COLUMNS = [
-    'Response #', 'Source', 'Date', 'How Are You Testing', 'Zip', 'Census Tract', 'Census Block',
+    'Response #', 'Source', 'Date', 'How Are You Testing', 'Zip', 'Census Tract', 'Census Block', 'Latitude', 'Longitude', 'Accuracy',
     'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed',
     'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps',
     'Actual Price Per Mbps', 'Ping'
   ]
 
   CSV_KEYS = [
-    :id, :source, :date, :testing_for, :zip_code, :census_code, :census_block, :provider, :connected_with,
+    :id, :source, :date, :testing_for, :zip_code, :census_code, :census_block, :latitude, :longitude, :accuracy, :provider, :connected_with,
     :monthly_price, :provider_down_speed, :rating,:actual_down_speed, :actual_upload_speed,
     :provider_price, :actual_price, :ping
   ]
@@ -301,7 +301,7 @@ class Submission < ActiveRecord::Base
 
   def to_csv_row
     CSV::Row.new(CSV_KEYS, [id, source, test_date.strftime('%B %d, %Y'), Submission::testing_for_mapping(testing_for),
-      zip_code, census_code, census_block, provider, connected_with, monthly_price, provider_down_speed, rating, actual_down_speed,
+      zip_code, census_code, census_block, latitude, longitude, accuracy, provider, connected_with, monthly_price, provider_down_speed, rating, actual_down_speed,
       actual_upload_speed, provider_price, actual_price, ping])
   end
 
