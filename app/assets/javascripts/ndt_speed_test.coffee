@@ -34,7 +34,7 @@ bind_ndt_speed_calculation = ->
 
   NDT_meter = new NDTmeter('#ndt-svg')
   $('#start_ndt_test').on 'click', ->
-    # Note: rates are in bits/s, latency is in milliseconds.
+    # Note: rates are in kbits/s, latency is in milliseconds.
     s2cRate = undefined
     c2sRate = undefined
     minRTT = undefined
@@ -56,10 +56,9 @@ bind_ndt_speed_calculation = ->
       downloadMeasurement: (data) ->
         if data.Source == 'client'
           NDT_meter.onprogress('interval_s2c', {
-            s2cRate: data.Data.MeanClientMbps
+            s2cRate: data.Data.MeanClientMbps * 1000
           })
-          console.log 'Download: ' +
-          data.Data.MeanClientMbps + ' Mb/s'
+          console.log 'Download: ' + data.Data.MeanClientMbps + ' Mb/s'
         return
       downloadComplete: (data) ->
         s2cRate = data.LastClientMeasurement.MeanClientMbps * 1000
