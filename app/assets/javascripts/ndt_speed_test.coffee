@@ -82,6 +82,7 @@ bind_ndt_speed_calculation = ->
           c2sRate: c2sRate,
           MinRTT: minRTT
         })
+        NDT_meter.onstatechange('finished_all')
         return
       error: (error) ->
         console.log 'Error: ' + error
