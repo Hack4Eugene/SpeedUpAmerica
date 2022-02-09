@@ -70,7 +70,7 @@ bind_ndt_speed_calculation = ->
       uploadMeasurement: (data) ->
         if data.Source == 'server'
           NDT_meter.onprogress('interval_c2s', {
-            c2sRate: (data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8)
+            c2sRate: (data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8) * 1000
           })
         return
       uploadComplete: (data) ->
