@@ -15,6 +15,6 @@
 //= require bootstrap-sprockets
 //= require chosen-jquery
 //= require bootstrap-datepicker
-//= require ndt.js
+//= require ndt7.min.js
 //= require d3.v3.min.js
 //= require_tree .
