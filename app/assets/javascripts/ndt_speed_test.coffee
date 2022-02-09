@@ -20,27 +20,23 @@ bind_ndt_speed_calculation = ->
         document.getElementById('submission_hostname').value = server.machine
         Sentry.setExtra("mlab_server", server.machine)
         NDT_meter.onstatechange('running_s2c')
-        return
       downloadMeasurement: (data) ->
         if data.Source == 'client'
           NDT_meter.onprogress('interval_s2c', {
             s2cRate: data.Data.MeanClientMbps * 1000
           })
           console.log 'Download: ' + data.Data.MeanClientMbps + ' Mb/s'
-        return
       downloadComplete: (data) ->
         s2cRate = data.LastClientMeasurement.MeanClientMbps * 1000
         minRTT = (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0)
         NDT_meter.onstatechange('finished_s2c')
         console.log('Download complete: ' + s2cRate.toFixed(2) + ' bps')
         NDT_meter.onstatechange('running_c2s')
-        return
       uploadMeasurement: (data) ->
         if data.Source == 'server'
           NDT_meter.onprogress('interval_c2s', {
             c2sRate: (data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8) * 1000
           })
-        return
       uploadComplete: (data) ->
         c2sRate = (data.LastServerMeasurement.TCPInfo.BytesReceived /
             data.LastServerMeasurement.TCPInfo.ElapsedTime * 8) * 1000
@@ -51,13 +47,10 @@ bind_ndt_speed_calculation = ->
           MinRTT: minRTT
         })
         NDT_meter.onstatechange('finished_all')
-        return
       error: (error) ->
         console.log 'Error: ' + error
         NDT_meter.onerror(error)
-        return
     }
-    return
 
 (($) ->
   window.NdtSpeedTest || (window.NdtSpeedTest = {})
