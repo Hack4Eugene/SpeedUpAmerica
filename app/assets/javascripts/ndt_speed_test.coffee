@@ -31,7 +31,7 @@ bind_ndt_speed_calculation = ->
         s2cRate = data.LastClientMeasurement.MeanClientMbps * 1000
         minRTT = (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0)
         NDT_meter.onstatechange('finished_s2c')
-        console.log('Download complete: ' + s2cRate.toFixed(2) + ' bps')
+        console.log('Download complete: ' + s2cRate.toFixed(2) + ' Kb/s')
         NDT_meter.onstatechange('running_c2s')
       
       uploadMeasurement: (data) ->
@@ -43,7 +43,7 @@ bind_ndt_speed_calculation = ->
       uploadComplete: (data) ->
         c2sRate = (data.LastServerMeasurement.TCPInfo.BytesReceived /
             data.LastServerMeasurement.TCPInfo.ElapsedTime * 8) * 1000
-        console.log('Upload complete: ' + c2sRate.toFixed(2) + ' bps')
+        console.log('Upload complete: ' + c2sRate.toFixed(2) + ' Kb/s')
         NDT_meter.onfinish({
           s2cRate: s2cRate,
           c2sRate: c2sRate,
