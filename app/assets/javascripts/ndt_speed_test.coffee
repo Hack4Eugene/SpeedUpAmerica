@@ -60,8 +60,5 @@ bind_ndt_speed_calculation = ->
   window.NdtSpeedTest || (window.NdtSpeedTest = {})
 
   NdtSpeedTest.init = ->
-    init_controls()
-
-  init_controls = ->
     bind_ndt_speed_calculation()
 ).call(this)
