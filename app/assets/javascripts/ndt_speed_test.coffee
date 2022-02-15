@@ -7,7 +7,7 @@ bind_ndt_speed_calculation = ->
     c2sRate = undefined
     minRTT = undefined
     NDT_meter.onstart()
-    ndt7.test {
+    ndt7.test({
       userAcceptedDataPolicy: true
       downloadworkerfile: '/assets/js/ndt7-download-worker.min.js'
       uploadworkerfile: '/assets/js/ndt7-upload-worker.min.js'
@@ -54,7 +54,7 @@ bind_ndt_speed_calculation = ->
       error: (error) ->
         console.log 'Error: ' + error
         NDT_meter.onerror(error)
-    }
+    })
 
 (($) ->
   window.NdtSpeedTest || (window.NdtSpeedTest = {})
