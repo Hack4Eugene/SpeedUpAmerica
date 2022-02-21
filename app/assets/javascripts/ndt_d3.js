@@ -212,7 +212,7 @@ NDTmeter.prototype.meter_movement = function () {
     this.update_display(progress_label,
         ((progress_percentage * 100).toFixed(0) + "%"));
 
-    if (this.state === "running_c2s") {
+    if (this.state === "running_s2c") {
       progress = twoPi + -1 * progress;
       end_angle = this.arc.endAngle(twoPi);
       start_angle = this.arc.startAngle(progress);
