@@ -1,0 +1,38 @@
+<div id='introduction'>
+  <!-- <div class='options-container'>
+    <ul class='list-inline'>
+      <li>
+        <%= button_tag type: 'button', id: 'take_test' do %>
+          <%= image_tag 'take_the_test-animated3.gif', class: 'take-test-animation' %>
+        <% end %>
+          <p>Take the Test!!</p>
+      </li>
+
+      <li>
+        <%= link_to regionresult_page_path do %>
+          <%= image_tag 'view_results-animated3.gif', width: '65%' %>
+        <% end %>
+        <p>View Results</p>
+      </li>
+    </ul>
+  </div> -->
+  <!-- <p>
+    SpeedUp’s goal is to provide on the ground truth about the Internet in your region, helping to ensure access to quality Internet service for every community, both urban and rural. Your Internet speed test allows us to put accurate and up-to-date data on a map, identifying geographic areas that are underserved.
+  </p>
+  <p>
+    Accurate data leads to a better-informed community and better-informed policy makers. This map helps guide public and private investments in Internet infrastructure to the places that need it the most. This broadband map aims to provide transparency: real Internet speeds received, actual prices paid, and level of service experienced. Check your speed and contribute to the map.
+  </p>
+  <p>
+    <i>We DO NOT collect personal data. We do ask for your location to map internet speeds across your region.</i>
+  </p> -->
+
+  <div class='row'>
+    <div class='col-lg-7 col-xs-11 col-sm-9 col-centered'>
+      <%= render partial: 'regionshared/partners', locals: {
+        label: 'SpeedUp partners:'
+      } %>
+    </div>
+
+
+  </div>
+</div>

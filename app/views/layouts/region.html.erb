@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'/>
+  <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.4"></script>
+  <%= meta_tags title: "#{yield(:title).present? ? yield(:title) : 'SpeedUp - Bring better internet service to your region!'}",
+    description: "#{yield(:description).present? ? yield(:description) : 'Internet speed test and broadband map brought to you by SpeedUp'}",
+    twitter: {
+      site: "#{request.original_url}",
+      title: "#{yield(:title).present? ? yield(:title) : 'Speed Up - Internet Speed Test'}",
+      description: "#{yield(:description).present? ? yield(:description) : 'SpeedUp aims to provide on the ground truth about the Internet in your region. Our national broadband map provides transparency: real Internet speeds received, actual prices paid, and level of service experienced.'}",
+      image: image_url('logo.png'),
+    },
+    og: {
+      title: "#{yield(:title).present? ? yield(:title) : 'SpeedUp - Bring better internet service to your region!'}",
+      type: 'website',
+      url: "#{request.original_url}",
+      description: "#{yield(:description).present? ? yield(:description) : 'I tested my internet speed with SpeedUp! Find out if you\'re getting the internet speed you are paying for.'}",
+      image: image_url('logo.png'),
+    }
+  %>
+
+  <%= favicon_link_tag 'logo.png' %>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+
+  <%= google_tag_manager_script_tag(:sua) %>
+
+  <% if Rails.env.production? == false %>
+    <meta name="robots" content="noindex,nofollow">
+  <% end %>
+
+  <!-- sentry.io -->
+  <script src="https://browser.sentry-cdn.com/5.4.3/bundle.min.js" crossorigin="anonymous"></script>
+  <script>
+  Sentry.init({
+    dsn: 'https://34760911653f40a18ba07c39a6a37002@sentry.io/1488146',
+    environment: '<%= Rails.env %>'
+  });
+  </script>
+
+  <!-- Start of speedup Zendesk Widget script -->
+  <!-- <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=c0957b4c-a84a-43de-9ce3-965ad066e2ff"> </script> -->
+  <!-- End of speedup Zendesk Widget script -->
+
+</head>
+
+<body class='<%= body_css_class %>'>
+  <%= google_tag_manager_noscript_tag(:sua) %>
+
+  <div class='wrapper-container'>
+    <%= render "regionshared/#{header_file_name}" %>
+
+    <%= render partial: 'regionshared/messages' %>
+
+    <div class='yield-container'>
+      <%= yield %>
+    </div>
+    <%= render "regionshared/footer" %>
+    <%= hidden_field_tag 'rails_env_constant', Rails.env, id: 'rails_env_constant' %>
+  </div>
+
+  <div class='hide'>
+    <%= image_tag 'twitter.png', height: 50, width: 50, id: 'twitter-img' %>
+    <%= image_tag 'facebook.png', height: 20, width: 20, id: 'facebook-img' %>
+    <%= image_tag 'linkedin.png', height: 20, width: 20, id: 'linkedin-img' %>
+  </div>
+</body>
+</html>
+
+<script>
+ $(function() {
+   <%= yield :js_init %>
+ });
+</script>

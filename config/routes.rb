@@ -13,12 +13,15 @@ Rails.application.routes.draw do
   end
 
   get 'all-results', to: 'submissions#result_page', as: :result_page
+  get 'region-results', to: 'regionsubmissions#result_page', as: :regionresult_page
   get 'result/:test_id', to: 'submissions#show', as: :submission
+  get 'regionresult/:test_id', to: 'regionsubmissions#show', as: :regionsubmission
   post 'stats/groupby', to: 'submissions#tileset_groupby', defaults: { format: :json }
   get 'speed_data', to: 'submissions#speed_data'
   get 'internet-stats', to: redirect('all-results')
   get 'embeddable_view', to: 'submissions#embeddable_view'
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
+  get 'region/*regionname', to: 'region#index'
   get '/:page', to: 'static#show'
   root 'home#index'
 
