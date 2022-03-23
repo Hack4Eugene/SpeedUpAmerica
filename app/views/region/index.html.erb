@@ -1,0 +1,72 @@
+<div class='col-md-7 home-wrapper text-center col-sm-9'>
+  <h1>Test Your Internet Speed <span style="text-transform:capitalize;"><%= @regionname %></span></h1>
+
+  <%= render 'introduction' %>
+  <%= hidden_field_tag 'location_success', 'false' %>
+
+  <div id='form-container' class=''>
+    <%= form_for @submission, url: submissions_path, class: 'form-horizontal' do |f| %>
+      <%= f.hidden_field :latitude %>
+      <%= f.hidden_field :longitude %>
+      <%= f.hidden_field :accuracy %>
+      <%= f.hidden_field :actual_down_speed %>
+      <%= f.hidden_field :actual_upload_speed %>
+      <%= f.hidden_field :hostname %>
+      <%= f.hidden_field :address %>
+      <%= f.hidden_field :zip_code %>
+      <%= f.hidden_field :ping %>
+
+      <%= render 'form_step_0', f: f %>
+      <%= render 'form_step_1', f: f %>
+      <%= render 'form_step_2a', f: f %>
+      <%= render 'form_step_2b', f: f %>
+
+      <%= hidden_field_tag :start_ndt_test %>
+    <% end %>
+
+    <!-- <div class="maxmind-container">
+      This product includes GeoLite2 data created by MaxMind, available from<br/>
+      <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
+    </div>
+ -->
+  </div>
+</div>
+
+
+
+<div class='modal fade' id='testing_speed' tabindex='-1' role='dialog' data-backdrop="static" data-keyboard="false" aria-labelledby='mySmallModalLabel'>
+  <div class='modal-dialog modal-sm' role="document">
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h4 id='ndt-status' class='modal-title'></h4>
+      </div>
+
+      <div class='modal-body'>
+        <div class='row'>
+          <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+            <div id='welcome-container'>
+              <div id='sidebar'>
+                <div id='test-container'>
+                  <div id='ndt-div' data-width='150'>
+                    <div id='ndt-svg'></div>
+                    <div id='msg'></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class='clearfix'></div>
+    </div>
+  </div>
+</div>
+
+<%= render 'error_geolocation' %>
+
+<%= render 'error_position_unavailable' %>
+
+<% content_for :js_init do %>
+  NdtSpeedTest.init();
+<% end %>

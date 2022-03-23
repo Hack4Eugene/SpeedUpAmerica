@@ -1,0 +1,26 @@
+<div id='form-step-2b' class='hide form-fields'>
+
+  <div class='form-group rating-container col-md-12'>
+    <div class='row'>
+      <%= f.label :rating, 'Is this service meeting your expectations for internet speed and value?', class: 'col-md-6 text-center' %>
+
+      <div class='col-md-6'>
+        <%= f.text_field :rating %>
+      </div>
+    </div>
+  </div>
+
+  <div class='clearfix'></div>
+
+  <div class='row'>
+    <div class='form-group col-md-6 col-md-offset-6'>
+      <div class='col-md-12 text-center'>
+        <%= button_tag 'Test My Speed!!', type: 'button', class: 'test-speed-btn col-md-12' %>
+        <p class='location-warning'>(Note: Please, allow to share your location to take a test.)</p>
+      </div>
+    </div>
+  </div>
+
+  <%= render 'bottom_description' %>
+
+</div>

@@ -284,6 +284,7 @@ Committers:
 * Bishop Lafer
 * Cory Borman
 * James Coulter
+* Dave Weaver
 
 Technical Committee:
 

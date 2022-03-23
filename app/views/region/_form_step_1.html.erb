@@ -1,0 +1,23 @@
+<div id='form-step-1'class='hide form-fields'>
+  <div class='checkboxes-container'>
+    <p class='bold'>What type of internet connection are you testing?</p>
+    <div class='checkbox checkbox-info'>
+      <%= f.check_box :testing_for, { id: 'home_wifi', data: { target: '#form-step-2a' } }, 'Home Wifi', false %>
+      <%= label_tag :home_wifi, "<strong>Residential:</strong> I'm testing my internet speed at home".html_safe %>
+    </div>
+
+    <div class='checkbox checkbox-info'>
+      <%= f.check_box :testing_for, { id: 'mobile_data', data: { target: '#form-step-2b' } }, 'Mobile Data', false %>
+      <%= label_tag :mobile_data, "<strong>Mobile data:</strong> I’m testing my data plan (phone or tablet)".html_safe %>
+    </div>
+
+    <div class='checkbox checkbox-info'>
+      <%= f.check_box :testing_for, { id: 'public_wifi', data: { target: '#form-step-2b' } }, 'Public Wifi', false %>
+      <%= label_tag :public_wifi, "<strong>Work or Public:</strong> I’m connected to a public wifi service or I’m at work".html_safe %>
+    </div>
+  </div>
+
+  <%= button_tag 'Let\'s do this!', type: 'button', id: 'testing_for_button', disabled: true, class: 'primaryBtn' %>
+
+  <%= render 'bottom_description' %>
+</div>
