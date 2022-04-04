@@ -22,8 +22,12 @@
   %>
 
   <%= favicon_link_tag 'logo.png' %>
+
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
+  <%= stylesheet_link_tag    'region', media: 'all' %>
+  <%= javascript_include_tag 'region' %>
+
   <%= csrf_meta_tags %>
 
   <%= google_tag_manager_script_tag(:sua) %>
@@ -47,7 +51,7 @@
 
 </head>
 
-<body class='<%= body_css_class %>'>
+<body class='<%= region_body_css_class %> <%= @regionname %>'>
   <%= google_tag_manager_noscript_tag(:sua) %>
 
   <div class='wrapper-container'>

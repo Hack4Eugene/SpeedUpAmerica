@@ -3,7 +3,7 @@ class RegionController < ApplicationController
 	layout "region"
 
   def index
-    @submission = Submission.new
+    @region_submission = RegionSubmission.new
 	@regionname = params[:regionname]
   end
 

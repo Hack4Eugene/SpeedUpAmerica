@@ -1,11 +1,10 @@
 <div class='col-md-7 home-wrapper text-center col-sm-9'>
   <h1>Test Your Internet Speed <span style="text-transform:capitalize;"><%= @regionname %></span></h1>
-
-  <%= render 'introduction' %>
+	<h2>In 5 steps</h2>
   <%= hidden_field_tag 'location_success', 'false' %>
 
   <div id='form-container' class=''>
-    <%= form_for @submission, url: submissions_path, class: 'form-horizontal' do |f| %>
+    <%= form_for @region_submission, url: region_submissions_path, class: 'form-horizontal' do |f| %>
       <%= f.hidden_field :latitude %>
       <%= f.hidden_field :longitude %>
       <%= f.hidden_field :accuracy %>
@@ -15,13 +14,11 @@
       <%= f.hidden_field :address %>
       <%= f.hidden_field :zip_code %>
       <%= f.hidden_field :ping %>
+      <%= f.hidden_field :region, :value => @regionname %>
 
       <%= render 'form_step_0', f: f %>
-      <%= render 'form_step_1', f: f %>
-      <%= render 'form_step_2a', f: f %>
-      <%= render 'form_step_2b', f: f %>
 
-      <%= hidden_field_tag :start_ndt_test %>
+      <%= hidden_field_tag :region_start_ndt_test %>
     <% end %>
 
     <!-- <div class="maxmind-container">
@@ -69,4 +66,5 @@
 
 <% content_for :js_init do %>
   NdtSpeedTest.init();
+  console.log('NdtSpeedTest.init');
 <% end %>

@@ -12,16 +12,39 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :region_submissions, only: :create do
+    collection do
+      post :region_export_csv, defaults: { format: :csv }
+    end
+  end
+
+
+  class RestrictedRegionListConstraint
+    def matches?(request)
+      request[:regionname] =~ /\ball\b|\boregon\b|\bwashington\b|\bcalifornia\b/
+    end
+  end
+
+
+  # SpeedUpAmerica routes
   get 'all-results', to: 'submissions#result_page', as: :result_page
-  get 'region-results', to: 'regionsubmissions#result_page', as: :regionresult_page
   get 'result/:test_id', to: 'submissions#show', as: :submission
-  get 'regionresult/:test_id', to: 'regionsubmissions#show', as: :regionsubmission
   post 'stats/groupby', to: 'submissions#tileset_groupby', defaults: { format: :json }
   get 'speed_data', to: 'submissions#speed_data'
   get 'internet-stats', to: redirect('all-results')
   get 'embeddable_view', to: 'submissions#embeddable_view'
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
-  get 'region/*regionname', to: 'region#index'
+
+  # region routes
+  get 'region-results/*regionname', to: 'region_submissions#result_page', as: :regionresult_page, constraints: RestrictedRegionListConstraint.new
+  get 'region-result/:test_id', to: 'region_submissions#show', as: :regionsubmission
+  post 'region-stats/groupby/*regionname', to: 'region_submissions#tileset_groupby', defaults: { format: :json }, constraints: RestrictedRegionListConstraint.new
+  get 'region_speed_data/*regionname', to: 'region_submissions#speed_data', constraints: RestrictedRegionListConstraint.new
+  get 'region_internet-stats/*regionname', to: redirect('region-all-results'), constraints: RestrictedRegionListConstraint.new
+  get 'region-embed/*regionname', to: 'region_submissions#embed', defaults: { format: :js }, constraints: { format: :js }
+  get 'region/*regionname', to: 'region#index', defaults: {
+	regionname: 'oregon' }, constraints: RestrictedRegionListConstraint.new
+
   get '/:page', to: 'static#show'
   root 'home#index'
 
@@ -82,3 +105,4 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 end
+

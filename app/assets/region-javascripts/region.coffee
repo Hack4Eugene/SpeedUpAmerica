@@ -1,17 +1,3 @@
-bind_rating_stars = ->
-  star_options =
-    stars: 7
-    min: 0
-    max: 7
-    step: 1
-    displayOnly: false
-    showClear: false
-    showCaption: false
-    size:'sm'
-
-  $('.rating-container input').each ->
-    $(this).rating star_options
-
 disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
 
@@ -65,21 +51,13 @@ ajax_interactions = ->
 check_fields_validity = ->
   is_valid = true
 
-  unless $('#submission_monthly_price')[0].checkValidity()
-    $('#submission_monthly_price').addClass('got-error')
+  unless $('#region_submission_monthly_price')[0].checkValidity()
+    $('#region_submission_monthly_price').addClass('got-error')
     $('#price_error_span').removeClass('hide')
     is_valid = false
   else
-    $('#submission_monthly_price').removeClass('got-error')
+    $('#region_submission_monthly_price').removeClass('got-error')
     $('#price_error_span').addClass('hide')
-
-  unless $('#submission_provider_down_speed')[0].checkValidity()
-    $('#submission_provider_down_speed').addClass('got-error')
-    $('#speed_error_span').removeClass('hide')
-    is_valid = false
-  else
-    $('#submission_provider_down_speed').removeClass('got-error')
-    $('#speed_error_span').addClass('hide')
 
   is_valid
 
@@ -87,12 +65,13 @@ is_mobile_data = ->
   $(".checkboxes-container input[name='submission[testing_for]']:checked").val() == 'Mobile Data'
 
 enable_speed_test = ->
-  $('.test-speed-btn').on 'click', ->
+  $('#test-speed-btn').on 'click', ->
     if check_fields_validity()
       $('#testing_speed').modal('show');
 
       setTimeout (->
-        $('#start_ndt_test').click()
+        console.log('starting ndt test...');
+        $('#region_start_ndt_test').click()
       ), 200
 
 numeric_field_constraint = ->
@@ -110,52 +89,33 @@ numeric_field_constraint = ->
     if (e.shiftKey or e.keyCode < 48 or e.keyCode > 57) and (e.keyCode < 96 or e.keyCode > 105)
       e.preventDefault()
 
-set_error_for_invalid_fields = ->
-  $('#submission_monthly_price').focusout ->
-    unless $('#submission_monthly_price')[0].checkValidity()
-      $('#submission_monthly_price').addClass('got-error')
-      $('#price_error_span').removeClass('hide')
-    else
-      $('#submission_monthly_price').removeClass('got-error')
-      $('#price_error_span').addClass('hide')
-
-  $('#submission_provider_down_speed').focusout ->
-    unless $('#submission_provider_down_speed')[0].checkValidity()
-      $('#submission_provider_down_speed').addClass('got-error')
-      $('#speed_error_span').removeClass('hide')
-      is_valid = false
-    else
-      $('#submission_provider_down_speed').removeClass('got-error')
-      $('#speed_error_span').addClass('hide')
-
-location_start = ->
-  if $('#location_geolocation').prop('checked')
-    $('#location_button').prop('innerHTML', 'Loading...')
-
-  if $('#location_address_have').prop('checked')
-    $('#location_next_button').prop('innerHTML', 'Loading...');
-
-  if $('#location_address_donothave').prop('checked')
-    $('#location_next_button').prop('innerHTML', 'Loading...');
 
 
-location_finished = ->
-  if $('#location_geolocation').prop('checked') && $('#location_success').prop('value', 'true')
-    $('#location_button').prop('innerHTML', 'Location Success!')
-    $('#location_button').addClass('button-disabled')
-    $('#location_button').prop('disabled', true)
 
-  if $('#location_address_have').prop('checked')
-    $('#location_next_button').prop('innerHTML', "Let's begin");
 
-  if $('#location_address_donothave').prop('checked')
-    $('#location_next_button').prop('innerHTML', "Let's begin");
+access_start = ->
+  #if $('#access_have').prop('checked')
+    #$('#test-speed-btn').prop('innerHTML', 'Loading...');
+
+  #if $('#access_donothave').prop('checked')
+    #$('#test-speed-btn').prop('innerHTML', 'Loading...');
+
+
+access_finished = ->
+  if $('#access_have').prop('checked')
+    $('#test-speed-btn').prop('innerHTML', "Let's begin");
+    $('#location-address-input').removeClass('hide')
+
+  if $('#access_donothave').prop('checked')
+    $('#test-speed-btn').prop('innerHTML', "Let's begin");
+    $('#location-address-input').removeClass('hide')
+
 
   $("#location_success").attr 'value', true
-  $('.test-speed-btn').prop('disabled', false)
+  $('#test-speed-btn').prop('disabled', false)
   $('.location-warning').addClass('hide')
-  $('#location_next_button').attr('disabled', false)
-  $('#location_next_button').removeClass('button-disabled')
+  $('#test-speed-btn').attr('disabled', false)
+  $('#test-speed-btn').removeClass('button-disabled')
 
 location_error = ->
   if $('#location_geolocation').prop('checked')
@@ -183,69 +143,119 @@ places_autocomplete = ->
       set_coords(50, latlng.lat, latlng.lng)
   placesAutocomplete
 
-# This function only works on the home page
-take_the_test = ->
+# This function only works on the region page
+region_take_the_test = ->
   $('.title-container').addClass('hidden')
   $('#form-container').removeClass('hide')
   $('#form-step-0 input').prop('disabled', false)
   $('#introduction').addClass('hide')
   $('.home-wrapper').addClass('mobile-wrapper-margin')
 
-  $(".checkboxes-container input[name='submission[location]']").on 'change', ->
-    $('#location_button').prop('disabled', false)
-    if $("#location_success").prop('value') == 'false'
-      $('#location_next_button').prop('disabled', true)
-      $('#location_next_button').addClass('button-disabled')
-    $(".checkboxes-container input[name='submission[location]']").each ->
+
+# 1st box clicked
+  $(".checkboxes-container input[name='region_submission[access]']").on 'change', ->
+
+
+    #$('#location_button').prop('disabled', false)
+    #if $("#location_success").prop('value') == 'false'
+      #$('#test-speed-btn').prop('disabled', true)
+      #$('#test-speed-btn').addClass('button-disabled')
+    $(".checkboxes-container input[name='region_submission[access]']").each ->
       $(this).prop('checked', false)
     $(this).prop('checked', true)
 
-    if $('#location_geolocation').prop('checked')
-      $('#location_button').removeClass('hide')
-      $('#location-address-input').addClass('hide')
 
-    if $('#location_address_have').prop('checked')
+# 1st box  choice 1 checked - HAVE ACCESS
+    if $('#access_have').prop('checked')
+      $('#access_donothave').prop('checked',false)
+      $('#connected-with').removeClass('hide')
+      $('#connectedornot-div').removeClass('hide')
       $('#nointernet').addClass('hide')
-      $('#location_button').addClass('hide')
-      $('#location-address-input').removeClass('hide')
+      $('#addresswithinternet').removeClass('hide')
+      $('#addresswithoutinternet').addClass('hide')
+      $('#test-speed-btn').prop('innerHTML', 'Test My Speed')
+      $('#access-div').addClass('shrink') #shrink the first div
+      $('#price-text-notconnected').addClass('hide')
+      $('#price-text-connected').removeClass('hide')
 
-    if $('#location_address_donothave').prop('checked')
+# 1st box choice 2 checked - DO NOT HAVE ACCESS
+    if $('#access_donothave').prop('checked')
+      $('#access_have').prop('checked',false)
+      $('#price-div').addClass('hide')
+      $('#connectedornot-div').removeClass('hide')
       $('#nointernet').removeClass('hide')
-      $('#location_button').addClass('hide')
-      $('#location-address-input').removeClass('hide')
+      $('#connected-with').addClass('hide')
+      $('#addresswithinternet').addClass('hide')
+      $('#addresswithoutinternet').removeClass('hide')
+      $('#test-speed-btn').prop('innerHTML', 'Submit')
+      $('#access-div').addClass('shrink') #shrink the first div
+      $('#price-text-connected').addClass('hide')
+      $('#price-text-notconnected').removeClass('hide')
 
-    if $('#location_disabled').prop('checked')
-      $('#location_button').addClass('hide')
-      $('#location-address-input').addClass('hide')
-      $('#location_next_button').attr('disabled', false)
-      $('#location_next_button').removeClass('button-disabled')
+
+#if $('#access_have').prop('checked', false) and $('#access_donothave').prop('checked', false)
+          #$('#connectedornot-div').addClass('hide')
+
+# 2nd box group 1 check  - HOW CONNECTED
+  $(".checkboxes-container input[name='region_submission[connected_with]']").on 'change', ->
+      $('#price-div').removeClass('hide')
+
+      $(".checkboxes-container input[name='region_submission[connected_with]']").each ->
+        $(this).prop('checked', false)
+      $(this).prop('checked', true)
+
+
+# 2nd box group 2 check - WHY NOT CONNECTED
+  $(".checkboxes-container input[name='region_submission[whynoaccess]']").on 'change', ->
+     
+      $('#price-div').removeClass('hide')
+
+      $('#access-div').addClass('shrink') #shrink the first div
+      $(".checkboxes-container input[name='region_submission[whynoaccess]']").each ->
+        $(this).prop('checked', false)
+      $(this).prop('checked', true)
+
+
+# 3rd box - PRICE
+  $("#region_submission_monthly_price").on 'change', ->
+      $('#address-div').removeClass('hide')
+
+# 4th box filled in - ADDRESS
+location_finished = ->
+  if $('#address-input').prop('value', 'true')
+      $('#testbutton-div').removeClass('hide')
+      $('#test-speed-btn').removeClass('button-disabled')
+
+#$("#address-input").on 'change', ->
+    #if $('#address-input').prop('value', 'true')
+       #$('#testbutton-div').removeClass('hide')
+
+
 
 $ ->
-  bind_rating_stars()
   disable_form_inputs()
   numeric_field_constraint()
 
   thispath = window.location.pathname
   thispatharray = thispath.split('/')
 		thispathone = thispatharray[1]
-		console.log ('thispathone:'+thispathone)
   
 
   if thispathone == 'region'
     enable_speed_test()
-    set_error_for_invalid_fields()
+    #set_error_for_invalid_fields()
     places_autocomplete()
     ajax_interactions()
     $(".checkboxes-container input[name='submission[location]']").each ->
       $(this).prop('checked', false)
 
     # Start the test when the user clicks either the button or the nav link
-    $('#take_test, .nav-link-take-test').on 'click', take_the_test
+    $('#take_test, .nav-link-take-test').on 'click', region_take_the_test
 
     # Start the test if the user arrived via a link pointing to the test
     # if window.location.hash == '#take_test'
     window.scrollTo(0, 0)
-    take_the_test()
+    region_take_the_test()
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
@@ -255,7 +265,7 @@ $ ->
     $('#location_button').prop('innerHTML', 'Loading...')
     get_location()
 
-  $('#location_next_button').on 'click', ->
+  $('#test-speed-btn').on 'click', ->
     if $('#location_geolocation').prop('checked')
       if $("#location_success").prop('value') == 'false'
         navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
@@ -266,8 +276,8 @@ $ ->
         show_step_one()
       else
         $('#address-input').addClass('error-input')
-        $('#location_next_button').attr('disabled', true)
-        $('#location_next_button').removeClass('button-disabled')
+        $('#test-speed-btn').attr('disabled', true)
+        $('#test-speed-btn').removeClass('button-disabled')
 
         setTimeout (->
           $('#address-input').removeClass('error-input');
@@ -293,5 +303,5 @@ show_step_one = ->
   $('#form-step-0').addClass('hide')
   $('#form-step-1').removeClass('hide')
   $('#form-step-1 input').prop('disabled', false)
-  $('.test-speed-btn').prop('disabled', false)
+  $('#test-speed-btn').prop('disabled', false)
   $('.location-warning').addClass('hide')
