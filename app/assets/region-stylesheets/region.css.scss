@@ -1,5 +1,5 @@
 /*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * This is a manifest file that'll be compiled into region.css, which will include all the files
  * listed below.
  *
  * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
@@ -9,12 +9,14 @@
  * compiled file so the styles you add here take precedence over styles defined in any styles
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
+
  *
- *= require style
- *= require star-rating.min
- *= require social-share-button
- *= require chosen
- *= require bootstrap-datepicker
- *= require_directory .
- *= require_self
+ *= require region-theme-all
+ *= require region-theme-california
+ *= require region-theme-washington
+ *= require region-theme-oregon
  */
+
+
+
+

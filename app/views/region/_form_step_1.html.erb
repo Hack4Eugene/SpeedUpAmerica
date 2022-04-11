@@ -1,21 +1,30 @@
 <div id='form-step-1'class='hide form-fields'>
-  <div class='checkboxes-container'>
-    <p class='bold'>What type of internet connection are you testing?</p>
+	<div id="nointernet" class="hide">
+	<p class='bold'>If you don't have internet access at your home, please indicate the reason why:</p>
+
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :testing_for, { id: 'home_wifi', data: { target: '#form-step-2a' } }, 'Home Wifi', false %>
-      <%= label_tag :home_wifi, "<strong>Residential:</strong> I'm testing my internet speed at home".html_safe %>
+      <%= f.check_box :whynoaccess, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'No Internet', false %>
+      <%= label_tag :nointernet_notaffordable, "Internet is not affordable".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :testing_for, { id: 'mobile_data', data: { target: '#form-step-2b' } }, 'Mobile Data', false %>
-      <%= label_tag :mobile_data, "<strong>Mobile data:</strong> I’m testing my data plan (phone or tablet)".html_safe %>
+      <%= f.check_box :whynoaccess, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'No Internet', false %>
+      <%= label_tag :nointernet_notavailable, "Internet is not available in my area".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :testing_for, { id: 'public_wifi', data: { target: '#form-step-2b' } }, 'Public Wifi', false %>
-      <%= label_tag :public_wifi, "<strong>Work or Public:</strong> I’m connected to a public wifi service or I’m at work".html_safe %>
+      <%= f.check_box :whynoaccess, { id: 'nointernet_limitations', data: { target: '#form-step-1' } }, 'No Internet', false %>
+      <%= label_tag :nointernet_limitations, " I have physical limitations (i.e. eyesight/disability)".html_safe %>
     </div>
-  </div>
+
+
+	<div class='checkboxes-container hide' id="connected-with">
+        <p class='bold'>I am currently connected to the internet from:</p>
+        <div class='col-md-6'>
+          <%= f.select(:connected_with, connected_list, {disabled: '', selected: ''}, class: 'form-control pull-right') %>
+        </div>
+	</div>
+	</div>
 
   <%= button_tag 'Let\'s do this!', type: 'button', id: 'testing_for_button', disabled: true, class: 'primaryBtn' %>
 

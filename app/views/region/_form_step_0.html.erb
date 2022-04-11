@@ -1,4 +1,4 @@
-<div id='form-step-0'>
+<div id='region-form-step-0' >
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.0/mapbox-gl-geocoder.min.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.0/mapbox-gl-geocoder.css' type='text/css' />
   <script type='application/javascript'>
@@ -6,58 +6,109 @@
   var ALGOLIA_API_KEY = '<%= ENV['ALGOLIA_API_KEY'] %>';
   </script>
 
-  <div class='checkboxes-container'>
-    <p class='bold'>To put your speed test results on the map, we'd like to use your location.</p>
+<% # STEP 1 HAVE ACCESS %>
+  <div class='checkboxes-container' id="access-div">
+
+    <p class='bold'>1. Please select one of the following options below:</p>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'location_address_have', data: { target: '#form-step-1' } }, 'Location Address', false %>
-      <%= label_tag :location_address_have, "I have internet access at my home".html_safe %>
+      <%= f.check_box :access, { id: 'access_have', data: { target: '#form-step-1' } }, 'Access', false %>
+      <%= label_tag :access_have, "I have internet access at my home".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'location_address_donothave', data: { target: '#form-step-1' } }, 'Location Address', false %>
-      <%= label_tag :location_address_donothave, "I do NOT have internet access at my home".html_safe %>
+      <%= f.check_box :access, { id: 'access_donothave', data: { target: '#form-step-1' } }, 'Access', false %>
+      <%= label_tag :access_donothave, "I do NOT have internet access at my home".html_safe %>
     </div>
 
+	<span class='block-element' id="datapolicy">
+	    <p>By entering your information you agree to the <a href="/faq" target="_blank">data policy</a>. </p>
+	</span>
+  </div>
 
-	<div id="nointernet" class="hide">
-	<p class='bold'>If you don't have internet access at your home, please indicate the reason why:</p>
+<% # STEP 2 HOW CONNECTED  OR WHY NOT CONNECTION  %>
+  <div id="connectedornot-div" class="checkboxes-container hide">
+	<div id="connected-with" class="hide">
+		<p class='bold'>2. I am currently connected to the internet from:</p>
 
-    <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'No Internet', false %>
-      <%= label_tag :nointernet_notaffordable, "Internet is not affordable".html_safe %>
-    </div>
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :connected_with, { id: 'connected_with_wired', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= label_tag :connected_with_wired, "Wired connection. This means you use a cable to connect your device (laptop, desktop) to your modem.".html_safe %>
+		</div>
 
-    <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'No Internet', false %>
-      <%= label_tag :nointernet_notavailable, "Internet is not available in my area".html_safe %>
-    </div>
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :connected_with, { id: 'connected_with_wifi', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= label_tag :connected_with_wifi, "Wifi connection. This means you use wifi to connect your device (desktop, laptop, phone) to your modem.".html_safe %>
+		</div>
 
-    <div class='checkbox checkbox-info'>
-      <%= f.check_box :location, { id: 'nointernet_limitations', data: { target: '#form-step-1' } }, 'No Internet', false %>
-      <%= label_tag :nointernet_limitations, " I have physical limitations (i.e. eyesight/disability)".html_safe %>
-    </div>
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :connected_with, { id: 'connected_with_cellular', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= label_tag :connected_with_cellular, "Cellular. This means you use a mobile phone service (tmobile, verizon, etc.) to connect to the internet (directly or via a mobile hot spot".html_safe %>
+		</div>
 
-    <p class="text">Please enter your address even if you do not have internet at home.  </p>
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :connected_with, { id: 'connected_with_notsure', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= label_tag :connected_with_notsure, "I\'m not sure. (That\'s ok! Please still take the test)".html_safe %>
+		</div>
 	</div>
 
 
-  </div>
+	<div id="nointernet" class="hide">
+		<p class='bold'>2. If you don't have internet access at your home, please indicate the reason why:</p>
 
-  <%= button_tag 'Get My Location', type: 'button', id: 'location_button', disabled: true, class: 'hide button button-primary' %>
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :whynoaccess, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'No Internet', false %>
+			<%= label_tag :nointernet_notaffordable, "Internet is not affordable".html_safe %>
+		</div>
 
-  <span id='location-address-input' class='hide'>
-    <input type="search" id="address-input" placeholder="Search for an address"/>
-  </span>
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :whynoaccess, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'No Internet', false %>
+			<%= label_tag :nointernet_notavailable, "Internet is not available in my area".html_safe %>
+		</div>
+	</div>
 
+   </div>
 
+<% # STEP 3 PRICE  %>
+	<div id="price-div" class="hide">
+		<%= f.label :monthly_price, class: 'col-md-6' do %>
+          <p class='bold'>
+		  
+		  <span id="price-text-connected">3. What is the estimated price you pay per month</span>
 
-  <span class='block-element'>
-    <%= button_tag 'Let\'s begin', type: 'button', id: 'location_next_button', class: 'button button-primary button-disabled', disabled: true %>
-    </span>
+		  <span id="price-text-notconnected" class="hide">3. What is the estimated price you would pay per month for internet</span>
 
-  <span class='block-element'>
-    <p>We DO NOT store your personal data. We DO ask for your location to map internet speeds across America.</p>
-  </span>
+          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='By providing your monthly internet cost, we help determine if you are getting the internet speed and value you should be expecting.'></span></p>
+        <% end %>
+
+        <div class='col-md-4 restricted-field text-left'>
+          <%= f.number_field :monthly_price, within: 0..200, class: 'form-control pull-right numeric', disabled: false %>
+		  <button type="button" id="enterpricebtn">ENTER</button>
+          <span id='price_error_span' class='hide'>Error: This should not be greater than 200</span>
+        </div>
+
+	</div>
+
+<% # STEP 4 ADDRESS  %>
+   <div id="address-div" class="hide">
+	<div id="addresswithinternet" class="hide">
+		<p class='bold'>4. Please enter your address</p>
+	</div>
+
+	<div id="addresswithoutinternet" class="hide">
+		<p class='bold'>4. Please enter your address even if you do not have internet at home.</p>
+	</div>
+
+		<span id='location-address-input' class=''>
+			<input type="search" id="address-input" placeholder="Search for an address"/>
+		</span>
+	</div>
+		
+<% # STEP 5 TEST BUTTON  %>
+	 <div id="testbutton-div" class="hide">
+		<span class='block-element'>
+		<p class='bold'>5. <%= button_tag 'Test My Speed', type: 'button', id: 'test-speed-btn', class: 'button button-primary', disabled: false %></p>
+		</span>
+	</div>
 
 </div>

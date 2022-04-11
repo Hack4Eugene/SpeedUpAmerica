@@ -1,4 +1,4 @@
-class RegionsubmissionsController < ApplicationController
+class RegionSubmissionsController < ApplicationController
 
   layout "region"
 
@@ -52,8 +52,8 @@ class RegionsubmissionsController < ApplicationController
     render json: data
   end
 
-  def export_csv
-    render_csv
+  def region_export_csv
+    region_render_csv
   end
 
   private
