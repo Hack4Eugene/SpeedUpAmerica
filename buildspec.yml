@@ -2,13 +2,15 @@ version: 0.2
 env:
   parameter-store:
       SUA_GEOLITE_ACCESS_KEY: SUA_GEOLITE_ACCESS_KEY
+      DOCKER_USERNAME: DOCKER_USERNAME
+      DOCKER_PASS: DOCKER_PASS
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
       - REPOSITORY_URI=238241637211.dkr.ecr.us-west-2.amazonaws.com/speedupamerica
-      - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
+      -  docker login --username $DOCKER_USERNAME -p DOCKER_PASS $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
