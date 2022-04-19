@@ -4,7 +4,7 @@ class RegionController < ApplicationController
 
   def index
     @region_submission = RegionSubmission.new
-	@regionname = params[:regionname]
+	@regionname = params[:regionname.downcase]
   end
 
  

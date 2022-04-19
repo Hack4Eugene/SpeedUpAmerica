@@ -51,7 +51,7 @@
 
 </head>
 
-<body class='<%= region_body_css_class %> <%= @regionname %>'>
+<body class='<%= region_body_css_class %> <%= @regionname.downcase %>'>
   <%= google_tag_manager_noscript_tag(:sua) %>
 
   <div class='wrapper-container'>
