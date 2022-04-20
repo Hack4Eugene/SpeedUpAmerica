@@ -1,0 +1,23 @@
+<div class='container'>
+  <div class='row'>
+        <h3 class='text-center'>Your Results</h3>
+        <table class='col-md-6 text-center'>
+          <tr>
+            <td class='text-right'><h4>Download Speed:&nbsp;</h4></td>
+            <td class='text-left'><h3><%= print_speed(region_submission.actual_down_speed) %></h3></td>
+          </tr>
+          <% unless region_submission.testing_for == 'Mobile Data' %>
+            <tr>
+              <td class='text-right'><h4>Upload Speed:&nbsp;</h4></td>
+              <td class='text-left'><h3><%= print_speed(region_submission.actual_upload_speed) %></h3></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td class='text-right'><h4>Ping:&nbsp;</h4></td>
+            <td class='text-left'><h3><%= print_ping(region_submission.ping) %></h3></td>
+          </tr>
+        </table>
+  </div>
+</div>
+
+  <%= render 'about_speedup' %>

@@ -50,8 +50,14 @@
   <!-- End of speedup Zendesk Widget script -->
 
 </head>
+<% if @regionname.nil?
+	  #@regionname ='all'
+   else
+	 @regionname = @regionname.to_s.downcase
+   end 
+%>
 
-<body class='<%= region_body_css_class %> <%= @regionname.downcase %>'>
+<body class='<%= region_body_css_class %> <%= @regionname %>'>
   <%= google_tag_manager_noscript_tag(:sua) %>
 
   <div class='wrapper-container'>

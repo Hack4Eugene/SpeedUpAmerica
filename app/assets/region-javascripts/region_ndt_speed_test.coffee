@@ -1,5 +1,5 @@
 region_bind_ndt_speed_calculation = ->
-  RegionNDT_meter = new RegionNDTmeter('#ndt-svg')
+  RegionNDT_meter = new NDTmeter('#ndt-svg')
   console.log('region_bind_ndt_speed_calculation');
   $('#region_start_ndt_test').on 'click', ->
     # Note: rates are in kbits/s, latency is in milliseconds.
@@ -31,7 +31,7 @@ region_bind_ndt_speed_calculation = ->
         s2cRate = data.LastClientMeasurement.MeanClientMbps * 1000
         minRTT = (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0)
         RegionNDT_meter.onstatechange('finished_s2c')
-        console.log('Download complete: ' + s2cRate.toFixed(2) + ' Kb/s')
+        console.log('Regional Download complete: ' + s2cRate.toFixed(2) + ' Kb/s')
         RegionNDT_meter.onstatechange('running_c2s')
 
       uploadMeasurement: (data) ->
@@ -43,7 +43,7 @@ region_bind_ndt_speed_calculation = ->
       uploadComplete: (data) ->
         c2sRate = (data.LastServerMeasurement.TCPInfo.BytesReceived /
             data.LastServerMeasurement.TCPInfo.ElapsedTime * 8) * 1000
-        console.log('Upload complete: ' + c2sRate.toFixed(2) + ' Kb/s')
+        console.log('Regional Upload complete: ' + c2sRate.toFixed(2) + ' Kb/s')
         RegionNDT_meter.onfinish({
           s2cRate: s2cRate,
           c2sRate: c2sRate,
@@ -60,6 +60,6 @@ region_bind_ndt_speed_calculation = ->
   window.NdtSpeedTest || (window.NdtSpeedTest = {})
 
  NdtSpeedTest.init = ->
-    console.log('NdtSpeedTest.init');
+    console.log('RegionNdtSpeedTest.init 1');
     region_bind_ndt_speed_calculation()
 ).call(this)

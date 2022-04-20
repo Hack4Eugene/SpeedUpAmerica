@@ -1,7 +1,7 @@
 <div class='container'>
   <div class='row'>
     <div class='col-md-12 col-centered table-responsive bdrNone resultTableForDesktop'>
-    <% if submission.zip_code.blank? %>
+    <% if region_submission.zip_code.blank? %>
       <div class='col-md-12 col-xs-12'>
     <% else %>
       <div class='col-md-6 col-xs-12'>
@@ -12,7 +12,7 @@
             <td class='text-right'><h4>Download Speed</h4></td>
             <td class='text-left'><h4><%= print_speed(submission.actual_down_speed) %></h4></td>
           </tr>
-          <% unless submission.testing_for == 'Mobile Data' %>
+          <% unless region_submission.testing_for == 'Mobile Data' %>
             <tr>
               <td class='text-right'd>Upload Speed</td>
               <td class='text-left'><%= print_speed(submission.actual_upload_speed) %></td>
@@ -24,10 +24,10 @@
           </tr>
         </table>
       </div>
-    <% if !submission.zip_code.blank? %>
+    <% if !region_submission.zip_code.blank? %>
       <div class='col-md-6 col-xs-12 text-left'>
         <h3 class='text-center'>Comparison</h3>
-        <%= render partial: 'result_comparison_table', locals: {submission: submission} %>
+        <%= render partial: 'result_comparison_table', locals: {region_submission: submission} %>
       </div>
     <% end %>
     </div>

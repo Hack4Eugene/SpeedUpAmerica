@@ -48,6 +48,10 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
+
+  config.web_console.permissions = '172.19.0.1'
+  # https://stackoverflow.com/questions/29417328/how-to-disable-cannot-render-console-from-on-rails
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
   config.action_dispatch.default_headers = {

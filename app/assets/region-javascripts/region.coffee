@@ -2,9 +2,9 @@ disable_form_inputs = ->
   $('#form-container .form-fields input').prop('disabled', true)
 
 set_coords = (accuracy, latitude, longitude) ->
-  $('#submission_latitude').attr 'value', latitude
-  $('#submission_longitude').attr 'value', longitude
-  $("input[name='submission[accuracy]']").attr 'value', accuracy
+  $('#region_submission_latitude').attr 'value', latitude
+  $('#region_submission_longitude').attr 'value', longitude
+  $("input[name='region_submission[accuracy]']").attr 'value', accuracy
 
   location_finished()
 
@@ -70,7 +70,7 @@ enable_speed_test = ->
       $('#testing_speed').modal('show');
 
       setTimeout (->
-        console.log('starting ndt test...');
+        console.log('starting regional ndt test...');
         $('#region_start_ndt_test').click()
       ), 200
 
@@ -141,6 +141,10 @@ places_autocomplete = ->
     if eventResult
       latlng = eventResult.suggestion.latlng
       set_coords(50, latlng.lat, latlng.lng)
+				$('#region_submission_address').attr 'value', eventResult.suggestion.value
+				$('#region_submission_zip_code').attr 'value',eventResult.suggestion.postcode
+				#console.log('address:'+eventResult.suggestion.value)
+				#console.log('zip:'+eventResult.suggestion.postcode)
   placesAutocomplete
 
 # This function only works on the region page
@@ -225,6 +229,13 @@ location_finished = ->
   if $('#address-input').prop('value', 'true')
       $('#testbutton-div').removeClass('hide')
       $('#test-speed-btn').removeClass('button-disabled')
+      #$('#region_submission_address').attr 'value',  $('#address-input').val();
+			#console.log('address-input val:' + $('#address-input').val());
+			#console.log('address-input prop val:' + $('#address-input').prop('value'));
+			#console.log('address-input placeholder:' + $('#address-input').attr('placeholder'));
+			#console.log('address-input textContent:' + $('#address-input').textContent);
+			
+
 
 #$("#address-input").on 'change', ->
     #if $('#address-input').prop('value', 'true')
@@ -246,7 +257,7 @@ $ ->
     #set_error_for_invalid_fields()
     places_autocomplete()
     ajax_interactions()
-    $(".checkboxes-container input[name='submission[location]']").each ->
+    $(".checkboxes-container input[name='region_submission[location]']").each ->
       $(this).prop('checked', false)
 
     # Start the test when the user clicks either the button or the nav link
@@ -259,7 +270,7 @@ $ ->
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
-  $(".checkboxes-container input[name='submission[testing_for]']").prop('checked', false)
+  $(".checkboxes-container input[name='region_submission[testing_for]']").prop('checked', false)
 
   $('#location_button').on 'click', ->
     $('#location_button').prop('innerHTML', 'Loading...')
@@ -286,14 +297,14 @@ $ ->
     if $('#location_disabled').prop('checked')
       show_step_one()
 
-  $(".checkboxes-container input[name='submission[testing_for]']").on 'change', ->
-    $(".checkboxes-container input[name='submission[testing_for]']").each ->
+  $(".checkboxes-container input[name='region_submission[testing_for]']").on 'change', ->
+    $(".checkboxes-container input[name='region_submission[testing_for]']").each ->
       $(this).prop('checked', false)
     $(this).prop('checked', true)
-    $('#testing_for_button').attr('disabled', !$(".checkboxes-container input[name='submission[testing_for]']").is(':checked'));
+    $('#testing_for_button').attr('disabled', !$(".checkboxes-container input[name='region_submission[testing_for]']").is(':checked'));
 
   $('#testing_for_button').on 'click', ->
-    testing_for = $(".checkboxes-container input[name='submission[testing_for]']:checked").data('target')
+    testing_for = $(".checkboxes-container input[name='region_submission[testing_for]']:checked").data('target')
     $(testing_for).removeClass('hide')
     $(testing_for + ' input').prop('disabled', false)
     $(testing_for + ' select').prop('disabled', false)

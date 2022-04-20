@@ -68,15 +68,15 @@ class RegionSubmission < ActiveRecord::Base
     subs = valid_test.with_test_type(test_type)
 
     if boundary_type == 'census_code'
-      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'census_tract' AND submissions.census_code = b.boundary_id")
+      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'census_tract' AND region_submissions.census_code = b.boundary_id")
       subs = subs.where('b.enabled = true')
       subs.select('census_code, actual_down_speed, actual_upload_speed').group_by(&:census_code)
     elsif boundary_type == 'census_block'
-      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'census_block' AND submissions.census_block = b.boundary_id")
+      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'census_block' AND region_submissions.census_block = b.boundary_id")
       subs = subs.where('b.enabled = true')
       subs.select('census_block, actual_down_speed, actual_upload_speed').group_by(&:census_block)
     elsif boundary_type == 'zip_code'
-      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'zip_code' AND submissions.zip_code = b.boundary_id")
+      subs = subs.joins("LEFT JOIN boundaries b ON b.boundary_type = 'zip_code' AND region_submissions.zip_code = b.boundary_id")
       subs = subs.where('b.enabled = true')
       subs.select('zip_code, actual_down_speed, actual_upload_speed').group_by(&:zip_code)
     else
@@ -86,28 +86,55 @@ class RegionSubmission < ActiveRecord::Base
 
   scope :get_provider_for_stats_cache, -> (provider, test_type) { where(provider: provider).with_test_type(test_type) }
 
-  def self.create_submission(params)
-    duplicate_ipa_tests = Submission.where('test_date = ? AND ip_address = ?', Date.today, params[:ip_address])
+  def self.create_region_submission(params)
+    duplicate_ipa_tests = RegionSubmission.where('test_date = ? AND ip_address = ?', Date.today, params[:ip_address])
 
-    submission = Submission.new(params)
+    region_submission = RegionSubmission.new(params)
 
-    if submission.monthly_price.present? && submission.provider_down_speed.present? && submission.actual_down_speed.present? &&
-       submission.provider_down_speed > 0 && submission.monthly_price > 0 && submission.actual_down_speed > 0
-      submission.provider_price = submission.monthly_price / submission.provider_down_speed
-      submission.actual_price = submission.monthly_price / submission.actual_down_speed
+    #if region_submission.monthly_price.present? && region_submission.provider_down_speed.present? && region_submission.actual_down_speed.present? &&
+      #region_submission.provider_down_speed > 0 && region_submission.monthly_price > 0 && region_submission.actual_down_speed > 0
+      #region_submission.provider_price = region_submission.monthly_price / region_submission.provider_down_speed
+    if region_submission.monthly_price.present? && region_submission.actual_down_speed.present? && region_submission.monthly_price > 0 && region_submission.actual_down_speed > 0
+      region_submission.actual_price = region_submission.monthly_price / region_submission.actual_down_speed
+	else
+	  region_submission.actual_price = 0
     end
 
-    submission.test_date = Date.today
-    submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
-    submission.completed = true
-    submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
-    submission.provider = submission.get_provider
-    submission.save
+	region_submission.region = region_submission.region.titleize
+    region_submission.test_date = Date.today
+    region_submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
+    region_submission.completed = true
+    region_submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
+    #region_submission.provider = region_submission.get_provider
+	region_submission.provider = ''
+	region_submission.provider_down_speed = 0
+	region_submission.provider_price = 0
+	region_submission.rating = 0
+	region_submission.area_code = ''
+	if region_submission.zip_code.present?
+		region_submission.zip_code = region_submission.zip_code[0, 5]
+	else
+		region_submission.zip_code = 0
+	end
+	region_submission.census_code = ''
+	region_submission.upload_median = 0
+	region_submission.download_median = 0
+	if !region_submission.connected_with.present?
+		region_submission.connected_with = ''
+	end
+	region_submission.census_status = ""
+	region_submission.census_block = ""
+	region_submission.country_code = ""
+	region_submission.county = ""
+	region_submission.location = 0
+	#region_submission.location = POINT(longitude, latitude)
 
-    submission.populate_location
-    submission.populate_boundaries
+    region_submission.save
 
-    submission
+    #region_submission.populate_location
+    region_submission.populate_boundaries
+
+    region_submission
   end
 
   def self.get_all_results
@@ -128,11 +155,6 @@ class RegionSubmission < ActiveRecord::Base
   def location
   end
 
-  def access
-  end
-
-  def whynoaccess
-  end
 
   def self.fetch_tileset_groupby(params)
     providers = provider_names(params[:provider])
@@ -160,15 +182,15 @@ class RegionSubmission < ActiveRecord::Base
     polygon_data = polygon_data.where(provider: providers)              if providers.present? && providers.any?
     polygon_data = polygon_data.mapbox_filter_by_boundary(params[:group_by], params[:test_type])
 
-    stats = polygon_data.map do |id, submissions|
+    stats = polygon_data.map do |id, region_submissions|
       attribute_name = speed_attribute(params[:test_type])
-      median_speed  = median(submissions.map(&:"#{attribute_name}")).to_f
+      median_speed  = median(region_submissions.map(&:"#{attribute_name}")).to_f
 
       {
         'id': id,
         'all_median': median_speed,
-        'all_count': number_with_delimiter(submissions.length, delimiter: ','),
-        'all_fast': '%.2f' % submissions.map(&:"#{attribute_name}").compact.max.to_f,
+        'all_count': number_with_delimiter(region_submissions.length, delimiter: ','),
+        'all_fast': '%.2f' % region_submissions.map(&:"#{attribute_name}").compact.max.to_f,
         'color': set_color(median_speed),
         'fillOpacity': 0.6,
       }
@@ -287,16 +309,11 @@ class RegionSubmission < ActiveRecord::Base
   end
 
   CSV_COLUMNS = [
-    'Response #', 'Source', 'Date', 'How Are You Testing', 'Zip', 'Census Tract', 'Census Block', 'Latitude', 'Longitude', 'Accuracy',
-    'Provider', 'How are you connected', 'Price Per Month', 'Advertised Download Speed',
-    'Satisfaction Rating', 'Download Speed', 'Upload Speed', 'Advertised Price Per Mbps',
-    'Actual Price Per Mbps', 'Ping'
+    'Response #', 'Source', 'Date', 'Region', 'Access', 'How are you connected','Why No Access', 'Address', 'Zip', 'Latitude', 'Longitude', 'Accuracy', 'Price Per Month', 'Download Speed', 'Upload Speed', 'Ping', 'Actual Price Per Mbps'
   ]
 
   CSV_KEYS = [
-    :id, :source, :date, :testing_for, :zip_code, :census_code, :census_block, :latitude, :longitude, :accuracy, :provider, :connected_with,
-    :monthly_price, :provider_down_speed, :rating,:actual_down_speed, :actual_upload_speed,
-    :provider_price, :actual_price, :ping
+    :id, :source, :date, :region, :access, :connected_with,  :whynoaccess, :address,  :zip_code, :latitude, :longitude, :accuracy, :monthly_price, :actual_download_speed, :actual_upload_speed, :ping, :actual_price
   ]
 
   def self.csv_header
@@ -306,9 +323,9 @@ class RegionSubmission < ActiveRecord::Base
   end
 
   def to_csv_row
-    CSV::Row.new(CSV_KEYS, [id, source, test_date.strftime('%B %d, %Y'), Submission::testing_for_mapping(testing_for),
-      zip_code, census_code, census_block, latitude, longitude, accuracy, provider, connected_with, monthly_price, provider_down_speed, rating, actual_down_speed,
-      actual_upload_speed, provider_price, actual_price, ping])
+    CSV::Row.new(CSV_KEYS, [id, source, test_date.strftime('%B %d, %Y'), region, access, connected_with, whynoaccess, address,
+      zip_code, latitude, longitude, accuracy, monthly_price, actual_down_speed,
+      actual_upload_speed, ping, actual_price])
   end
 
   def self.find_in_batches(date_range)
@@ -335,8 +352,8 @@ class RegionSubmission < ActiveRecord::Base
     end
 
     column = BOUNDARY_TYPE_TO_SUBS_COLUMN[type]
-    quoted_column = Submission.connection.quote_column_name(column)
-    Submission.where("#{quoted_column} = ?", id)
+    quoted_column = RegionSubmission.connection.quote_column_name(column)
+    RegionSubmission.where("#{quoted_column} = ?", id)
   end
 
   def self.testing_for_mapping(testing_for)
@@ -393,21 +410,21 @@ class RegionSubmission < ActiveRecord::Base
   end
 
   def self.calculate_speed_data(params, providers, start_date, end_date, date_ranges)
-    submissions = self.valid_test
-    submissions = submissions.with_date_range(start_date, end_date)  if date_ranges.present?
-    submissions = submissions.with_test_type(params[:test_type]) if params[:test_type].present?
-    submissions = submissions.with_zip_code(params[:zip_code])   if params[:zip_code].present? && params[:zip_code].any?
-    submissions = submissions.with_census_code(params[:census_code]) if params[:census_code].present? && params[:census_code].any?
-    submissions = submissions.where(provider: providers)
+    region_submissions = self.valid_test
+    region_submissions = region_submissions.with_date_range(start_date, end_date)  if date_ranges.present?
+    region_submissions = region_submissions.with_test_type(params[:test_type]) if params[:test_type].present?
+    region_submissions = region_submissions.with_zip_code(params[:zip_code])   if params[:zip_code].present? && params[:zip_code].any?
+    region_submissions = region_submissions.with_census_code(params[:census_code]) if params[:census_code].present? && params[:census_code].any?
+    region_submissions = region_submissions.where(provider: providers)
 
     test_type = params[:test_type]
     categories = date_ranges.collect { |range| range[:name] }
 
-    isps_data = isps_tests_data(submissions, test_type, providers, date_ranges, categories)
+    isps_data = isps_tests_data(region_submissions, test_type, providers, date_ranges, categories)
 
     {
-      speed_comparison_data: calculate_speed_comparison_data(submissions, test_type),
-      speed_breakdown_chart_data: calculate_speed_breakdown_data(submissions, test_type, providers),
+      speed_comparison_data: calculate_speed_comparison_data(region_submissions, test_type),
+      speed_breakdown_chart_data: calculate_speed_breakdown_data(region_submissions, test_type, providers),
       median_speed_chart_data: isps_data[:median_data],
       tests_count_data: isps_data[:tests_count_data],
       from_cache: false,
@@ -433,15 +450,15 @@ class RegionSubmission < ActiveRecord::Base
     }
   end
 
-  def self.calculate_speed_comparison_data(submissions, test_type)
+  def self.calculate_speed_comparison_data(region_submissions, test_type)
     attribute_name = speed_attribute(test_type)
-    total_count = submissions.count
-    mlab_tests_count = submissions.from_mlab.count
+    total_count = region_submissions.count
+    mlab_tests_count = region_submissions.from_mlab.count
 
-    less_than_5 = percentage(submissions.where("#{attribute_name}": [0..5]).count, total_count)
-    less_than_25 = percentage(submissions.where("#{attribute_name}": [0..25]).count, total_count)
-    faster_than_100 = percentage(submissions.where("#{attribute_name} >?", 100).count, total_count)
-    faster_than_250 = percentage(submissions.where("#{attribute_name} >?", 250).count, total_count)
+    less_than_5 = percentage(region_submissions.where("#{attribute_name}": [0..5]).count, total_count)
+    less_than_25 = percentage(region_submissions.where("#{attribute_name}": [0..25]).count, total_count)
+    faster_than_100 = percentage(region_submissions.where("#{attribute_name} >?", 100).count, total_count)
+    faster_than_250 = percentage(region_submissions.where("#{attribute_name} >?", 250).count, total_count)
 
     {
       speedup_tests_count: total_count - mlab_tests_count,
@@ -458,10 +475,10 @@ class RegionSubmission < ActiveRecord::Base
     total_count = stats.map(&:"#{test_type}_count").inject(0){|sum, x| sum + x }
     sua_count = stats.map(&:"#{test_type}_sua_count").inject(0){|sum, x| sum + x }
 
-    less_than_5 = Submission.percentage(stats.map(&:"#{test_type}_less_than_5").inject(0){|sum, x| sum + x }, total_count)
-    less_than_25 = Submission.percentage(stats.map(&:"#{test_type}_less_than_25").inject(0){|sum, x| sum + x }, total_count)
-    faster_than_100 = Submission.percentage(stats.map(&:"#{test_type}_faster_than_100").inject(0){|sum, x| sum + x }, total_count)
-    faster_than_250 = Submission.percentage(stats.map(&:"#{test_type}_faster_than_250").inject(0){|sum, x| sum + x }, total_count)
+    less_than_5 = RegionSubmission.percentage(stats.map(&:"#{test_type}_less_than_5").inject(0){|sum, x| sum + x }, total_count)
+    less_than_25 = RegionSubmission.percentage(stats.map(&:"#{test_type}_less_than_25").inject(0){|sum, x| sum + x }, total_count)
+    faster_than_100 = RegionSubmission.percentage(stats.map(&:"#{test_type}_faster_than_100").inject(0){|sum, x| sum + x }, total_count)
+    faster_than_250 = RegionSubmission.percentage(stats.map(&:"#{test_type}_faster_than_250").inject(0){|sum, x| sum + x }, total_count)
 
     {
       speedup_tests_count: sua_count,
@@ -474,13 +491,13 @@ class RegionSubmission < ActiveRecord::Base
     }
   end
 
-  def self.calculate_speed_breakdown_data(submissions, test_type, providers)
+  def self.calculate_speed_breakdown_data(region_submissions, test_type, providers)
     categories = get_speed_ranges()
     series = []
 
     providers.each do |provider|
-      provider_submissions = submissions.with_provider(provider)
-      values = speed_breakdown(test_type, provider_submissions)
+      provider_region_submissions = region_submissions.with_provider(provider)
+      values = speed_breakdown(test_type, provider_region_submissions)
       series << { name: provider, data: values }
     end
 
@@ -505,7 +522,7 @@ class RegionSubmission < ActiveRecord::Base
     { categories: categories, series: series }
   end
 
-  def self.isps_tests_data(submissions, test_type, providers, date_ranges, categories)
+  def self.isps_tests_data(region_submissions, test_type, providers, date_ranges, categories)
     median_speed_series = []
     tests_count_series = []
 
@@ -513,7 +530,7 @@ class RegionSubmission < ActiveRecord::Base
       median_speed_values = []
       tests_count_values = []
       date_ranges.each do |date_range|
-        rangedSubmission = submissions.with_date_range(date_range[:range][0], date_range[:range][1]).with_provider(provider)
+        rangedSubmission = region_submissions.with_date_range(date_range[:range][0], date_range[:range][1]).with_provider(provider)
         attribute_name = speed_attribute(test_type)
         rangedMedian = median(rangedSubmission.map(&:"#{attribute_name}")) if rangedSubmission.present?
         rangedCount = rangedSubmission.size if rangedSubmission.present?
@@ -609,23 +626,23 @@ class RegionSubmission < ActiveRecord::Base
     }[range]
   end
 
-  def self.speed_breakdown(test_type, provider_submissions)
+  def self.speed_breakdown(test_type, provider_region_submissions)
     SPEED_BREAKDOWN_RANGES.map do |range|
-      count = count_between(provider_submissions, range, test_type)
-      percentage(count, provider_submissions.count)
+      count = count_between(provider_region_submissions, range, test_type)
+      percentage(count, provider_region_submissions.count)
     end
   end
 
-  def self.count_between(submissions, range, test_type)
+  def self.count_between(region_submissions, range, test_type)
     attribute_name = speed_attribute(test_type)
     if '+'.in?(range)
       lower = range.gsub('+', '').to_f
-      submissions.where("#{attribute_name} >= ?", lower).count
+      region_submissions.where("#{attribute_name} >= ?", lower).count
     else
       range_values = range.split('..')
       lower = range_values[0].to_f
       upper = range_values[1].to_f
-      submissions.where("#{attribute_name}": [lower..upper]).count
+      region_submissions.where("#{attribute_name}": [lower..upper]).count
     end
   end
 
@@ -642,13 +659,13 @@ class RegionSubmission < ActiveRecord::Base
     categories
   end
 
-  def self.average_speed_by_zipcode(submissions)
+  def self.average_speed_by_zipcode(region_submissions)
     average_speeds = {}
-    zip_codes = submissions.pluck(:zip_code).uniq
+    zip_codes = region_submissions.pluck(:zip_code).uniq
 
     zip_codes.each do |zip_code|
-      zip_code_submissions = submissions.where(zip_code: zip_code)
-      average = (zip_code_submissions.pluck(:actual_down_speed).sum/zip_code_submissions.count.to_f).round(2)
+      zip_code_region_submissions = region_submissions.where(zip_code: zip_code)
+      average = (zip_code_region_submissions.pluck(:actual_down_speed).sum/zip_code_region_submissions.count.to_f).round(2)
       average_speeds[zip_code] = average
     end
 
@@ -672,19 +689,20 @@ class RegionSubmission < ActiveRecord::Base
   end
 
   def get_provider
-    result = ISP_DB.lookup(ip_address)
-    Submission.provider_mapping(result["autonomous_system_organization"]) if result.found?
+    #result = ISP_DB.lookup(ip_address)
+    #RegionSubmission.provider_mapping(result["autonomous_system_organization"]) if result.found?
+	provider = ''
   end
 
   def populate_location
     conn = ActiveRecord::Base.connection
-    conn.execute("UPDATE submissions SET location = POINT(longitude, latitude) WHERE id = #{id}")
+    conn.execute("UPDATE region_submissions SET location = POINT(longitude, latitude) WHERE id = #{id}")
   end
 
   def populate_boundaries
     conn = ActiveRecord::Base.connection
     query = "SELECT boundary_type, boundary_id FROM boundaries WHERE "\
-      "ST_Contains(geometry, (SELECT location FROM submissions WHERE id = #{id} LIMIT 1));"
+      "ST_Contains(geometry, (SELECT location FROM region_submissions WHERE id = #{id} LIMIT 1));"
     result = conn.select_rows(query)
 
     result.each do |row|

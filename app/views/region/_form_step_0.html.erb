@@ -12,12 +12,12 @@
     <p class='bold'>1. Please select one of the following options below:</p>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :access, { id: 'access_have', data: { target: '#form-step-1' } }, 'Access', false %>
+      <%= f.check_box :access, { id: 'access_have', data: { target: '#form-step-1' } }, 'Have access', false %>
       <%= label_tag :access_have, "I have internet access at my home".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
-      <%= f.check_box :access, { id: 'access_donothave', data: { target: '#form-step-1' } }, 'Access', false %>
+      <%= f.check_box :access, { id: 'access_donothave', data: { target: '#form-step-1' } }, 'No access', false %>
       <%= label_tag :access_donothave, "I do NOT have internet access at my home".html_safe %>
     </div>
 
@@ -32,22 +32,22 @@
 		<p class='bold'>2. I am currently connected to the internet from:</p>
 
 		<div class='checkbox checkbox-info'>
-			<%= f.check_box :connected_with, { id: 'connected_with_wired', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= f.check_box :connected_with, { id: 'connected_with_wired', data: { target: '#form-step-1' } }, 'Wired', false %>
 			<%= label_tag :connected_with_wired, "Wired connection. This means you use a cable to connect your device (laptop, desktop) to your modem.".html_safe %>
 		</div>
 
 		<div class='checkbox checkbox-info'>
-			<%= f.check_box :connected_with, { id: 'connected_with_wifi', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= f.check_box :connected_with, { id: 'connected_with_wifi', data: { target: '#form-step-1' } }, 'Wifi', false %>
 			<%= label_tag :connected_with_wifi, "Wifi connection. This means you use wifi to connect your device (desktop, laptop, phone) to your modem.".html_safe %>
 		</div>
 
 		<div class='checkbox checkbox-info'>
-			<%= f.check_box :connected_with, { id: 'connected_with_cellular', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= f.check_box :connected_with, { id: 'connected_with_cellular', data: { target: '#form-step-1' } }, 'Cellular', false %>
 			<%= label_tag :connected_with_cellular, "Cellular. This means you use a mobile phone service (tmobile, verizon, etc.) to connect to the internet (directly or via a mobile hot spot".html_safe %>
 		</div>
 
 		<div class='checkbox checkbox-info'>
-			<%= f.check_box :connected_with, { id: 'connected_with_notsure', data: { target: '#form-step-1' } }, 'Connected with', false %>
+			<%= f.check_box :connected_with, { id: 'connected_with_notsure', data: { target: '#form-step-1' } }, 'Not sure', false %>
 			<%= label_tag :connected_with_notsure, "I\'m not sure. (That\'s ok! Please still take the test)".html_safe %>
 		</div>
 	</div>
@@ -57,12 +57,12 @@
 		<p class='bold'>2. If you don't have internet access at your home, please indicate the reason why:</p>
 
 		<div class='checkbox checkbox-info'>
-			<%= f.check_box :whynoaccess, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'No Internet', false %>
+			<%= f.check_box :whynoaccess, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'Not affordable', false %>
 			<%= label_tag :nointernet_notaffordable, "Internet is not affordable".html_safe %>
 		</div>
 
 		<div class='checkbox checkbox-info'>
-			<%= f.check_box :whynoaccess, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'No Internet', false %>
+			<%= f.check_box :whynoaccess, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'Not available', false %>
 			<%= label_tag :nointernet_notavailable, "Internet is not available in my area".html_safe %>
 		</div>
 	</div>

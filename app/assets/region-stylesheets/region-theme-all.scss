@@ -2,18 +2,20 @@
 
 
 $region: all;
+$color1: #003399; /* primary color */
+$color2: #33cccc; /* secondary color */
 $bgcolor1: #EEE;
 $bgcolor2: #EED;
 $bgcolor3: #DEE;
 $bgcolor4: #EDE;
 $bgcolor5: #DED;
-$bgcolor6: #222;
+$bgcolor6: #222; /* secondary color */
+$bgcolor7: #003399;  /* primary color */
 $border-radius1: 10px;
 $box-shadow1: 7px 7px 7px #777777;
+$text-shadow1: 5px 5px 5px #999;
 $border1: 0;
-$buttonbg1: #888;
 $buttoncolor1: #FFFFFF;
-$buttonhovercolor1: #000;
 $fontsize1: 16px;
 $padding1: 30px 50px 30px 50px;
 $margin1: 0px auto 20px;
@@ -30,6 +32,14 @@ $bg1: #FFFFFF;
 
 .region.#{$region} div#region-form-step-0 {
 
+}
+
+.region.#{$region} h1 {
+	color: $color2;
+}
+
+.region.#{$region} h2 {
+	color: $color1;
 }
 
 .region.#{$region} #region-form-step-0{
@@ -116,13 +126,13 @@ $bg1: #FFFFFF;
 
 .region.#{$region} #form-container p {
     font-size: 18px;
-    color: $bgcolor6;
+    color: $color1;
     line-height: 28px;
 }
 
 .region.#{$region} .checkbox label {
     font-size: 18px;
-    color: $bgcolor6;
+    color: $color1;
     line-height: 20px;
 }
  
@@ -158,11 +168,27 @@ $bg1: #FFFFFF;
     padding: 20px;
 }
 
+.region.#{$region} button#test-speed-btn {
+    border-radius: 20px;
+		transition: .5s ease-in-out;
+		font-size:26px;
+		width: 250px;
+    padding: 20px;
+    background-color:$bgcolor6;
+}
+
 .region.#{$region} button#test-speed-btn:hover {
-    background-color:#538b8b;
+    background-color:$bgcolor7;
 		opacity:1;
 }
 
+.region.#{$region} .export-btn {
+    background-color:$bgcolor6;
+}
+
+.region.#{$region} .export-btn:hover {
+    background-color:$bgcolor7;
+}
 
 .region.#{$region}  button#enterpricebtn {
     margin-top: 10px;
@@ -171,11 +197,34 @@ $bg1: #FFFFFF;
     color: $buttoncolor1;
     border-radius: 10px;
     border: 0;
-    background-color: $buttonbg1;
+    background-color: $bgcolor6;
     font-weight: 600;
 		transition:0.5s ease-in-out;
 }
 
 .region.#{$region}  button#enterpricebtn:hover {
-    background-color: $buttonhovercolor1;
+    background-color: $bgcolor7;
+}
+
+.region.#{$region} .background-container {
+    background: $bgcolor1;
+    padding: 20px;
+}
+
+.region.#{$region} .container {
+    padding: 30px;
+}
+
+.region.#{$region}  h3 {
+    color: $color1;
+}
+
+.region.#{$region} h4 {
+    color: $color2;
+}
+
+.region.#{$region} table.col-md-6.text-center {
+    float: none;
+    margin: auto;
+		width: auto;
 }

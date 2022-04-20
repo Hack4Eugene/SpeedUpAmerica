@@ -36,14 +36,14 @@ Rails.application.routes.draw do
   get 'embed', to: 'submissions#embed', defaults: { format: :js }, constraints: { format: :js }
 
   # region routes
-  get 'region-results/*regionname', to: 'region_submissions#result_page', as: :regionresult_page, constraints: RestrictedRegionListConstraint.new
-  get 'region-result/:test_id', to: 'region_submissions#show', as: :regionsubmission
+  get 'region-results/*regionname', to: 'region_submissions#result_page', as: :region_result_page, constraints: RestrictedRegionListConstraint.new
+  get 'region-result/:test_id', to: 'region_submissions#show', as: :region_submission
   post 'region-stats/groupby/*regionname', to: 'region_submissions#tileset_groupby', defaults: { format: :json }, constraints: RestrictedRegionListConstraint.new
   get 'region_speed_data/*regionname', to: 'region_submissions#speed_data', constraints: RestrictedRegionListConstraint.new
   get 'region_internet-stats/*regionname', to: redirect('region-all-results'), constraints: RestrictedRegionListConstraint.new
   get 'region-embed/*regionname', to: 'region_submissions#embed', defaults: { format: :js }, constraints: { format: :js }
   get 'region/*regionname', to: 'region#index', defaults: {
-	regionname: 'oregon' }, constraints: RestrictedRegionListConstraint.new
+	regionname: 'Oregon' }, constraints: RestrictedRegionListConstraint.new
 
   get '/:page', to: 'static#show'
   root 'home#index'
