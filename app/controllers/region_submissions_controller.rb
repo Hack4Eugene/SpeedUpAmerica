@@ -4,34 +4,42 @@ class RegionSubmissionsController < ApplicationController
 
   before_action :validate_referer, only: [:show]
   before_action :initialize_stats_data, only: [:show, :embeddable_view]
-  before_action :set_submission, only: [:show]
-  before_action :set_selected_providers, only: [:result_page]
-  before_action :set_feature_blocks, only: [:result_page]
-  before_action :set_selected_providers_for_submission, only: [:show]
+  before_action :set_region_submission, only: [:show]
+  before_action :set_selected_providers, only: [:region_result_page]
+  before_action :set_feature_blocks, only: [:region_result_page]
+  before_action :set_selected_providers_for_region_submission, only: [:show]
   before_action :set_selected_zip_codes, only: [:show]
   skip_before_action :verify_authenticity_token, only: [:embed]
+
+
 
   def show
   end
 
+
   def create
-    data = submission_params
+    data = region_submission_params
 
     # Use remote IP from connection or headers
     data[:ip_address] = request.remote_ip
 
-    submission = Submission.create_submission(data)
-    redirect_to submission_path(submission)
+    region_submission = RegionSubmission.create_region_submission(data)
+
+	@regionname = region_submission.region;
+    #redirect_to region_submission_path(region_submission)
+
+	render 'region_show', locals: {region_submission: region_submission}
+	#render json: data
   end
 
   def tileset_groupby
-    data = Submission.fetch_tileset_groupby(params)
+    data = RegionSubmission.fetch_tileset_groupby(params)
     render json: data
   rescue StandardError => e
     render status: 500, json: {'status': 'error', 'error': e.message}
   end
 
-  def result_page
+  def region_result_page
   end
 
   def embeddable_view
@@ -48,7 +56,7 @@ class RegionSubmissionsController < ApplicationController
       render status: 400, json: {'status': 'error', 'error': 'Bad request: missing provider'}
     end
 
-    data = Submission.internet_stats_data(statistics) || []
+    data = RegionSubmission.internet_stats_data(statistics) || []
     render json: data
   end
 
@@ -58,7 +66,7 @@ class RegionSubmissionsController < ApplicationController
 
   private
 
-    def render_csv
+    def region_render_csv
       set_file_headers
       set_streaming_headers
 
@@ -68,12 +76,12 @@ class RegionSubmissionsController < ApplicationController
       self.response_body = csv_lines(params)
     end
 
-    def set_submission
-      @submission = Submission.find_by_test_id(params[:test_id])
+    def set_region_submission
+      @region_submission = RegionSubmission.find_by_test_id(params[:test_id])
     end
 
     def set_file_headers
-      file_name = "submissions_#{Time.now.to_i}.csv"
+      file_name = "region_submissions_#{Time.now.to_i}.csv"
       headers["Content-Type"] = "text/csv"
       headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
     end
@@ -85,20 +93,20 @@ class RegionSubmissionsController < ApplicationController
 
     def csv_lines(params)
       Enumerator.new do |out|
-        out << Submission.csv_header.to_s
+        out << RegionSubmission.csv_header.to_s
 
         #ideally you'd validate the params, skipping here for brevity
-        Submission.find_in_batches(params[:date_range]) do |submission|
-          out << submission.to_csv_row.to_s
+        RegionSubmission.find_in_batches(params[:date_range]) do |region_submission|
+          out << region_submission.to_csv_row.to_s
         end
       end
     end
 
-    def submission_params
-      params.require(:submission).permit(
+    def region_submission_params
+      params.require(:region_submission).permit(
         :latitude, :longitude, :accuracy, :actual_down_speed, :actual_upload_speed,
-        :testing_for, :address, :zip_code, :provider, :connected_with, :monthly_price,
-        :provider_down_speed, :rating, :ping, :hostname
+        :testing_for, :address, :zip_code, :provider, :connected_with,:access,:whynoaccess,:address,:zip_code,:monthly_price,
+        :provider_down_speed, :rating, :ping, :hostname, :region
       )
     end
 
@@ -107,27 +115,27 @@ class RegionSubmissionsController < ApplicationController
     end
 
     def initialize_stats_data
-      @all_results = Submission.get_all_results
+      @all_results = RegionSubmission.get_all_results
     end
 
     def set_selected_zip_codes
-      if @submission.zip_code.nil?
+      if @region_submission.zip_code.nil?
         @selected_zip_codes = nil
         return
       end
 
-      @selected_zip_codes = @submission.zip_code
+      @selected_zip_codes = @region_submission.zip_code
     end
 
-    def set_selected_providers_for_submission
+    def set_selected_providers_for_region_submission
       # if zip_code not set for some reason get top 3
-      if @submission.zip_code.nil?
+      if @region_submission.zip_code.nil?
         return set_selected_providers
       end
 
-      ids = Submission.unscoped.select('p.id AS id', 'count(*) AS count')
-        .joins("LEFT JOIN provider_statistics AS p ON submissions.provider = p.name")
-        .where(:zip_code => @submission.zip_code).where("submissions.test_date >= CURDATE() - INTERVAL 1 month")
+      ids = RegionSubmission.unscoped.select('p.id AS id', 'count(*) AS count')
+        .joins("LEFT JOIN provider_statistics AS p ON region_submissions.provider = p.name")
+        .where(:zip_code => @region_submission.zip_code).where("region_submissions.test_date >= CURDATE() - INTERVAL 1 month")
         .group('p.id').order('count DESC').first(3).map(&:id)
 
       @selected_provider_ids = ids

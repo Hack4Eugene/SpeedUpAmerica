@@ -27,23 +27,23 @@ module RegionSubmissionsHelper
     ratio < 0 ? 'red-color' : 'green-color'
   end
 
-  def compared_speed_percentage(submission)
-    lower_speed_count = Submission.with_type_and_lower_speed(submission.testing_for, submission.actual_down_speed).count
-    total_speed_count = Submission.with_connection_type(submission.testing_for).count
+  def compared_speed_percentage(region_submission)
+    lower_speed_count = RegionSubmission.with_type_and_lower_speed(region_submission.testing_for, region_submission.actual_down_speed).count
+    total_speed_count = RegionSubmission.with_connection_type(region_submission.testing_for).count
     percentage = lower_speed_count/total_speed_count.to_f*100
     css_class = percentage > 50 && 'green-color' || 'red-color'
     "<span class=#{css_class}>Faster than <span class='percent-val'>#{percentage.round(2)}%</span></span>".html_safe
   end
 
-  def actual_speed_percentage(submission)
-    speed_difference = submission.provider_down_speed.to_f - submission.actual_down_speed.to_f
-    percentage = submission.provider_down_speed.zero? && 0 || speed_difference/submission.provider_down_speed.to_f*100
+  def actual_speed_percentage(region_submission)
+    speed_difference = region_submission.provider_down_speed.to_f - region_submission.actual_down_speed.to_f
+    percentage = region_submission.provider_down_speed.zero? && 0 || speed_difference/region_submission.provider_down_speed.to_f*100
     return "<span class='red-color'><span class='percent-val'>#{percentage.abs.round(2)}%</span> slower</span>".html_safe if speed_difference >= 0
     return "<span class='green-color'><span class='percent-val'>#{percentage.abs.round(2)}%</span> faster</span>".html_safe if speed_difference < 0
   end
 
-  def internet_speed(submissions, type)
-    speeds = submissions.pluck(:actual_down_speed).sort
+  def internet_speed(region_submissions, type)
+    speeds = region_submissions.pluck(:actual_down_speed).sort
     return speeds.first if type == 'slowest'
     return (speeds.sum/speeds.count.to_f).round(2) if type == 'average'
     return speeds.last if type == 'fastest'
@@ -77,7 +77,7 @@ module RegionSubmissionsHelper
   end
 
   def get_group_bys()
-    group_bys = Submission::MAP_FILTERS[:group_by]
+    group_bys = RegionSubmission::MAP_FILTERS[:group_by]
 
     if @feature_blocks == true
       group_bys[:census_block] = 'census_block'

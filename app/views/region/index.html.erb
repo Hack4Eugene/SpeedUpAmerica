@@ -7,6 +7,8 @@
     <%= form_for @region_submission, url: region_submissions_path, class: 'form-horizontal' do |f| %>
       <%= f.hidden_field :latitude %>
       <%= f.hidden_field :longitude %>
+      <%= f.hidden_field :testing_for %>
+      <%= f.hidden_field :provider %>
       <%= f.hidden_field :accuracy %>
       <%= f.hidden_field :actual_down_speed %>
       <%= f.hidden_field :actual_upload_speed %>
@@ -66,5 +68,5 @@
 
 <% content_for :js_init do %>
   NdtSpeedTest.init();
-  console.log('NdtSpeedTest.init');
+  console.log('RegionNdtSpeedTest.init 2');
 <% end %>

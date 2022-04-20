@@ -3,7 +3,7 @@
 
 'use strict';
 
-function RegionNDTmeter(body_element) {
+function NDTmeter(body_element) {
   this.meter = undefined;
   this.arc = undefined;
   this.state = undefined;
@@ -37,13 +37,13 @@ function RegionNDTmeter(body_element) {
   this.create();
 }
 
-RegionNDTmeter.prototype.update_display = function (status, information) {
+NDTmeter.prototype.update_display = function (status, information) {
   d3.select('#ndt-status').text(status);
   d3.select('text.information').text(information);
   return;
 };
 
-RegionNDTmeter.prototype.create = function () {
+NDTmeter.prototype.create = function () {
 
   var ndtDiv = d3.select('#ndt-div');
   var width = $('#ndt-div').data('width');
@@ -99,7 +99,7 @@ RegionNDTmeter.prototype.create = function () {
   return;
 };
 
-RegionNDTmeter.prototype.onstart = function (server) {
+NDTmeter.prototype.onstart = function (server) {
   var that = this;
   var meter_movement = function () {
     that.meter_movement();
@@ -112,13 +112,13 @@ RegionNDTmeter.prototype.onstart = function (server) {
   d3.timer(meter_movement);
 };
 
-RegionNDTmeter.prototype.onstatechange = function (returned_message) {
+NDTmeter.prototype.onstatechange = function (returned_message) {
   this.state = returned_message;
   this.time_switched = new Date().getTime();
   this.update_display(this.NDT_STATUS_LABELS[returned_message], '...');
 };
 
-RegionNDTmeter.prototype.onprogress = function (returned_message, passedResults) {
+NDTmeter.prototype.onprogress = function (returned_message, passedResults) {
   var throughputRate;
   var progress_label = this.NDT_STATUS_LABELS[this.state];
 
@@ -130,7 +130,7 @@ RegionNDTmeter.prototype.onprogress = function (returned_message, passedResults)
   }
 };
 
-RegionNDTmeter.prototype.onfinish = function (passed_results) {
+NDTmeter.prototype.onfinish = function (passed_results) {
   console.log(passed_results)
   var resultString,
     dy_current,
@@ -149,26 +149,26 @@ RegionNDTmeter.prototype.onfinish = function (passed_results) {
         passed_results.hasOwnProperty(metric_name)) {
       if (metric_name == 'MinRTT') {
         resultString = Number(passed_results[metric_name]).toFixed(2);
-		if (document.getElementById('submission_ping'))
+		if (document.getElementById('region_submission_ping'))
 		{
-			 document.getElementById('submission_ping').value = resultString;
+			 document.getElementById('region_submission_ping').value = resultString;
 		}
 
       } else {
         resultString = Number(passed_results[metric_name] /
           1000).toFixed(2);
         if (metric_name == 's2cRate') {
-			if (document.getElementById('submission_actual_down_speed'))
+			if (document.getElementById('region_submission_actual_down_speed'))
 			{
-				document.getElementById('submission_actual_down_speed').value = resultString;
+				document.getElementById('region_submission_actual_down_speed').value = resultString;
 			}
 
 
         }
         if (metric_name == 'c2sRate') {
-			if (document.getElementById('submission_actual_upload_speed'))
+			if (document.getElementById('region_submission_actual_upload_speed'))
 			{
-			document.getElementById('submission_actual_upload_speed').value = resultString;
+			document.getElementById('region_submission_actual_upload_speed').value = resultString;
 			}
 
         }
@@ -182,17 +182,17 @@ RegionNDTmeter.prototype.onfinish = function (passed_results) {
 
   d3.selectAll("#progress-meter .foreground").classed("complete", true);
 
-  $('#new_submission').submit();
+  $('#new_region_submission').submit();
   document.getElementById('ndt-div').innerHTML = '<h3>Submitting Data...</h3>';
 };
 
-RegionNDTmeter.prototype.onerror = function (error_message) {
+NDTmeter.prototype.onerror = function (error_message) {
   d3.timer.flush();
   d3.selectAll("#progress-meter").classed("progress-error", true);
   this.update_display(error_message, "!");
 };
 
-RegionNDTmeter.prototype.reset_meter = function () {
+NDTmeter.prototype.reset_meter = function () {
   d3.select('#s2cRate')
     .text('?')
     .classed('metric-value', false)
@@ -206,7 +206,7 @@ RegionNDTmeter.prototype.reset_meter = function () {
   return;
 };
 
-RegionNDTmeter.prototype.meter_movement = function () {
+NDTmeter.prototype.meter_movement = function () {
   var end_angle,
     start_angle,
     progress_label,
