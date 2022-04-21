@@ -132,7 +132,7 @@ class RegionSubmission < ActiveRecord::Base
     region_submission.save
 
     #region_submission.populate_location
-    region_submission.populate_boundaries
+    #region_submission.populate_boundaries
 
     region_submission
   end
