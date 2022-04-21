@@ -36,12 +36,16 @@ phases:
       - aws s3 cp s3://sua-datafiles/tl_2018_us_zcta510.json data/tl_2018_us_zcta510.json
       - aws s3 cp s3://sua-datafiles/tl_2018_us_county.json data/tl_2018_us_county.json
       - aws s3 cp s3://sua-datafiles/tl_2018_us_state.json data/tl_2018_us_state.json
+      - REPOSITORY_URI=238241637211.dkr.ecr.us-west-2.amazonaws.com/speedupamerica
+      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
+      - REPOSITORY_URI=238241637211.dkr.ecr.us-west-2.amazonaws.com/speedupamerica
+      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
