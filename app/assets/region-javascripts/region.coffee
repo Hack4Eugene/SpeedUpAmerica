@@ -172,8 +172,11 @@ region_take_the_test = ->
 # 1st box  choice 1 checked - HAVE ACCESS
     if $('#access_have').prop('checked')
       $('#access_donothave').prop('checked',false)
-      $('#connected-with').removeClass('hide')
-      $('#connectedornot-div').removeClass('hide')
+      #$('#connected-with').removeClass('hide')
+      #$('#connectedornot-div').removeClass('hide')
+      $('#connectedornot-div').addClass('hide')
+      $('#price-div').removeClass('hide')
+      $('#address-div').removeClass('hide')
       $('#nointernet').addClass('hide')
       $('#addresswithinternet').removeClass('hide')
       $('#addresswithoutinternet').addClass('hide')
@@ -181,12 +184,16 @@ region_take_the_test = ->
       $('#access-div').addClass('shrink') #shrink the first div
       $('#price-text-notconnected').addClass('hide')
       $('#price-text-connected').removeClass('hide')
+      $(".checkboxes-container input[name='region_submission[whynoaccess]']").each ->
+        $(this).prop('checked', false)
+				window.scrollBy(0,150)
 
 # 1st box choice 2 checked - DO NOT HAVE ACCESS
     if $('#access_donothave').prop('checked')
       $('#access_have').prop('checked',false)
       $('#price-div').addClass('hide')
       $('#connectedornot-div').removeClass('hide')
+      $('#address-div').addClass('hide')
       $('#nointernet').removeClass('hide')
       $('#connected-with').addClass('hide')
       $('#addresswithinternet').addClass('hide')
@@ -195,7 +202,7 @@ region_take_the_test = ->
       $('#access-div').addClass('shrink') #shrink the first div
       $('#price-text-connected').addClass('hide')
       $('#price-text-notconnected').removeClass('hide')
-
+				window.scrollBy(0,150)
 
 #if $('#access_have').prop('checked', false) and $('#access_donothave').prop('checked', false)
           #$('#connectedornot-div').addClass('hide')
@@ -211,13 +218,16 @@ region_take_the_test = ->
 
 # 2nd box group 2 check - WHY NOT CONNECTED
   $(".checkboxes-container input[name='region_submission[whynoaccess]']").on 'change', ->
-     
+    
       $('#price-div').removeClass('hide')
+      $('#address-div').removeClass('hide')
+
 
       $('#access-div').addClass('shrink') #shrink the first div
       $(".checkboxes-container input[name='region_submission[whynoaccess]']").each ->
         $(this).prop('checked', false)
       $(this).prop('checked', true)
+			window.scrollBy(0,200) 
 
 
 # 3rd box - PRICE
@@ -234,7 +244,7 @@ location_finished = ->
 			#console.log('address-input prop val:' + $('#address-input').prop('value'));
 			#console.log('address-input placeholder:' + $('#address-input').attr('placeholder'));
 			#console.log('address-input textContent:' + $('#address-input').textContent);
-			
+				window.scrollBy(0,280)			
 
 
 #$("#address-input").on 'change', ->

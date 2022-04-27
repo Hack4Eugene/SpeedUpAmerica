@@ -9,7 +9,7 @@
 <% # STEP 1 HAVE ACCESS %>
   <div class='checkboxes-container' id="access-div">
 
-    <p class='bold'>1. Please select one of the following options below:</p>
+    <p class='bold'>Please select one of the following options below:</p>
 
     <div class='checkbox checkbox-info'>
       <%= f.check_box :access, { id: 'access_have', data: { target: '#form-step-1' } }, 'Have access', false %>
@@ -29,7 +29,7 @@
 <% # STEP 2 HOW CONNECTED  OR WHY NOT CONNECTION  %>
   <div id="connectedornot-div" class="checkboxes-container hide">
 	<div id="connected-with" class="hide">
-		<p class='bold'>2. I am currently connected to the internet from:</p>
+		<p class='bold'>I am currently connected to the internet from:</p>
 
 		<div class='checkbox checkbox-info'>
 			<%= f.check_box :connected_with, { id: 'connected_with_wired', data: { target: '#form-step-1' } }, 'Wired', false %>
@@ -54,7 +54,7 @@
 
 
 	<div id="nointernet" class="hide">
-		<p class='bold'>2. If you don't have internet access at your home, please indicate the reason why:</p>
+		<p class='bold'>If you don't have internet access at your home, please indicate the reason why:</p>
 
 		<div class='checkbox checkbox-info'>
 			<%= f.check_box :whynoaccess, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'Not affordable', false %>
@@ -74,16 +74,16 @@
 		<%= f.label :monthly_price, class: 'col-md-6' do %>
           <p class='bold'>
 		  
-		  <span id="price-text-connected">3. What is the estimated price you pay per month</span>
+		  <span id="price-text-connected">What is the estimated price you pay per month (optional)<br></span>
 
-		  <span id="price-text-notconnected" class="hide">3. What is the estimated price you would pay per month for internet</span>
+		  <span id="price-text-notconnected" class="hide">What is the estimated price you would pay per month for internet (optional)<br></span>
 
           <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='By providing your monthly internet cost, we help determine if you are getting the internet speed and value you should be expecting.'></span></p>
         <% end %>
 
         <div class='col-md-4 restricted-field text-left'>
           <%= f.number_field :monthly_price, within: 0..200, class: 'form-control pull-right numeric', disabled: false %>
-		  <button type="button" id="enterpricebtn">ENTER</button>
+		  <!-- <button type="button" id="enterpricebtn">ENTER</button> -->
           <span id='price_error_span' class='hide'>Error: This should not be greater than 200</span>
         </div>
 
@@ -92,11 +92,11 @@
 <% # STEP 4 ADDRESS  %>
    <div id="address-div" class="hide">
 	<div id="addresswithinternet" class="hide">
-		<p class='bold'>4. Please enter your address</p>
+		<p class='bold'>Please enter your address</p>
 	</div>
 
 	<div id="addresswithoutinternet" class="hide">
-		<p class='bold'>4. Please enter your address even if you do not have internet at home.</p>
+		<p class='bold'>I'd like to register my address as a location that doesn't have internet</p>
 	</div>
 
 		<span id='location-address-input' class=''>
@@ -107,7 +107,7 @@
 <% # STEP 5 TEST BUTTON  %>
 	 <div id="testbutton-div" class="hide">
 		<span class='block-element'>
-		<p class='bold'>5. <%= button_tag 'Test My Speed', type: 'button', id: 'test-speed-btn', class: 'button button-primary', disabled: false %></p>
+		<p class='bold'><%= button_tag 'Test My Speed', type: 'button', id: 'test-speed-btn', class: 'button button-primary', disabled: false %></p>
 		</span>
 	</div>
 
