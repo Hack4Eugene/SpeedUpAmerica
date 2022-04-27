@@ -20,4 +20,7 @@
   </div>
 </div>
 
-  <%= render 'about_speedup' %>
+<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center export-data-div' style="display:none;">
+    <%= link_to 'Export Data', region_export_csv_region_submissions_path, method: :post, class: 'btn btn-lg btn-primary export-btn' %>
+</div>
+  <%#= render 'about_speedup' %>

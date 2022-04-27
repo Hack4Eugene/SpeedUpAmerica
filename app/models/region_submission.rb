@@ -100,6 +100,9 @@ class RegionSubmission < ActiveRecord::Base
 	  region_submission.actual_price = 0
     end
 
+	if !region_submission.monthly_price.present?
+		region_submission.monthly_price = 0
+	end 
 	region_submission.region = region_submission.region.titleize
     region_submission.test_date = Date.today
     region_submission.test_type = 'duplicate' if duplicate_ipa_tests.present?

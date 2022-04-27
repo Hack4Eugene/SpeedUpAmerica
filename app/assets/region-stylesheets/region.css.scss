@@ -268,3 +268,30 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 .region .banner-text {
     padding: 0px; 
 }
+
+/* tooltip adjustment */
+.region .glyphicon {
+    display: block;
+}
+
+.region nav.navbar {
+    display: none;
+}
+
+.region #form-container {
+    padding: 40px 30px 0px;
+}
+
+/* make address wider */
+.region .algolia-places {
+    width: 100%;
+}
+
+/* for results page */
+.region .title-container {
+    margin-top: 0px;
+}
+
+.region .tooltip{
+	/* background-color:$color1; */
+}
