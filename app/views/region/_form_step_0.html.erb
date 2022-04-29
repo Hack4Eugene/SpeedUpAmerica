@@ -20,11 +20,15 @@
       <%= f.check_box :access, { id: 'access_donothave', data: { target: '#form-step-1' } }, 'No access', false %>
       <%= label_tag :access_donothave, "I do NOT have internet access at my home".html_safe %>
     </div>
-
-	<span class='block-element' id="datapolicy">
-	    <p>By entering your information you agree to the <a href="/faq" target="_blank">data policy</a>. </p>
-	</span>
   </div>
+
+
+  <div class='checkboxes-container hide' id="agree-div">
+    <div class='checkbox checkbox-info'>
+		<%= check_box_tag(:agree) %>
+		<%= label_tag(:agree, @disclaimerlink) %>
+    </div>
+   </div>
 
 <% # STEP 2 HOW CONNECTED  OR WHY NOT CONNECTION  %>
   <div id="connectedornot-div" class="checkboxes-container hide">
@@ -72,13 +76,11 @@
 <% # STEP 3 PRICE  %>
 	<div id="price-div" class="hide">
 		<%= f.label :monthly_price, class: 'col-md-6' do %>
-          <p class='bold'>
+			<p class='bold'>
 		  
-		  <span id="price-text-connected">What is the estimated price you pay per month (optional)<br></span>
+			<span id="price-text-connected">What is the estimated price you pay per month (optional)<br></span>
 
-		  <span id="price-text-notconnected" class="hide">What is the estimated price you would pay per month for internet (optional)<br></span>
-
-          <span rel='tooltip' class='glyphicon glyphicon-info-sign info-color' title='By providing your monthly internet cost, we help determine if you are getting the internet speed and value you should be expecting.'></span></p>
+			</p>
         <% end %>
 
         <div class='col-md-4 restricted-field text-left'>

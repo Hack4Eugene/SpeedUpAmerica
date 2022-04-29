@@ -159,50 +159,65 @@ region_take_the_test = ->
 # 1st box clicked
   $(".checkboxes-container input[name='region_submission[access]']").on 'change', ->
 
-
-    #$('#location_button').prop('disabled', false)
-    #if $("#location_success").prop('value') == 'false'
-      #$('#test-speed-btn').prop('disabled', true)
-      #$('#test-speed-btn').addClass('button-disabled')
+    $('#agree-div').removeClass('hide')
     $(".checkboxes-container input[name='region_submission[access]']").each ->
       $(this).prop('checked', false)
     $(this).prop('checked', true)
+    $('#agree').prop('checked', false)
+    $('#address-div').addClass('hide')
+    $('#addresswithinternet').addClass('hide')
+    $('#addresswithoutinternet').addClass('hide')
+    $('#price-div').addClass('hide')
+    $('#connectedornot-div').addClass('hide')
+    $('#testbutton-div').addClass('hide')
+
+
 
 
 # 1st box  choice 1 checked - HAVE ACCESS
-    if $('#access_have').prop('checked')
-      $('#access_donothave').prop('checked',false)
-      #$('#connected-with').removeClass('hide')
-      #$('#connectedornot-div').removeClass('hide')
-      $('#connectedornot-div').addClass('hide')
-      $('#price-div').removeClass('hide')
-      $('#address-div').removeClass('hide')
-      $('#nointernet').addClass('hide')
-      $('#addresswithinternet').removeClass('hide')
-      $('#addresswithoutinternet').addClass('hide')
-      $('#test-speed-btn').prop('innerHTML', 'Test My Speed')
-      $('#access-div').addClass('shrink') #shrink the first div
-      $('#price-text-notconnected').addClass('hide')
-      $('#price-text-connected').removeClass('hide')
-      $(".checkboxes-container input[name='region_submission[whynoaccess]']").each ->
-        $(this).prop('checked', false)
-				window.scrollBy(0,150)
+
+  $("#agree").on 'change', ->
+    if $('#agree').prop('checked')
+      if $('#access_have').prop('checked')
+        $('#access_donothave').prop('checked',false)
+        #$('#connected-with').removeClass('hide')
+        #$('#connectedornot-div').removeClass('hide')
+        $('#connectedornot-div').addClass('hide')
+        $('#price-div').removeClass('hide')
+        $('#address-div').removeClass('hide')
+        $('#nointernet').addClass('hide')
+        $('#addresswithinternet').removeClass('hide')
+        $('#addresswithoutinternet').addClass('hide')
+        $('#test-speed-btn').prop('innerHTML', 'Test My Speed')
+        $('#access-div').addClass('shrink') #shrink the first div
+        $('#price-text-connected').removeClass('hide')
+        $(".checkboxes-container input[name='region_submission[whynoaccess]']").each ->
+          $(this).prop('checked', false)
+        window.scrollBy(0,150)
 
 # 1st box choice 2 checked - DO NOT HAVE ACCESS
-    if $('#access_donothave').prop('checked')
-      $('#access_have').prop('checked',false)
-      $('#price-div').addClass('hide')
-      $('#connectedornot-div').removeClass('hide')
+      if $('#access_donothave').prop('checked')
+        $('#access_have').prop('checked',false)
+        $('#price-div').addClass('hide')
+        $('#connectedornot-div').removeClass('hide')
+        $('#address-div').addClass('hide')
+        $('#nointernet').removeClass('hide')
+        $('#connected-with').addClass('hide')
+        $('#addresswithinternet').addClass('hide')
+        $('#addresswithoutinternet').removeClass('hide')
+        $('#test-speed-btn').prop('innerHTML', 'Submit')
+        $('#access-div').addClass('shrink') #shrink the first div
+        $('#price-text-connected').addClass('hide')
+        $('#price-text-notconnected').removeClass('hide')
+        window.scrollBy(0,150)
+
+    else
       $('#address-div').addClass('hide')
-      $('#nointernet').removeClass('hide')
-      $('#connected-with').addClass('hide')
       $('#addresswithinternet').addClass('hide')
-      $('#addresswithoutinternet').removeClass('hide')
-      $('#test-speed-btn').prop('innerHTML', 'Submit')
-      $('#access-div').addClass('shrink') #shrink the first div
-      $('#price-text-connected').addClass('hide')
-      $('#price-text-notconnected').removeClass('hide')
-				window.scrollBy(0,150)
+      $('#addresswithoutinternet').addClass('hide')
+      $('#price-div').addClass('hide')
+      $('#connectedornot-div').addClass('hide')
+      $('#testbutton-div').addClass('hide')
 
 #if $('#access_have').prop('checked', false) and $('#access_donothave').prop('checked', false)
           #$('#connectedornot-div').addClass('hide')
@@ -219,7 +234,7 @@ region_take_the_test = ->
 # 2nd box group 2 check - WHY NOT CONNECTED
   $(".checkboxes-container input[name='region_submission[whynoaccess]']").on 'change', ->
     
-      $('#price-div').removeClass('hide')
+      $('#price-div').addClass('hide')
       $('#address-div').removeClass('hide')
 
 
