@@ -65,7 +65,19 @@ $bg1: #FFFFFF;
 		margin: $margin1;
 }
 
-
+.region.#{$region} div#agree-div {
+    background:$bgcolor4;
+    display: block;
+    padding: $padding1;
+    text-align: left;
+		border-radius: $border-radius1;
+		border: $border1;
+    box-shadow: $box-shadow1;
+		font-size: $fontsize1;
+		max-width: 700px;
+		width:100%;
+		margin: $margin1;
+}
 
 .region.#{$region} #connectedornot-div{
     background:$bgcolor2;
