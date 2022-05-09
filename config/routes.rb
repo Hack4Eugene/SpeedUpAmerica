@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   class RestrictedRegionListConstraint
     def matches?(request)
-      request[:regionname] =~ /\ball\b|\boregon\b|\bOregon\b|\bwashington\b|\bWashington\b|\bcalifornia\b|\bCalifornia\b/
+      request[:regionname] =~ /\ball\b|\boregon\b|\bOregon\b|\boregon-es\b|\bOregon-es\b|\bwashington\b|\bWashington\b|\bcalifornia\b|\bCalifornia\b/
     end
   end
 

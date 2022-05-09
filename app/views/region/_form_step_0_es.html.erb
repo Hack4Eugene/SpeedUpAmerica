@@ -9,16 +9,16 @@
 <% # STEP 1 HAVE ACCESS %>
   <div class='checkboxes-container' id="access-div">
 
-    <p class='bold'>Please select one of the following options below:</p>
+    <p class='bold'>Seleccione una de las opciones a continuación:</p>
 
     <div class='checkbox checkbox-info'>
       <%= f.check_box :access, { id: 'access_have', data: { target: '#form-step-1' } }, 'Have access', false %>
-      <%= label_tag :access_have, "I have internet access at my home".html_safe %>
+      <%= label_tag :access_have, "Tengo acceso a Internet en mi casa.".html_safe %>
     </div>
 
     <div class='checkbox checkbox-info'>
       <%= f.check_box :access, { id: 'access_donothave', data: { target: '#form-step-1' } }, 'No access', false %>
-      <%= label_tag :access_donothave, "I do NOT have internet access at my home".html_safe %>
+      <%= label_tag :access_donothave, "NO tengo acceso a Internet en mi casa.".html_safe %>
     </div>
   </div>
 
@@ -58,16 +58,16 @@
 
 
 	<div id="nointernet" class="hide">
-		<p class='bold'>If you don't have internet access at your home, please indicate the reason why:</p>
+		<p class='bold'>Si no tiene acceso a Internet en su casa, indique el motivo:</p>
 
 		<div class='checkbox checkbox-info'>
 			<%= f.check_box :whynoaccess, { id: 'nointernet_notaffordable', data: { target: '#form-step-1' } }, 'Not affordable', false %>
-			<%= label_tag :nointernet_notaffordable, "Internet is not affordable".html_safe %>
+			<%= label_tag :nointernet_notaffordable, "Internet no es asequible.".html_safe %>
 		</div>
 
 		<div class='checkbox checkbox-info'>
 			<%= f.check_box :whynoaccess, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'Not available', false %>
-			<%= label_tag :nointernet_notavailable, "Internet is not available in my area".html_safe %>
+			<%= label_tag :nointernet_notavailable, "Internet no está disponible en mi área.".html_safe %>
 		</div>
 	</div>
 
@@ -78,7 +78,7 @@
 		<%= f.label :monthly_price, class: 'col-md-6' do %>
 			<p class='bold'>
 		  
-			<span id="price-text-connected">What is the estimated price you pay per month (optional)<br></span>
+			<span id="price-text-connected">¿Cuál es el precio estimado que paga por mes? (opcional)<br></span>
 
 			</p>
         <% end %>
@@ -94,37 +94,37 @@
 <% # STEP 4 ADDRESS  %>
    <div id="address-div" class="hide">
 	<div id="addresswithinternet" class="hide">
-		<p class='bold'>Please enter your address</p>
+		<p class='bold'>Introduzca su dirección.</p>
 	</div>
 
 	<div id="addresswithoutinternet" class="hide">
-		<p class='bold'>I'd like to register my address as a location that doesn't have internet</p>
+		<p class='bold'>Me gustaría registrar mi dirección como un lugar que no tiene Internet.</p>
 	</div>
 
 		<span id='location-address-input' class=''>
-			<input type="search" id="address-input" placeholder="Search for an address"/>
+			<input type="search" id="address-input" placeholder="Introduzca su dirección"/>
 		</span>
 	</div>
 		
 <% # STEP 5 TEST BUTTON  %>
-	<div id="testbutton-div" class="hide">
+	 <div id="testbutton-div" class="hide">
 		<span class='block-element'>
-		<p class='bold'><%= button_tag 'Test My Speed', type: 'button', id: 'test-speed-btn', class: 'button button-primary', disabled: false %></p>
+		<p class='bold'><%= button_tag 'Probar mi velocidad.', type: 'button', id: 'test-speed-btn', class: 'button button-primary', disabled: false %></p>
 		</span>
 	</div>
 
 	<div id="submitbutton-div" class="hide">
 		<span class='block-element'>
-		<p class='bold'><%= button_tag 'Submit', type: 'button', id: 'submit-btn', class: 'button button-primary', disabled: false %></p>
+		<p class='bold'><%= button_tag 'Enviar', type: 'button', id: 'submit-btn', class: 'button button-primary', disabled: false %></p>
 		</span>
 	</div>
-	
+
 	<div id="noacess-notaffordable-div" class="hide">
-		<p class='bold'>Thank you for your participation. Get more information on state and federal government discounted Internet access programs: <a href="https://www.oregon.gov/puc/pages/oregon-lifeline.aspx" target="_blank">https://www.oregon.gov/puc/pages/oregon-lifeline.aspx</a></p>
+		<p class='bold'>Gracias por su participación. Obtenga más información sobre programas del gobierno estatal y federal que ofrecen acceso a Internet con descuento: <a href="https://www.oregon.gov/puc/pages/oregon-lifeline.aspx" target="_blank">https://www.oregon.gov/puc/pages/oregon-lifeline.aspx</a></p>
 	</div>
 
 	<div id="noacess-noaccess-div" class="hide">
-		<p class='bold'>Thank you for your participation.</p>
+		<p class='bold'>Gracias por su participación.</p>
 	</div>
 
 </div>
