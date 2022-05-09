@@ -1,34 +1,15 @@
-/*
- * This is a manifest file that'll be compiled into region.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any styles
- * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
- * file per style scope.
+/* SpeedUp Region Theme: Oregon-es */
 
- *
- *= require region-theme-all
- *= require region-theme-california
- *= require region-theme-washington
- *= require region-theme-oregon
- */
-
-
-
-$region: region;
-$color1: #003399; /* primary color */
-$color2: #009999; /* secondary color */
+$region: oregon-es;
+$color1: #000099; /* primary color */
+$color2: #55b6c7; /* secondary color */
 $bgcolor1: #33996611;
 $bgcolor2: #ffff3311;
 $bgcolor3: #ff660011;
 $bgcolor4: #99663311;
-$bgcolor5: #6666cc11;
-$bgcolor6: #009999; /* secondary color */
-$bgcolor7: #003399; /* primary color */
+$bgcolor5: #6666cc11; 
+$bgcolor6: #55b6c7;  /* secondary color */
+$bgcolor7: #000099; /* primary color */
 $border-radius1: 26px;
 $box-shadow1: 7px 7px 7px #777777;
 $text-shadow1: 5px 5px 5px #999;
@@ -41,14 +22,14 @@ $margin1: 0px auto 20px;
 $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_landscape.jpg) center center; 
 
 
-.region .home-wrapper {
+.region.#{$region} .home-wrapper {
 /*  
   position: relative;
   z-index: 1;
 */
 }
 
-.region .home-wrapper::before {
+.region.#{$region} .home-wrapper::before {
 /*  
   content: "";
   position: absolute;
@@ -63,25 +44,24 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 */
 }
 
-
-.region h1 {
+.region.#{$region} h1 {
 	color: $color2;
 }
 
-.region h2 {
+.region.#{$region} h2 {
 	color: $color1;
 }
 
-.region div#region-form-step-0 {
+.region.#{$region} div#region-form-step-0 {
 	margin-bottom:200px;
 }
 
-.region .hide {
+.region.#{$region} .hide {
 		transition:1s ease-in-out;
 }
 
 
-.region div#access-div {
+.region.#{$region} div#access-div {
     background:$bgcolor1;
     display: block;
     padding: $padding1;
@@ -95,7 +75,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 		margin: $margin1;
 }
 
-.region div#agree-div {
+.region.#{$region} div#agree-div {
     background:$bgcolor4;
     display: block;
     padding: $padding1;
@@ -109,7 +89,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 		margin: $margin1;
 }
 
-.region #connectedornot-div{
+.region.#{$region} #connectedornot-div{
     background:$bgcolor2;
     display: block;
     padding: $padding1;
@@ -124,7 +104,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 }
 
 
-.region #address-div{
+.region.#{$region} #address-div{
     background:$bgcolor4;
     display: block;
     padding: $padding1;
@@ -138,7 +118,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 		margin: $margin1;
 }
 
-.region #price-div{
+.region.#{$region} #price-div{
     background:$bgcolor3;
     display: block;
     padding: $padding1;
@@ -153,7 +133,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 		overflow:auto;
 }
 
-.region #testbutton-div{
+.region.#{$region} #testbutton-div{
     background:$bgcolor5;
     display: block;
     padding: $padding1;
@@ -167,25 +147,25 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 		margin: $margin1;
 }
 
-.region #form-container p {
+.region.#{$region} #form-container p {
     font-size: 18px;
     color: $color1;
     line-height: 28px;
 }
 
-.region .checkbox label {
+.region.#{$region} .checkbox label {
     font-size: 18px;
     color: $color1;
     line-height: 20px;
 }
  
-.region .shrink {
+.region.#{$region} .shrink {
 	 font-size:14px;
 	 padding:10px;
 }
 
 
-.region #address-input {
+.region.#{$region} #address-input {
     font-size: 16px;
     max-width: 700px;
 		width:100%;
@@ -193,17 +173,17 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 
 
 
-.region .checkbox label::before {
+.region.#{$region} .checkbox label::before {
     width: 20px;
     height: 20px;
 }
 
-.region  .checkbox input[type="checkbox"]:checked + label::after, .checkbox input[type="radio"]:checked + label::after {
+.region.#{$region}  .checkbox input[type="checkbox"]:checked + label::after, .checkbox input[type="radio"]:checked + label::after {
     font-size: 16px;
 		margin:3px 0px 0px -22px;
 }
 
-.region button#test-speed-btn {
+.region.#{$region} button#test-speed-btn {
     border-radius: 20px;
 		transition: .5s ease-in-out;
 		font-size:26px;
@@ -212,35 +192,21 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
     background-color:$bgcolor6;
 }
 
-.region button#test-speed-btn:hover {
+.region.#{$region} button#test-speed-btn:hover {
     background-color:$bgcolor7;
 		opacity:1;
 }
 
-
-.region button#submit-btn {
-    border-radius: 20px;
-		transition: .5s ease-in-out;
-		font-size:26px;
-		width: 250px;
-    padding: 20px;
-    background-color:$color1;
-}
-
-.region button#submit-btn:hover {
-    background-color:$color2;
-		opacity:1;
-}
-
-.region .export-btn {
+.region.#{$region} .export-btn {
     background-color:$bgcolor6;
 }
 
-.region .export-btn:hover {
+.region.#{$region} .export-btn:hover {
     background-color:$bgcolor7;
 }
 
-.region  button#enterpricebtn {
+
+.region.#{$region}  button#enterpricebtn {
     margin-top: 10px;
     padding: 8px;
     font-size: 16px;
@@ -252,73 +218,31 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 		transition:0.5s ease-in-out;
 }
 
-.region  button#enterpricebtn:hover {
+.region.#{$region}  button#enterpricebtn:hover {
     background-color: $bgcolor7;
 }
 
 
-.region .background-container {
+
+.region.#{$region} .background-container {
     background: $bgcolor1;
     padding: 20px;
 }
 
-.region .container {
+.region.#{$region} .container {
     padding: 30px;
-		border-radius: 40px;
 }
 
-.region  h3 {
-    color: $color2;
-		text-shadow: $text-shadow1;
-}
-
-.region h4 {
+.region.#{$region}  h3 {
     color: $color1;
 }
 
-.region table.col-md-6.text-center {
+.region.#{$region} h4 {
+    color: $color2;
+}
+
+.region.#{$region} table.col-md-6.text-center {
     float: none;
     margin: auto;
 		width: auto;
-}
-
-
-.region h1,.region h2 ,.region h3  {
-    margin-bottom:20px
-}
-
-
-.region .results-banner-text {
-    padding-top: 0px; 
-}
-
-.region .banner-text {
-    padding: 0px; 
-}
-
-/* tooltip adjustment */
-.region .glyphicon {
-    display: block;
-}
-
-.region nav.navbar {
-    display: none;
-}
-
-.region #form-container {
-    padding: 40px 30px 0px;
-}
-
-/* make address wider */
-.region .algolia-places {
-    width: 100%;
-}
-
-/* for results page */
-.region .title-container {
-    margin-top: 0px;
-}
-
-.region .tooltip{
-	/* background-color:$color1; */
 }

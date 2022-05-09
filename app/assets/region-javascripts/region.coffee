@@ -74,6 +74,15 @@ enable_speed_test = ->
         $('#region_start_ndt_test').click()
       ), 200
 
+enable_submit = ->
+  $('#submit-btn').on 'click', ->
+    if check_fields_validity()
+
+      setTimeout (->
+        console.log('starting submittal of data...');
+        $('#submitdatabutton').click()
+      ), 200
+
 numeric_field_constraint = ->
   $('.numeric').keydown (e) ->
     if $.inArray(e.keyCode, [
@@ -170,6 +179,9 @@ region_take_the_test = ->
     $('#price-div').addClass('hide')
     $('#connectedornot-div').addClass('hide')
     $('#testbutton-div').addClass('hide')
+    $('#testbutton-div').addClass('button-disabled')
+    $('#submitbutton-div').addClass('hide')
+    $('#submitbutton-div').addClass('button-disabled')
 
 
 
@@ -188,7 +200,6 @@ region_take_the_test = ->
         $('#nointernet').addClass('hide')
         $('#addresswithinternet').removeClass('hide')
         $('#addresswithoutinternet').addClass('hide')
-        $('#test-speed-btn').prop('innerHTML', 'Test My Speed')
         $('#access-div').addClass('shrink') #shrink the first div
         $('#price-text-connected').removeClass('hide')
         $(".checkboxes-container input[name='region_submission[whynoaccess]']").each ->
@@ -205,7 +216,6 @@ region_take_the_test = ->
         $('#connected-with').addClass('hide')
         $('#addresswithinternet').addClass('hide')
         $('#addresswithoutinternet').removeClass('hide')
-        $('#test-speed-btn').prop('innerHTML', 'Submit')
         $('#access-div').addClass('shrink') #shrink the first div
         $('#price-text-connected').addClass('hide')
         $('#price-text-notconnected').removeClass('hide')
@@ -252,20 +262,17 @@ region_take_the_test = ->
 # 4th box filled in - ADDRESS
 location_finished = ->
   if $('#address-input').prop('value', 'true')
+    if $('#access_have').prop('checked')
       $('#testbutton-div').removeClass('hide')
       $('#test-speed-btn').removeClass('button-disabled')
-      #$('#region_submission_address').attr 'value',  $('#address-input').val();
-			#console.log('address-input val:' + $('#address-input').val());
-			#console.log('address-input prop val:' + $('#address-input').prop('value'));
-			#console.log('address-input placeholder:' + $('#address-input').attr('placeholder'));
-			#console.log('address-input textContent:' + $('#address-input').textContent);
-				window.scrollBy(0,280)			
-
-
-#$("#address-input").on 'change', ->
-    #if $('#address-input').prop('value', 'true')
-       #$('#testbutton-div').removeClass('hide')
-
+      #console.log('address-input val:' + $('#address-input').val());
+      #console.log('address-input prop val:' + $('#address-input').prop('value'));
+      #console.log('address-input placeholder:' + $('#address-input').attr('placeholder'));
+      #console.log('address-input textContent:' + $('#address-input').textContent);
+      window.scrollBy(0,280)	
+    else
+      $('#submitbutton-div').removeClass('hide')
+      $('#submit-speed-btn').removeClass('button-disabled')
 
 
 $ ->
@@ -300,6 +307,10 @@ $ ->
   $('#location_button').on 'click', ->
     $('#location_button').prop('innerHTML', 'Loading...')
     get_location()
+
+  $('#submit-btn').on 'click', ->
+
+
 
   $('#test-speed-btn').on 'click', ->
     if $('#location_geolocation').prop('checked')

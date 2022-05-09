@@ -17,12 +17,20 @@
       <%= f.hidden_field :zip_code %>
       <%= f.hidden_field :ping %>
       <%= f.hidden_field :region, :value => @regionname %>
-
-      <%= render 'form_step_0', f: f %>
-
+	  <% if (@language == 'es') %>
+		<%= render 'form_step_0_es', f: f %>
+	  <% else %>
+		<%= render 'form_step_0', f: f %>
+	  <% end %>
       <%= hidden_field_tag :region_start_ndt_test %>
     <% end %>
 
+	<script>
+		regionlanguage = '<%= @language %>';
+	</script>
+
+	<!-- suffix: <%= @suffix %><br> -->
+	<!-- language: <%= @language %> -->
     <!-- <div class="maxmind-container">
       This product includes GeoLite2 data created by MaxMind, available from<br/>
       <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
