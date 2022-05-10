@@ -4,14 +4,8 @@
 
 <div class='title-container'>
 
-  <div class='background-container'>
-    
-    <%= render 'show_results', region_submission: region_submission %>
-  </div>
+	<div class='background-container'>
+		<%= render 'show_results', region_submission: region_submission %>
+	</div>
 </div>
-
-<% # = render 'mapbox', submission: @submission %>
-
-<% # = render 'all_results', all_results: @all_results %>
-
 <%= hidden_field_tag :connection_type, region_submission.testing_for %>

@@ -132,6 +132,16 @@ class RegionSubmission < ActiveRecord::Base
 	region_submission.location = 0
 	#region_submission.location = POINT(longitude, latitude)
 
+	if !region_submission.actual_down_speed.present?
+		region_submission.actual_down_speed = 0
+	end 
+	if !region_submission.actual_upload_speed.present?
+		region_submission.actual_upload_speed = 0
+	end 
+	if !region_submission.ping.present?
+		region_submission.ping = 0
+	end 
+
     region_submission.save
 
     #region_submission.populate_location
@@ -158,6 +168,8 @@ class RegionSubmission < ActiveRecord::Base
   def location
   end
 
+  def language
+  end
 
   def self.fetch_tileset_groupby(params)
     providers = provider_names(params[:provider])

@@ -1,3 +1,64 @@
+<%
+	# get the language
+	language = 'en'
+	suffix = region_submission.region[-2, 2].downcase
+	if (suffix == 'es')
+		language = 'es'
+	end
+%><% if (language == 'es') %>
+	<% if (region_submission.access == 'No access' ) %>
+		<% if (region_submission.whynoaccess == 'Not affordable' ) %>
+			<div class='container'>
+				<div class='row'>
+					<h3 class='text-center'>Gracias por su participación.<br><br>Obtenga más información sobre programas del gobierno estatal y federal que ofrecen acceso a Internet con descuento: <a href="https://www.oregon.gov/puc/pages/oregon-lifeline.aspx" target="_blank">https://www.oregon.gov/puc/pages/oregon-lifeline.aspx</a></h3>
+				</div>
+			</div>
+		<% else	%>
+			<div class='container'>
+				<div class='row'>
+					<h3 class='text-center'>Gracias por su participación.</h3>
+				</div>
+			</div>
+		<% end %>
+	<% else %>
+		<div class='container'>
+			<div class='row'>
+        <h3 class='text-center'>Sus Resultados</h3>
+        <table class='col-md-6 text-center'>
+          <tr>
+            <td class='text-right'><h4>Velocidad de Descarga:&nbsp;</h4></td>
+            <td class='text-left'><h3><%= print_speed(region_submission.actual_down_speed) %></h3></td>
+          </tr>
+          <% unless region_submission.testing_for == 'Mobile Data' %>
+            <tr>
+              <td class='text-right'><h4>Velocidad de Carga:&nbsp;</h4></td>
+              <td class='text-left'><h3><%= print_speed(region_submission.actual_upload_speed) %></h3></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td class='text-right'><h4>Ping:&nbsp;</h4></td>
+            <td class='text-left'><h3><%= print_ping(region_submission.ping) %></h3></td>
+          </tr>
+        </table>
+			</div>
+		</div>
+		<% end %>
+	<% else	%>
+		<% if (region_submission.access == 'No access' ) %>
+			<% if (region_submission.whynoaccess == 'Not affordable' ) %>
+				<div class='container'>
+					<div class='row'>
+						<h3 class='text-center'>Thank you for your participation.<br><br>Get more information on state and federal government discounted Internet access programs: <a href="https://www.oregon.gov/puc/pages/oregon-lifeline.aspx" target="_blank">https://www.oregon.gov/puc/pages/oregon-lifeline.aspx</a></h3>
+					</div>
+				</div>
+			<% else	%>
+				<div class='container'>
+				<div class='row'>
+					<h3 class='text-center'>Thank you for your participation.</h3>
+				</div>
+			</div>
+		<% end %>
+<% else %>
 <div class='container'>
   <div class='row'>
         <h3 class='text-center'>Your Results</h3>
@@ -19,8 +80,10 @@
         </table>
   </div>
 </div>
-
+	<% end %>
+<% end %>
 <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center export-data-div' style="display:none;">
     <%= link_to 'Export Data', region_export_csv_region_submissions_path, method: :post, class: 'btn btn-lg btn-primary export-btn' %>
 </div>
-  <%#= render 'about_speedup' %>
+<<!--span style="color:#000">language:<%=language%></span>
+<span style="color:#000">region:<%=region_submission.region%></span>-->

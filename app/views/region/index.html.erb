@@ -17,6 +17,7 @@
       <%= f.hidden_field :zip_code %>
       <%= f.hidden_field :ping %>
       <%= f.hidden_field :region, :value => @regionname %>
+      <%= f.hidden_field :language, :value => @language %>
 	  <% if (@language == 'es') %>
 		<%= render 'form_step_0_es', f: f %>
 	  <% else %>
@@ -70,9 +71,7 @@
   </div>
 </div>
 
-<%= render 'error_geolocation' %>
 
-<%= render 'error_position_unavailable' %>
 
 <% content_for :js_init do %>
   NdtSpeedTest.init();
