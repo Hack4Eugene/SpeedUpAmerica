@@ -75,13 +75,13 @@ enable_speed_test = ->
       ), 200
 
 enable_submit = ->
-  $('#submit-btn').on 'click', ->
-    if check_fields_validity()
-
-      setTimeout (->
-        console.log('starting submittal of data...');
-        $('#submitdatabutton').click()
-      ), 200
+# SUBMIT BUTTON
+	$('#submit-btn').on 'click', ->
+		console.log('submit-btn clicked');
+		setTimeout (->
+			console.log('starting submittal of data...');
+			$('#new_region_submission').submit();
+		), 200
 
 numeric_field_constraint = ->
   $('.numeric').keydown (e) ->
@@ -97,9 +97,6 @@ numeric_field_constraint = ->
       return
     if (e.shiftKey or e.keyCode < 48 or e.keyCode > 57) and (e.keyCode < 96 or e.keyCode > 105)
       e.preventDefault()
-
-
-
 
 
 access_start = ->
@@ -123,7 +120,7 @@ access_finished = ->
   $("#location_success").attr 'value', true
   $('#test-speed-btn').prop('disabled', false)
   $('.location-warning').addClass('hide')
-  $('#test-speed-btn').attr('disabled', false)
+  #$('#test-speed-btn').attr('disabled', false)
   $('#test-speed-btn').removeClass('button-disabled')
 
 location_error = ->
@@ -265,6 +262,8 @@ location_finished = ->
     if $('#access_have').prop('checked')
       $('#testbutton-div').removeClass('hide')
       $('#test-speed-btn').removeClass('button-disabled')
+      $('#submitbutton-div').addClass('hide')
+      $('#submit-btn').prop('disabled', true)
       #console.log('address-input val:' + $('#address-input').val());
       #console.log('address-input prop val:' + $('#address-input').prop('value'));
       #console.log('address-input placeholder:' + $('#address-input').attr('placeholder'));
@@ -272,7 +271,9 @@ location_finished = ->
       window.scrollBy(0,280)	
     else
       $('#submitbutton-div').removeClass('hide')
-      $('#submit-speed-btn').removeClass('button-disabled')
+      $('#submit-btn').prop('disabled', false)
+      $('#testbutton-div').addClass('hide')
+      $('#test-speed-btn').addClass('button-disabled')
 
 
 $ ->
@@ -286,6 +287,7 @@ $ ->
 
   if thispathone == 'region'
     enable_speed_test()
+    enable_submit()
     #set_error_for_invalid_fields()
     places_autocomplete()
     ajax_interactions()
@@ -293,62 +295,14 @@ $ ->
       $(this).prop('checked', false)
 
     # Start the test when the user clicks either the button or the nav link
-    $('#take_test, .nav-link-take-test').on 'click', region_take_the_test
+    # $('#take_test, .nav-link-take-test').on 'click', region_take_the_test
 
     # Start the test if the user arrived via a link pointing to the test
     # if window.location.hash == '#take_test'
-    window.scrollTo(0, 0)
+    #window.scrollTo(0, 0)
     region_take_the_test()
 
   $('[rel="tooltip"]').tooltip({'placement': 'top'});
   $('#testing_for_button').attr('disabled', true)
   $(".checkboxes-container input[name='region_submission[testing_for]']").prop('checked', false)
 
-  $('#location_button').on 'click', ->
-    $('#location_button').prop('innerHTML', 'Loading...')
-    get_location()
-
-  $('#submit-btn').on 'click', ->
-
-
-
-  $('#test-speed-btn').on 'click', ->
-    if $('#location_geolocation').prop('checked')
-      if $("#location_success").prop('value') == 'false'
-        navigator.geolocation.getCurrentPosition set_coords_by_geolocation, block_callback
-      show_step_one()
-
-    if $('#location_address').prop('checked')
-      if $("#location_success").prop('value') == 'true'
-        show_step_one()
-      else
-        $('#address-input').addClass('error-input')
-        $('#test-speed-btn').attr('disabled', true)
-        $('#test-speed-btn').removeClass('button-disabled')
-
-        setTimeout (->
-          $('#address-input').removeClass('error-input');
-        ), 2500
-
-    if $('#location_disabled').prop('checked')
-      show_step_one()
-
-  $(".checkboxes-container input[name='region_submission[testing_for]']").on 'change', ->
-    $(".checkboxes-container input[name='region_submission[testing_for]']").each ->
-      $(this).prop('checked', false)
-    $(this).prop('checked', true)
-    $('#testing_for_button').attr('disabled', !$(".checkboxes-container input[name='region_submission[testing_for]']").is(':checked'));
-
-  $('#testing_for_button').on 'click', ->
-    testing_for = $(".checkboxes-container input[name='region_submission[testing_for]']:checked").data('target')
-    $(testing_for).removeClass('hide')
-    $(testing_for + ' input').prop('disabled', false)
-    $(testing_for + ' select').prop('disabled', false)
-    $('#form-step-1').addClass('hide')
-
-show_step_one = ->
-  $('#form-step-0').addClass('hide')
-  $('#form-step-1').removeClass('hide')
-  $('#form-step-1 input').prop('disabled', false)
-  $('#test-speed-btn').prop('disabled', false)
-  $('.location-warning').addClass('hide')
