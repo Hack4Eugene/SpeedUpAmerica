@@ -1,0 +1,13 @@
+<% content_for :title, 'Speed Up Internet Region Speed Test Results' %>
+<% content_for :description, 'See how fast your internet speeds are with the Speed Up internet speed test' %>
+
+
+<div class='title-container'>
+
+	<div class='background-container'>
+		<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center export-data-div' style="display:none;">
+			<%= link_to 'Export Data', region_export_csv_region_submissions_path, method: :post, class: 'btn btn-lg btn-primary export-btn' %>
+		</div>
+	</div>
+</div>
+<%= hidden_field_tag :connection_type, region_submission.testing_for %>

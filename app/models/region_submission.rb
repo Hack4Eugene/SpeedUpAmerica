@@ -108,8 +108,8 @@ class RegionSubmission < ActiveRecord::Base
     region_submission.test_type = 'duplicate' if duplicate_ipa_tests.present?
     region_submission.completed = true
     region_submission.test_id = [Time.now.utc.to_i, SecureRandom.hex(10)].join('_')
-    #region_submission.provider = region_submission.get_provider
-	region_submission.provider = ''
+    region_submission.provider = region_submission.get_provider
+	#region_submission.provider = ''
 	region_submission.provider_down_speed = 0
 	region_submission.provider_price = 0
 	region_submission.rating = 0
@@ -324,11 +324,11 @@ class RegionSubmission < ActiveRecord::Base
   end
 
   CSV_COLUMNS = [
-    'Response #', 'Source', 'Date', 'Region', 'Access', 'How are you connected','Why No Access', 'Address', 'Zip', 'Latitude', 'Longitude', 'Accuracy', 'Price Per Month', 'Download Speed', 'Upload Speed', 'Ping', 'Actual Price Per Mbps'
+    'Response #', 'Source', 'Date', 'Region', 'Access', 'How are you connected','Why No Access', 'Address', 'Zip', 'Latitude', 'Longitude', 'Accuracy', 'Price Per Month', 'Download Speed', 'Upload Speed', 'Ping', 'Actual Price Per Mbps', 'Provider'
   ]
 
   CSV_KEYS = [
-    :id, :source, :date, :region, :access, :connected_with,  :whynoaccess, :address,  :zip_code, :latitude, :longitude, :accuracy, :monthly_price, :actual_download_speed, :actual_upload_speed, :ping, :actual_price
+    :id, :source, :date, :region, :access, :connected_with,  :whynoaccess, :address,  :zip_code, :latitude, :longitude, :accuracy, :monthly_price, :actual_download_speed, :actual_upload_speed, :ping, :actual_price, :provider
   ]
 
   def self.csv_header
@@ -340,7 +340,7 @@ class RegionSubmission < ActiveRecord::Base
   def to_csv_row
     CSV::Row.new(CSV_KEYS, [id, source, test_date.strftime('%B %d, %Y'), region, access, connected_with, whynoaccess, address,
       zip_code, latitude, longitude, accuracy, monthly_price, actual_down_speed,
-      actual_upload_speed, ping, actual_price])
+      actual_upload_speed, ping, actual_price, provider])
   end
 
   def self.find_in_batches(date_range)
