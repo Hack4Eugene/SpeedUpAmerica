@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :region_submissions, only: :create do
     collection do
       post :region_export_csv, defaults: { format: :csv }
+      get :region_export_csv_report, defaults: { format: :csv }
     end
   end
 

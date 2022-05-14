@@ -64,6 +64,10 @@ class RegionSubmissionsController < ApplicationController
     region_render_csv
   end
 
+  def region_export_csv_report
+    region_render_csv
+  end
+
   private
 
     def region_render_csv
