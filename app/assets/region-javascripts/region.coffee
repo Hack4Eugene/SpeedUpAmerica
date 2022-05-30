@@ -77,10 +77,13 @@ enable_speed_test = ->
 enable_submit = ->
 # SUBMIT BUTTON
 	$('#submit-btn').on 'click', ->
+		#disable the button right away to prevent multiple clicks
+		$('#submit-btn').prop("disabled",true);
 		console.log('submit-btn clicked');
 		setTimeout (->
 			console.log('starting submittal of data...');
 			$('#new_region_submission').submit();
+			    
 		), 200
 
 numeric_field_constraint = ->
@@ -136,22 +139,6 @@ ajax_interactions = ->
     .ajaxStop ->
       location_finished()
 
-places_autocomplete = ->
-  placesAutocomplete = places({
-    application_id: ALGOLIA_APP_ID,
-    api_key: ALGOLIA_API_KEY,
-    container: window.document.querySelector('#address-input')
-  });
-
-  placesAutocomplete.on 'change', (eventResult) ->
-    if eventResult
-      latlng = eventResult.suggestion.latlng
-      set_coords(50, latlng.lat, latlng.lng)
-				$('#region_submission_address').attr 'value', eventResult.suggestion.value
-				$('#region_submission_zip_code').attr 'value',eventResult.suggestion.postcode
-				#console.log('address:'+eventResult.suggestion.value)
-				#console.log('zip:'+eventResult.suggestion.postcode)
-  placesAutocomplete
 
 # This function only works on the region page
 region_take_the_test = ->
@@ -257,8 +244,12 @@ region_take_the_test = ->
       $('#address-div').removeClass('hide')
 
 # 4th box filled in - ADDRESS
+# With MapBox - the code below doesn't actually get triggered from this file - but a duplicate of this code is run on the MapBox file
+# This was the only way I could find to get the Mapbox trigger to work - @webaissance
+
 location_finished = ->
-  if $('#address-input').prop('value', 'true')
+  #if $('#address-input').prop('value', 'true')
+	if $('.mapboxgl-ctrl-geocoder--input').prop('value', 'true')
     if $('#access_have').prop('checked')
       $('#testbutton-div').removeClass('hide')
       $('#test-speed-btn').removeClass('button-disabled')
@@ -289,7 +280,7 @@ $ ->
     enable_speed_test()
     enable_submit()
     #set_error_for_invalid_fields()
-    places_autocomplete()
+   # places_autocomplete()
     ajax_interactions()
     $(".checkboxes-container input[name='region_submission[location]']").each ->
       $(this).prop('checked', false)

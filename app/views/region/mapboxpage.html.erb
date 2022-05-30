@@ -1,0 +1,112 @@
+<% # source: https://docs.mapbox.com/mapbox-gl-js/example/mapbox-gl-geocoder-no-map/ %>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+ <style>
+#geocoder {
+z-index: 1;
+margin: 20px;
+}
+.mapboxgl-ctrl-geocoder {
+min-width: 100%;
+}
+</style>
+<div id="geocoder"></div>
+<pre id="result" style="height:240px;overflow:scroll;"></pre>
+<pre id="result2" style="height:240px;overflow:scroll;"></pre>
+<script>
+mapboxgl.accessToken = '<%= ENV['MAPBOX_API_KEY'] %>';
+//mapboxgl.accessToken = 'pk.eyJ1Ijoid2ViYWlzc2FuY2UiLCJhIjoiY2s2bXIyZDNwMHQweTNrbnl5cDBld3RheSJ9.i4DkPUfX7uhgR24CGUWUiQ';
+const geocoder = new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+countries: 'us',
+types: 'address'
+});
+ 
+geocoder.addTo('#geocoder');
+ 
+// Get the geocoder results container.
+const results = document.getElementById('result');
+// Add geocoder result to container.
+geocoder.on('result', (e) => {
+const resultsstr =  JSON.stringify(e.result, null, 2);
+results.innerText = resultsstr;
+
+const results2 = document.getElementById('result2');
+
+const georesultsparsed = JSON.parse(resultsstr);
+//const georesultsparsed = e.result;
+
+var elements='<strong>Specific Values</strong>\n';
+var zipcode='';
+
+elements+= "center:" + georesultsparsed['center']+"\n";
+elements+= "geometry[coordinates]: " + georesultsparsed['geometry']['coordinates']+"\n";
+elements+= "geometry[coordinates][0]: " + georesultsparsed['geometry']['coordinates'][0]+"\n";
+elements+= "geometry[coordinates][1]: " + georesultsparsed['geometry']['coordinates'][1]+"\n";
+elements+= "address: " + georesultsparsed['place_name']+"\n";
+elements+= "accuracy: " + georesultsparsed['properties']['accuracy']+"\n";
+//elements+= "context0 stringify: " + JSON.stringify(georesultsparsed['context'][0])+"\n";
+//elements+= "context0: " + georesultsparsed['context'][0]+"\n";
+//elements+= "context0 id: " + JSON.stringify(georesultsparsed['context'][0]['id'])+"\n";
+//elements+= "context text0: " + JSON.stringify(georesultsparsed['context'][0]['text'])+"\n";
+elements+="\n";
+
+elements+="<strong>Get the zip</strong>\n";
+for (var key2 in georesultsparsed['context']){
+	var contextid = georesultsparsed['context'][key2]['id'];
+	elements+= 'context id: ' + key2 + ": " + georesultsparsed['context'][key2]['id'];
+	elements+="\n"
+	var stringbeforeperiod = contextid.split('.')[0];
+	elements+="stringbeforeperiod: "+ stringbeforeperiod + "\n"
+	var contexttext = georesultsparsed['context'][key2]['text'];		
+	elements+= 'context text: ' + key2 + ": " +georesultsparsed['context'][key2]['text'];
+	elements+="\n"
+
+	// https://stackoverflow.com/questions/9133102/how-to-grab-substring-before-a-specified-character-jquery-or-javascript
+	if (stringbeforeperiod =='postcode')  {
+		zipcode = contexttext;
+		break;
+	}
+}
+elements+= "zip: " + zipcode+"\n";
+elements+="\n";
+
+elements+="<strong>All Values</strong>\n";
+for (var key in georesultsparsed) {
+       elements+= key + ":";
+			 var thisval = georesultsparsed[key];
+       elements+=thisval+"\n";
+			 var thisvalstring = JSON.stringify(georesultsparsed[key]);
+       elements+=" stringify:" + thisvalstring+"\n";
+   }
+results2.innerHTML = elements;
+
+});
+ 
+// Clear results container when search is cleared.
+geocoder.on('clear', () => {
+results.innerText = '';
+results2.innerText = '';
+});
+
+
+ /*
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -122.63592,
+      45.52233
+    ]
+*/
+
+/*
+JSON.parse(JSON.stringify(userData))
+https://stackoverflow.com/questions/38380462/syntaxerror-unexpected-token-o-in-json-at-position-1
+*/
+</script>
