@@ -15,6 +15,7 @@
  *= require region-theme-california
  *= require region-theme-washington
  *= require region-theme-oregon
+ *= require region-theme-oregon-es
  */
 
 
@@ -73,7 +74,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 }
 
 .region div#region-form-step-0 {
-	margin-bottom:200px;
+	margin-bottom:0px;
 }
 
 .region .hide {
@@ -308,6 +309,7 @@ $bg1: url(https://upload.wikimedia.org/wikipedia/commons/c/cd/Central_Oregon_lan
 
 .region #form-container {
     padding: 40px 30px 0px;
+		margin-bottom:100px;
 }
 
 /* make address wider */

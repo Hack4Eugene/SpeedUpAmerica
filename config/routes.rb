@@ -45,7 +45,7 @@ Rails.application.routes.draw do
   get 'region-embed/*regionname', to: 'region_submissions#embed', defaults: { format: :js }, constraints: { format: :js }
   get 'region/*regionname', to: 'region#index', defaults: {
 	regionname: 'Oregon' }, constraints: RestrictedRegionListConstraint.new
-
+  get 'mapbox', to: 'region#mapboxpage'
   get '/:page', to: 'static#show'
   root 'home#index'
 

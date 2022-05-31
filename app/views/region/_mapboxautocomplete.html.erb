@@ -1,0 +1,88 @@
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+<style>
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+ <style>
+#geocoder {
+z-index: 1;
+margin: 20px;
+}
+.mapboxgl-ctrl-geocoder {
+min-width: 100%;
+}
+</style>
+
+<!-- <pre id="result"></pre> -->
+<script>
+
+document.addEventListener('DOMContentLoaded', (event) => {
+
+	//mapboxgl.accessToken = 'pk.eyJ1Ijoid2ViYWlzc2FuY2UiLCJhIjoiY2s2bXIyZDNwMHQweTNrbnl5cDBld3RheSJ9.i4DkPUfX7uhgR24CGUWUiQ';
+	mapboxgl.accessToken = '<%= ENV['MAPBOX_API_KEY'] %>';
+const geocoder = new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+countries: 'us',
+types: 'address'
+});
+ 
+geocoder.addTo('#geocoder');
+geocoder.on('result', (e) => {
+const resultsstr =  JSON.stringify(e.result, null, 2);
+const georesultsparsed = JSON.parse(resultsstr);
+
+// get latitude and longitude
+var lat = georesultsparsed['geometry']['coordinates'][1];
+var lon = georesultsparsed['geometry']['coordinates'][0];
+var placename = georesultsparsed['place_name'];
+var accuracy = georesultsparsed['properties']['accuracy'];
+var zipcode = '';
+for (var key2 in georesultsparsed['context']){
+	var contextid = georesultsparsed['context'][key2]['id'];
+	var stringbeforeperiod = contextid.split('.')[0];
+	var contexttext = georesultsparsed['context'][key2]['text'];		
+	if (stringbeforeperiod =='postcode')  {
+		zipcode = contexttext;
+		break;
+	}
+}
+
+// assign lat and lon values to fields 
+document.getElementById('region_submission_latitude').value = lat;
+document.getElementById('region_submission_longitude').value = lon;
+document.getElementById('region_submission_address').value = placename;
+document.getElementById('region_submission_accuracy').value = accuracy;
+document.getElementById('region_submission_zip_code').value = zipcode;
+
+location_finished();
+
+});
+
+
+  location_finished = function() {
+      if ($('#access_have').prop('checked')) {
+        $('#testbutton-div').removeClass('hide');
+        $('#test-speed-btn').removeClass('button-disabled');
+        $('#submitbutton-div').addClass('hide');
+        $('#submit-btn').prop('disabled', true);
+        return window.scrollBy(0, 280);
+      } else {
+        $('#submitbutton-div').removeClass('hide');
+        $('#submit-btn').prop('disabled', false);
+        $('#testbutton-div').addClass('hide');
+        return $('#test-speed-btn').addClass('button-disabled');
+      }
+    }
+
+})
+ /*
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -122.63592,
+      45.52233
+    ]
+*/
+</script>

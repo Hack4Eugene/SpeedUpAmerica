@@ -1,10 +1,6 @@
 <div id='region-form-step-0' >
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.0/mapbox-gl-geocoder.min.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.0/mapbox-gl-geocoder.css' type='text/css' />
-  <script type='application/javascript'>
-  var ALGOLIA_APP_ID = '<%= ENV['ALGOLIA_APP_ID'] %>';
-  var ALGOLIA_API_KEY = '<%= ENV['ALGOLIA_API_KEY'] %>';
-  </script>
 
 <% # STEP 1 HAVE ACCESS %>
   <div class='checkboxes-container' id="access-div">
@@ -92,7 +88,7 @@
 	</div>
 
 <% # STEP 4 ADDRESS  %>
-   <div id="address-div" class="hide">
+<div id="address-div" class="hide">
 	<div id="addresswithinternet" class="hide">
 		<p class='bold'>Introduzca su dirección.</p>
 	</div>
@@ -100,10 +96,15 @@
 	<div id="addresswithoutinternet" class="hide">
 		<p class='bold'>Me gustaría registrar mi dirección como un lugar que no tiene Internet.</p>
 	</div>
-
-		<span id='location-address-input' class=''>
-			<input type="search" id="address-input" placeholder="Introduzca su dirección"/>
+	
+	<span id='location-address-input' class=''>
+			
+			<%= render 'mapboxautocomplete' %>
+			<div id="geocoder" placeholder="Introduzca su dirección"></div>
+			<!-- <input type="search" id="address-input" placeholder="Introduzca su dirección"/> -->
 		</span>
+	</div>
+
 	</div>
 		
 <% # STEP 5 TEST BUTTON  %>
@@ -117,14 +118,6 @@
 		<span class='block-element'>
 		<p class='bold'><%= button_tag 'Enviar', type: 'button', id: 'submit-btn', class: 'button button-primary', disabled: false %></p>
 		</span>
-	</div>
-
-	<div id="noacess-notaffordable-div" class="hide">
-		<p class='bold'>Gracias por su participación. Obtenga más información sobre programas del gobierno estatal y federal que ofrecen acceso a Internet con descuento: <a href="https://www.oregon.gov/puc/pages/oregon-lifeline.aspx" target="_blank">https://www.oregon.gov/puc/pages/oregon-lifeline.aspx</a></p>
-	</div>
-
-	<div id="noacess-noaccess-div" class="hide">
-		<p class='bold'>Gracias por su participación.</p>
 	</div>
 
 </div>
