@@ -20,7 +20,6 @@ min-width: 100%;
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
-	//mapboxgl.accessToken = 'pk.eyJ1Ijoid2ViYWlzc2FuY2UiLCJhIjoiY2s2bXIyZDNwMHQweTNrbnl5cDBld3RheSJ9.i4DkPUfX7uhgR24CGUWUiQ';
 	mapboxgl.accessToken = '<%= ENV['MAPBOX_API_KEY'] %>';
 const geocoder = new MapboxGeocoder({
 accessToken: mapboxgl.accessToken,

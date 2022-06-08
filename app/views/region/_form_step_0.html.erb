@@ -65,6 +65,11 @@
 			<%= f.check_box :whynoaccess, { id: 'nointernet_notavailable', data: { target: '#form-step-1' } }, 'Not available', false %>
 			<%= label_tag :nointernet_notavailable, "Internet is not available in my area".html_safe %>
 		</div>
+
+		<div class='checkbox checkbox-info'>
+			<%= f.check_box :whynoaccess, { id: 'nointernet_other', data: { target: '#form-step-1' } }, 'Other reason', false %>
+			<%= label_tag :nointernet_notavailable, "Other reason.".html_safe %>
+		</div>
 	</div>
 
    </div>
