@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and aims to adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [6.3.7] - 2022-06-07
+
+### Added
+
+- Other reason. / Otra razon. for regional test Why No Internet question
+
+### Removed
+
+- Unused Mapbox accessTokens
+
 ## [6.3.6] - 2022-05-30
 
 ### Fixed

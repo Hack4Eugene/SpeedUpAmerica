@@ -21,7 +21,6 @@ min-width: 100%;
 <pre id="result2" style="height:240px;overflow:scroll;"></pre>
 <script>
 mapboxgl.accessToken = '<%= ENV['MAPBOX_API_KEY'] %>';
-//mapboxgl.accessToken = 'pk.eyJ1Ijoid2ViYWlzc2FuY2UiLCJhIjoiY2s2bXIyZDNwMHQweTNrbnl5cDBld3RheSJ9.i4DkPUfX7uhgR24CGUWUiQ';
 const geocoder = new MapboxGeocoder({
 accessToken: mapboxgl.accessToken,
 countries: 'us',
